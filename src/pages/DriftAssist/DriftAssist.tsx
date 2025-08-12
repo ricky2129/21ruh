@@ -101,17 +101,29 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       initialSessionIdFromProps: initialSessionId,
       awsCredentialsFromProps: awsCredentials,
       initialAwsCredentialsFromProps: initialAwsCredentials,
-      locationState: location.state
+      locationState: location.state,
+      hasAccessKey: !!(finalCredentials?.access_key),
+      hasSecretKey: !!(finalCredentials?.secret_key),
+      credentialKeys: finalCredentials ? Object.keys(finalCredentials) : []
     });
     
     if (finalSessionId && finalCredentials) {
       console.log('✅ DriftAssist: Setting up with existing credentials', {
         sessionId: finalSessionId,
-        credentials: finalCredentials,
+        credentials: {
+          ...finalCredentials,
+          access_key: finalCredentials.access_key ? `${finalCredentials.access_key.substring(0, 4)}...` : 'MISSING',
+          secret_key: finalCredentials.secret_key ? `${finalCredentials.secret_key.substring(0, 4)}...` : 'MISSING'
+        },
         willSkipToStep: 1
       });
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
+      
+      // If we have complete credentials, start at bucket selection
+      if (finalCredentials.access_key && finalCredentials.secret_key) {
+        setCurrentStep(0); // S3 bucket selection step
+      }
     } else if (finalSessionId) {
       // If we have sessionId but no credentials, still set the sessionId
       console.log('⚠️ DriftAssist: Setting up with sessionId only (no credentials)', {

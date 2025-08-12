@@ -108,7 +108,9 @@ const ConfigureDriftAssist: React.FC<ConfigureDriftAssistProps> = ({
         sessionId: response.session_id,
         awsCredentials: {
           region: values.AWS_REGION,
-          provider: values.CLOUD_PROVIDER
+          provider: values.CLOUD_PROVIDER,
+          access_key: values.AWS_ACCESS_KEY,
+          secret_key: values.AWS_SECRET_KEY
         }
       };
       
