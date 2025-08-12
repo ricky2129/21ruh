@@ -14,7 +14,7 @@ import {
   Form,
   Input as AntInput,
   Steps
-} from "antd";
+} from "antd"
 import {
   CloudOutlined,
   DisconnectOutlined,
@@ -96,13 +96,28 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     console.log('DriftAssist: useEffect triggered', { 
       finalSessionId, 
       finalCredentials, 
-      currentStep 
+      currentStep,
+      sessionIdFromProps: sessionId,
+      initialSessionIdFromProps: initialSessionId,
+      awsCredentialsFromProps: awsCredentials,
+      initialAwsCredentialsFromProps: initialAwsCredentials
     });
     
     if (finalSessionId && finalCredentials) {
       console.log('DriftAssist: Setting up with existing credentials');
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
+    } else if (finalSessionId) {
+      // If we have sessionId but no credentials, still set the sessionId
+      console.log('DriftAssist: Setting up with sessionId only');
+      setCurrentSessionId(finalSessionId);
+    } else {
+      console.warn('DriftAssist: No sessionId or credentials found', {
+        sessionId,
+        initialSessionId,
+        awsCredentials,
+        initialAwsCredentials
+      });
     }
   }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
 
