@@ -1,0 +1,36 @@
+@import "/src/themes/mixins.scss";
+
+.greeting {
+  line-height: 26px;
+}
+
+.landing-project-controls {
+  .filter-button {
+    color: $cool-gray-6;
+  }
+}
+
+.project-count {
+  color: $primary-85;
+}
+
+.landing-page-container {
+  padding: $space-sm;
+}
+
+.prequistic-card {
+  border: 1.6px solid $cool-gray-2;
+  padding: $space-md;
+border-radius: 6px;
+}
+
+.download-button {
+  margin-top: $space-md;
+  justify-content: space-between;
+  background-color: $sidenav-gray !important;
+}
+
+.prequistic-icon {
+  border-radius: 50%;
+  border: 1px solid $cool-gray-1;
+}

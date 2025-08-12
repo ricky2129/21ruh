@@ -1,0 +1,17 @@
+@import "/src/themes/theme.scss";
+
+.run-scans-container {
+    border: 1px solid $cool-gray-2;
+    border-radius: 6px;
+    padding: $space-md;
+    height: auto;
+    min-height: 512px;
+    .run-scans-button {
+        width: fit-content;
+    }
+    .loading-container {
+        padding: $space-xxs $space-sm;
+        border-radius: 4px;
+        background-color: $cool-blue-300;
+    }
+}

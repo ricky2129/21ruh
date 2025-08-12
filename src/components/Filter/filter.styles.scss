@@ -1,0 +1,21 @@
+@import "/src/themes/theme.scss";
+
+.filter-component {
+  .ant-input-affix-wrapper {
+    padding-inline: $space-md;
+  }
+
+  .ant-input-prefix {
+    margin-inline-end: $space-md;
+    max-width: fit-content;
+    text-wrap: nowrap;
+
+    .filter-tags {
+      flex-wrap: wrap;
+    }
+  }
+
+  .ant-tag {
+    margin-inline-end: 0;
+  }
+}

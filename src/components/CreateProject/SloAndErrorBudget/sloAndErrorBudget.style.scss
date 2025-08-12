@@ -1,0 +1,12 @@
+@import "/src/themes/theme.scss";
+
+.account-selector-radiobtn {
+    border: 1.6px solid $primary-blue;
+    padding: $space-sm;
+    border-radius: 6px;
+    width: 50%;
+}
+
+.accountRadiobtn-disabled {
+    border: 1px solid $cool-gray-4 !important;
+}

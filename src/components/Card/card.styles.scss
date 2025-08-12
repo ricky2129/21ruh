@@ -1,0 +1,18 @@
+.card-layout {
+  display: flex;
+
+  .ant-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    width: -webkit-fill-available;
+  }
+
+  .ant-card-body::after {
+    content: none;
+  }
+
+  .ant-card-body::before {
+    content: none;
+  }
+}

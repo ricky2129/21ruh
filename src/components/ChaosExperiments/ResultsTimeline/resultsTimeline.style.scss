@@ -1,0 +1,50 @@
+@import "/src/themes/theme.scss";
+
+.results-timeline-container {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: $space-md;
+  overflow-x: auto;
+  scrollbar-width: thin;
+
+  .result-timeline-steps {
+    width: $width-100;
+    display: inline-flex;
+    height: $height-100;
+
+    .result-timeline-step {
+      min-width: 350px;
+      padding: $space-md;
+    }
+
+    .scan-status-card {
+      min-width: 162px;
+      min-height: 120px;
+      padding: 0px 12px 12px;
+      .scan-status-text {
+        width: $width-100;
+        padding: $space-xxs $space-xs;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
+.execution-container {
+  border: 1px solid $cool-gray-2;
+  padding: $space-sm;
+  border-radius: 6px;
+  .circle-green {
+    background-color: $primary-green-600;
+    border-radius: 50%;
+    width: 22px;
+  }
+}
+
+.time-container {
+  background-color: $cool-gray-2;
+  padding: $space-xs $space-sm;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: $space-xs;
+}

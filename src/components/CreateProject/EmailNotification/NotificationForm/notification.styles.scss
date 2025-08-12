@@ -1,0 +1,46 @@
+@import "/src/themes/theme.scss";
+
+.unpublish-button {
+  color: $dust-red-5;
+}
+
+.publish-btn {
+  width: fit-content;
+}
+
+.email-address-customInput {
+  border: 1px solid $cool-gray-4;
+  padding: $space-xxs $space-sm;
+  max-width: 100%;
+  cursor: text;
+  border-radius: 4px ;
+  .email-address-input {
+    padding: 0;
+    width: min-content;
+    color: $black;
+  }
+}
+
+.email-address-customInput:hover {
+  border-color: #3897a8;
+}
+
+.email-address-customInput-focus {
+  box-shadow: 0 0 0 2px rgba(10, 75, 75, 0.2);
+  border-color: #3897a8;
+}
+
+.email-address-customInput-error {
+  border-color: $dust-red-5 !important;
+  box-shadow: none !important;
+}
+
+.custom-email-tag {
+  background-color: $cool-gray-2-light !important;
+  color: $black;
+  padding: $space-xxs $space-xs;
+  border-radius: 4px;
+  .custom-email-tag-closeIcon {
+    margin-left: $space-xxs;
+  }
+}

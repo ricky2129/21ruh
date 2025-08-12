@@ -1,0 +1,35 @@
+@import "/src/themes/theme.scss";
+
+.integration-manager-container:hover {
+  border: 1px solid $primary-blue;
+}
+
+.integration-manager-container {
+  border: 1px solid $cool-gray-2;
+  border-radius: 4px;
+  padding: $space-md;
+
+  .integration-icon {
+    padding: $space-sm;
+    background-color: $cool-gray-1;
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 4px;
+  }
+
+  .add-new-btn {
+    text-align: left !important;
+    justify-content: start;
+    padding: 0 !important;
+    box-shadow: none !important;
+    height: fit-content !important;
+    margin-top: $space-xxs;
+  }
+
+  .integration-item {
+    padding: $space-sm;
+    border: 1.6px solid $primary-blue;
+    border-radius: 6px;
+    min-height: 62px;
+  }
+}

@@ -1,0 +1,50 @@
+@import "/src/themes/mixins.scss";
+@import "/src/themes/theme.scss";
+
+.mfa-container {
+  padding: calc($space-lg * 2);
+
+  .subtitle {
+    color: $cool-gray-12;
+  }
+
+  .form-wrapper {
+    width: 25rem;
+  }
+
+  .otp-input {
+    & .ant-input {
+      width: auto;
+      padding: 10px 10px;
+      border-radius: 8px;
+      border-width: 1px;
+
+      color: $primary-blue;
+      font-weight: 600;
+    }
+
+    & .ant-input:focus {
+      border-color: $primary-blue;
+    }
+
+    & .ant-input-outlined:focus {
+      box-shadow: none;
+    }
+  }
+
+  .ant-btn-primary {
+    @include body-copy-semibold;
+
+    box-shadow: none;
+  }
+
+  .ant-btn-default {
+    @include body-copy-semibold;
+
+    box-shadow: none;
+  }
+
+  .mfa-setup-message {
+    color: $cool-gray-12;
+  }
+}

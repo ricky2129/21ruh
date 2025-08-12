@@ -1,0 +1,494 @@
+[
+  {
+    "status": "COMPLETE",
+    "task_id": "53eadec7-2faa-5c29-bc5e-182e0543a049",
+    "chart_title": "CPU Utilization",
+    "metric_data": {
+      "10.0.1.5": [
+        {
+          "timestamp": 1730288513101,
+          "value": 2.58
+        },
+        {
+          "timestamp": 1730288523167,
+          "value": 3.74
+        },
+        {
+          "timestamp": 1730288533195,
+          "value": 6.78
+        },
+        {
+          "timestamp": 1730288543228,
+          "value": 7.61
+        },
+        {
+          "timestamp": 1730288553298,
+          "value": 6.46
+        },
+        {
+          "timestamp": 1730288563329,
+          "value": 2.72
+        },
+        {
+          "timestamp": 1730288573383,
+          "value": 2.37
+        },
+        {
+          "timestamp": 1730288583448,
+          "value": 2.32
+        },
+        {
+          "timestamp": 1730288603995,
+          "value": 52.66
+        },
+        {
+          "timestamp": 1730288609113,
+          "value": 53.2
+        },
+        {
+          "timestamp": 1730288614331,
+          "value": 54.65
+        },
+        {
+          "timestamp": 1730288619460,
+          "value": 52.99
+        },
+        {
+          "timestamp": 1730288624588,
+          "value": 53.16
+        },
+        {
+          "timestamp": 1730288629737,
+          "value": 53.25
+        },
+        {
+          "timestamp": 1730288634878,
+          "value": 52.77
+        },
+        {
+          "timestamp": 1730288640015,
+          "value": 53.28
+        },
+        {
+          "timestamp": 1730288645164,
+          "value": 52.94
+        },
+        {
+          "timestamp": 1730288650301,
+          "value": 53.33
+        },
+        {
+          "timestamp": 1730288655454,
+          "value": 52.65
+        },
+        {
+          "timestamp": 1730288660608,
+          "value": 52.83
+        },
+        {
+          "timestamp": 1730288665736,
+          "value": 52.62
+        },
+        {
+          "timestamp": 1730288670880,
+          "value": 53.39
+        },
+        {
+          "timestamp": 1730288676060,
+          "value": 53.04
+        },
+        {
+          "timestamp": 1730288681202,
+          "value": 53.55
+        },
+        {
+          "timestamp": 1730288686327,
+          "value": 52.54
+        },
+        {
+          "timestamp": 1730288691535,
+          "value": 55.62
+        },
+        {
+          "timestamp": 1730288696662,
+          "value": 52.8
+        },
+        {
+          "timestamp": 1730288701786,
+          "value": 53.87
+        },
+        {
+          "timestamp": 1730288706989,
+          "value": 52.58
+        },
+        {
+          "timestamp": 1730288712119,
+          "value": 53.05
+        },
+        {
+          "timestamp": 1730288717246,
+          "value": 52.66
+        },
+        {
+          "timestamp": 1730288722403,
+          "value": 53.25
+        },
+        {
+          "timestamp": 1730288727530,
+          "value": 52.44
+        },
+        {
+          "timestamp": 1730288732657,
+          "value": 53.98
+        },
+        {
+          "timestamp": 1730288737825,
+          "value": 52.75
+        },
+        {
+          "timestamp": 1730288742972,
+          "value": 53.66
+        },
+        {
+          "timestamp": 1730288748103,
+          "value": 53.26
+        },
+        {
+          "timestamp": 1730288753249,
+          "value": 53.25
+        },
+        {
+          "timestamp": 1730288758371,
+          "value": 53.41
+        },
+        {
+          "timestamp": 1730288763521,
+          "value": 55.38
+        },
+        {
+          "timestamp": 1730288768685,
+          "value": 52.81
+        },
+        {
+          "timestamp": 1730288773995,
+          "value": 52.87
+        },
+        {
+          "timestamp": 1730288779133,
+          "value": 52.74
+        },
+        {
+          "timestamp": 1730288784404,
+          "value": 85.86
+        },
+        {
+          "timestamp": 1730288789598,
+          "value": 62.78
+        },
+        {
+          "timestamp": 1730288794783,
+          "value": 53.39
+        },
+        {
+          "timestamp": 1730288800223,
+          "value": 57.38
+        },
+        {
+          "timestamp": 1730288805358,
+          "value": 52.91
+        },
+        {
+          "timestamp": 1730288810623,
+          "value": 52.93
+        },
+        {
+          "timestamp": 1730288815754,
+          "value": 53.21
+        },
+        {
+          "timestamp": 1730288820877,
+          "value": 54.23
+        },
+        {
+          "timestamp": 1730288826025,
+          "value": 53.01
+        },
+        {
+          "timestamp": 1730288831178,
+          "value": 53.09
+        },
+        {
+          "timestamp": 1730288836301,
+          "value": 52.57
+        },
+        {
+          "timestamp": 1730288841429,
+          "value": 53.37
+        },
+        {
+          "timestamp": 1730288846554,
+          "value": 52.51
+        },
+        {
+          "timestamp": 1730288851706,
+          "value": 54.19
+        },
+        {
+          "timestamp": 1730288856832,
+          "value": 55.22
+        },
+        {
+          "timestamp": 1730288861989,
+          "value": 53.2
+        },
+        {
+          "timestamp": 1730288867145,
+          "value": 53.09
+        },
+        {
+          "timestamp": 1730288872374,
+          "value": 52.94
+        },
+        {
+          "timestamp": 1730288877503,
+          "value": 52.53
+        },
+        {
+          "timestamp": 1730288882637,
+          "value": 53.59
+        },
+        {
+          "timestamp": 1730288887854,
+          "value": 52.65
+        },
+        {
+          "timestamp": 1730288893049,
+          "value": 52.97
+        },
+        {
+          "timestamp": 1730288898212,
+          "value": 7.75
+        },
+        {
+          "timestamp": 1730288903320,
+          "value": 3.49
+        },
+        {
+          "timestamp": 1730288913949,
+          "value": 5.69
+        },
+        {
+          "timestamp": 1730289094332,
+          "value": 5.35
+        },
+        {
+          "timestamp": 1730289104450,
+          "value": 2.62
+        }
+      ]
+    }
+  },
+  {
+    "status": "COMPLETE",
+    "task_id": "b20ddf06-57a8-55f9-a35e-96ad1c855bb9",
+    "chart_title": "CPU Utilization",
+    "metric_data": {
+      "10.0.1.5": [
+        {
+          "timestamp": 1730288836301,
+          "value": 52.57
+        },
+        {
+          "timestamp": 1730288841429,
+          "value": 53.37
+        },
+        {
+          "timestamp": 1730288846554,
+          "value": 52.51
+        },
+        {
+          "timestamp": 1730288851706,
+          "value": 54.19
+        },
+        {
+          "timestamp": 1730288856832,
+          "value": 55.22
+        },
+        {
+          "timestamp": 1730288861989,
+          "value": 53.2
+        },
+        {
+          "timestamp": 1730288867145,
+          "value": 53.09
+        },
+        {
+          "timestamp": 1730288872374,
+          "value": 52.94
+        },
+        {
+          "timestamp": 1730288877503,
+          "value": 52.53
+        },
+        {
+          "timestamp": 1730288882637,
+          "value": 53.59
+        },
+        {
+          "timestamp": 1730288887854,
+          "value": 52.65
+        },
+        {
+          "timestamp": 1730288893049,
+          "value": 52.97
+        },
+        {
+          "timestamp": 1730288898212,
+          "value": 7.75
+        },
+        {
+          "timestamp": 1730288903320,
+          "value": 3.49
+        },
+        {
+          "timestamp": 1730288924131,
+          "value": 76.37
+        },
+        {
+          "timestamp": 1730288929281,
+          "value": 77.64
+        },
+        {
+          "timestamp": 1730288934409,
+          "value": 76.92
+        },
+        {
+          "timestamp": 1730288939575,
+          "value": 76.44
+        },
+        {
+          "timestamp": 1730288944742,
+          "value": 76.77
+        },
+        {
+          "timestamp": 1730288949890,
+          "value": 76.76
+        },
+        {
+          "timestamp": 1730288955058,
+          "value": 76.44
+        },
+        {
+          "timestamp": 1730288960228,
+          "value": 76.64
+        },
+        {
+          "timestamp": 1730288965384,
+          "value": 76.28
+        },
+        {
+          "timestamp": 1730288970522,
+          "value": 77.12
+        },
+        {
+          "timestamp": 1730288975659,
+          "value": 76.42
+        },
+        {
+          "timestamp": 1730288980784,
+          "value": 76.94
+        },
+        {
+          "timestamp": 1730288985945,
+          "value": 76.54
+        },
+        {
+          "timestamp": 1730288991090,
+          "value": 76.49
+        },
+        {
+          "timestamp": 1730288996235,
+          "value": 76.41
+        },
+        {
+          "timestamp": 1730289001378,
+          "value": 76.73
+        },
+        {
+          "timestamp": 1730289006520,
+          "value": 77.82
+        },
+        {
+          "timestamp": 1730289011657,
+          "value": 76.72
+        },
+        {
+          "timestamp": 1730289016842,
+          "value": 76.41
+        },
+        {
+          "timestamp": 1730289022079,
+          "value": 76.71
+        },
+        {
+          "timestamp": 1730289027218,
+          "value": 76.47
+        },
+        {
+          "timestamp": 1730289032345,
+          "value": 77.09
+        },
+        {
+          "timestamp": 1730289037462,
+          "value": 76.88
+        },
+        {
+          "timestamp": 1730289042590,
+          "value": 76.78
+        },
+        {
+          "timestamp": 1730289047792,
+          "value": 76.51
+        },
+        {
+          "timestamp": 1730289052931,
+          "value": 76.97
+        },
+        {
+          "timestamp": 1730289058078,
+          "value": 77.1
+        },
+        {
+          "timestamp": 1730289063253,
+          "value": 77.25
+        },
+        {
+          "timestamp": 1730289068402,
+          "value": 76.42
+        },
+        {
+          "timestamp": 1730289073589,
+          "value": 76.56
+        },
+        {
+          "timestamp": 1730289078770,
+          "value": 76.55
+        },
+        {
+          "timestamp": 1730289083992,
+          "value": 76.71
+        },
+        {
+          "timestamp": 1730289089242,
+          "value": 3.71
+        }
+      ]
+    }
+  },
+  {
+    "status": "NO_DATA",
+    "task_id": null,
+    "chart_title": null,
+    "metric_data": {}
+  }
+]

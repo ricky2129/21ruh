@@ -1,0 +1,91 @@
+@import "/src/themes/theme.scss";
+
+.configure-infra-container {
+  .add-newAccount-btn {
+    padding-left: $space-sm !important;
+    justify-content: start !important;
+  }
+
+  .resource-selection-select {
+    .ant-form-item-required {
+      align-items: baseline !important;
+    }
+  }
+
+  .custom-multi-select {
+    .ant-select-selection-item {
+      background-color: inherit !important;
+      color: rgba(0, 0, 0, 0.25);
+    }
+
+    .cloud-formation-selection {
+      border-radius: 2px;
+      border: 1px solid $cool-gray-2;
+      background: $cool-gray-3;
+      padding: $space-xs $space-md;
+    }
+  }
+
+  .resiliency-policy {
+    .ant-radio-group {
+      width: 100%;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-radio-wrapper {
+      margin-inline-end: 0;
+
+      span.ant-radio + * {
+        flex: 1;
+        padding-inline-end: 0;
+      }
+    }
+
+    .ant-radio {
+      align-self: flex-start;
+      padding-block-start: 3px;
+    }
+
+    .create-resiliency {
+      .create-new-button {
+        width: fit-content;
+      }
+
+      .new-resiliency-input {
+        display: none;
+      }
+    }
+  }
+
+  .new-resiliency-policy {
+    border-radius: 2px;
+    border: 1px solid $cool-gray-2;
+    background: $cool-gray-3;
+    padding: $space-xs $space-md;
+  }
+
+  .scheduled-assesment-selection {
+    border-radius: 2px;
+    border: 1px solid $cool-gray-2;
+    background: $cool-gray-3;
+    padding: $space-xs $space-md;
+  }
+
+  .ant-collapse-header {
+    padding: 0 0 $space-md 0 !important;
+
+    .ant-collapse-header-text {
+      margin-inline-end: 0 !important;
+      flex: none !important;
+    }
+
+    .ant-collapse-expand-icon {
+      svg {
+        fill: #006894;
+      }
+    }
+  }
+}

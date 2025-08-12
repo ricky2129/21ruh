@@ -1,0 +1,39 @@
+@import "/src/themes/theme.scss";
+
+.view-selector-container {
+  background-color: $cool-gray-3;
+  border-block-end: 1px solid $cool-gray-13;
+  padding-inline-end: $space-md;
+
+  .ant-btn {
+    padding: 6px $space-sm;
+    box-shadow: none;
+  }
+
+  .selected-tab-btn {
+    background-color: $white;
+    color: $primary-blue;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  }
+
+  .selected-tab-btn:hover {
+    background-color: $white !important;
+    color: $primary-blue !important;
+  }
+
+  .view-btn-container {
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: $space-xs $space-md;
+  }
+
+  .right-arrow-container {
+    background-color: $white;
+    border-radius: 50%;
+    padding: $space-xxs;
+    .right-arrow {
+      color: $primary-blue !important;
+      border: none !important;
+    }
+  }
+}

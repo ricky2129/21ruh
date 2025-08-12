@@ -1,0 +1,44 @@
+@import "/src/themes/theme.scss";
+
+.create-project-container {
+  min-height: 82vh;
+  .stepper-container {
+    background-color: $cool-blue-10;
+    height: 100%s;
+    padding: $space-xl;
+    border-right: 1px solid $cool-blue-200;
+  }
+
+  .description-title {
+    color: $cool-gray-9;
+  }
+
+  .stepper {
+    & .ant-steps-item-title {
+      font-size: 14px !important;
+    }
+
+    & .ant-steps-item-icon {
+      margin-inline-end: 12px !important;
+    }
+
+    & .ant-steps-item-container {
+      display: flex;
+      align-items: center;
+    }
+
+    & .ant-steps-item-tail:after {
+      min-height: 40px !important;
+      background-color: $cool-gray-4;
+      width: 2px !important;
+    }
+
+    & .ant-steps-item-description {
+      font-weight: 600 !important;
+    }
+  }
+}
+
+.create-form-container {
+    padding: $space-xl;
+}

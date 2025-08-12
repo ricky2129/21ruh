@@ -1,0 +1,57 @@
+@import "/src/themes/theme.scss";
+@import "/src/themes/mixins.scss";
+
+.sidenav-footer-wrapper {
+  padding: 0 $space-md $space-md $space-md;
+
+  .footer-menu-icon {
+    stroke: $cool-gray-11;
+  }
+
+  .footer-menu-text {
+    color: $cool-gray-11;
+  }
+
+  .sidenav-divider {
+    .divider {
+      margin-block: 0;
+    }
+  }
+
+  .ant-menu-title-content {
+    @include body-copy-semibold;
+  }
+
+  .ant-menu-submenu-title {
+    padding-left: 14px !important;
+  }
+
+  .ant-menu-submenu-arrow {
+    inset-inline-end: 8px;
+  }
+
+  .ant-menu-item {
+    padding: 7px 10px;
+
+    .ant-menu-item-icon {
+      display: flex;
+    }
+  }
+
+  .footer-user-details {
+    border-radius: $space-md;
+    background: $cool-gray-1;
+    padding: $space-sm;
+
+    .footer-user-role {
+      color: $primary-blue;
+    }
+
+    .footer-user-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100px;
+    }
+  }
+}

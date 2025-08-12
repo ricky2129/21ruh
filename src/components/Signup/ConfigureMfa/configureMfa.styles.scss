@@ -1,0 +1,41 @@
+@import "/src/themes/theme.scss";
+
+.configureMfa-container {
+  max-width: 518px;
+  min-height: 90vh;
+  .scan-text {
+    color: $cool-gray-12 !important;
+  }
+
+  .qr-container {
+    border: 1px solid $secondary-blue-0;
+    width: fit-content;
+    margin: 0 auto;
+    padding: $space-md;
+    border-radius: 12px;
+  }
+
+  .otp-input {
+    & .ant-input {
+      width: auto;
+      padding: 10px 10px;
+      border-radius: 8px;
+      border-width: 1px;
+
+      color: $primary-blue;
+      font-weight: 600;
+    }
+
+    & .ant-input:focus {
+      border-color: $primary-blue;
+    }
+
+    & .ant-input-outlined:focus {
+      box-shadow: none;
+    }
+  }
+
+  .configuremfa-action-buttons {
+    font-size: 18px;
+  }
+}

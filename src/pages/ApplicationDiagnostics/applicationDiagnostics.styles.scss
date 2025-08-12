@@ -1,0 +1,77 @@
+@import "/src/themes/theme.scss";
+
+.application-diagnostics-container {
+  padding: $space-xl;
+  background-color: $white;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  .summary-container {
+    border: 1px solid $secondary-blue-0;
+    width: $width-100;
+    padding: $space-sm;
+    border-radius: $space-xs;
+
+    .summary-column:not(:last-child) ::after {
+      position: absolute;
+      top: 50%;
+      inset-inline-end: 0;
+      width: 1px;
+      height: $space-xxl;
+      background-color: $secondary-blue-0;
+      transform: translateY(-50%);
+      transition: background-color 0.2s;
+      content: "";
+      margin-right: 20px;
+    }
+  }
+
+  .recommendation-tab {
+    width: 100%;
+
+    & .ant-tabs-content-holder {
+      border: 1px solid $cool-gray-2;
+      border-radius: 0px 6px 6px 6px;
+      padding: $space-md;
+    }
+
+    & .ant-tabs-nav {
+      margin-bottom: 0px !important;
+    }
+
+    .ant-tabs-tab {
+      border-block-end: none;
+    }
+
+    & .ant-tabs-tab-btn {
+      font-weight: 600;
+    }
+
+    & .ant-tabs-nav::before {
+      content: none;
+    }
+  }
+
+  .data-table {
+    th.ant-table-cell {
+      border-block: 1px solid $secondary-blue-0;
+    }
+
+    th.ant-table-cell::before {
+      content: none !important;
+    }
+  }
+
+  .ant-divider-horizontal {
+    margin-block: 0;
+  }
+
+  .recommendation-tags {
+    .ant-tag {
+      display: flex;
+      align-items: center;
+      border-radius: $space-md;
+      padding: 2px 8px;
+    }
+  }
+}

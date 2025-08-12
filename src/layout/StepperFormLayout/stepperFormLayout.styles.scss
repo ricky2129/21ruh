@@ -1,0 +1,64 @@
+@import "/src/themes/theme.scss";
+
+.create-stepper-form-container {
+    height: $height-100;
+    display: flex;
+  .stepper-container {
+    background-color: $cool-blue-10;
+    height: auto;
+    padding: $space-xl;
+    width: 40% !important;
+    border-right: 1px solid $cool-blue-200;
+  }
+
+  .description-title {
+    color: $cool-gray-9;
+  }
+
+  .stepper {
+    & .ant-steps-item-title {
+      font-size: 14px !important;
+    }
+
+    & .ant-steps-item-icon {
+      margin-inline-end: 10px !important;
+    }
+
+    & .ant-steps-item-container {
+      display: flex;
+      align-items: center;
+    }
+
+    & .ant-steps-item-tail:after {
+      min-height: 56px !important;
+      background-color: $cool-gray-4;
+      width: 2px !important;
+    }
+
+    & .ant-steps-item-description {
+      font-weight: 600 !important;
+    }
+  }
+}
+
+.stepper-content-container {
+  overflow-y: auto;
+  background-color: $white;
+  height: auto;
+  .stepper-content-innerContainer {
+    padding: $space-sm;
+    max-width: 600px;
+    width: -webkit-fill-available;
+  }
+  .stepper-action-container {
+    bottom: 5px;
+    width: 100%;
+    height: 68px;
+    border-top: 1px solid $cool-gray-2;
+    padding: $space-sm;
+
+    .action-buttons-right {
+      margin-left: auto;
+    }
+  }
+}

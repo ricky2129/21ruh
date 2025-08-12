@@ -1,0 +1,24 @@
+@import "/src/themes/theme.scss";
+
+.onboarding {
+  width: 100%;
+  height: 100vh;
+
+  .header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: $cool-gray-1;
+    padding: 20px 27px;
+    justify-content: space-between;
+  }
+
+  .content {
+    justify-content: center;
+    align-items: safe center;
+    display: flex;
+    background: $cool-gray-5;
+    opacity: 90%;
+    overflow-y: auto;
+  }
+}

@@ -1,0 +1,96 @@
+.ticketdetails-container {
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  max-width: 800px;
+  margin: 32px auto;
+  background: #fff;
+  position: relative;
+}
+
+.cross-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.15rem; 
+  color: #a0a0a0;
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+}
+
+.ticketdetails-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.ticketdetails-title {
+  font-size: 1.8rem;
+  color: #22223b;
+}
+
+.ticketdetails-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.ticketdetails-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  background: #0077b6; 
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover {
+    background: #005f8a; 
+  }
+}
+
+.ticketdetails-button.decline {
+  background: #e0e0e0;
+  color: #22223b;
+  border: 1px solid #bfc0c0;
+  &:hover {
+    background: #bfc0c0;
+    color: #22223b;
+  }
+}
+
+.ticketdetails-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ticketdetails-section {
+  padding: 12px;
+  background: #f7f9fb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.ticketdetails-label {
+  font-weight: bold;
+  color: #0077b6;
+}
+
+.ticketdetails-value {
+  color: #22223b;
+}
+
+.ticketdetails-button:disabled,
+.ticketdetails-button[disabled] {
+  background: #e0e0e0;
+  color: #b0b0b0;
+  cursor: not-allowed;
+  border: none;
+}

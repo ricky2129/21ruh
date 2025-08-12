@@ -1,0 +1,13 @@
+@import "/src/themes/theme.scss";
+
+.forgetPassword-success-container {
+    width: 519px;
+    min-height: 80vh;
+  .successText {
+    color: $cool-gray-11;
+  }
+
+  .confirmation-mail-text {
+    color: $cool-gray-11;
+  }
+}

@@ -1,0 +1,11 @@
+@import "/src/themes/theme.scss";
+
+.recommendation-drawer {
+  & .ant-divider-horizontal {
+    margin: 0;
+  }
+
+  ul {
+    padding-left: 24px;
+  }
+}

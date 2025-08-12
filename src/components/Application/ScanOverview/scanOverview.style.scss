@@ -1,0 +1,36 @@
+@import "/src/themes/theme.scss";
+
+.details-container {
+  padding: $space-md;
+  border: 1px solid $cool-gray-2;
+  border-radius: 6px;
+
+  .detail-text {
+    margin-bottom: $space-lg;
+  }
+}
+
+.details-container.border-all {
+  border-radius: 6px;
+  border-bottom: 1px solid $cool-gray-2;
+}
+
+.scan-progress-bar {
+
+
+  .ant-progress .ant-progress-bg {
+    border-radius: 0;
+    background: $secondary-blue-3;
+  }
+
+  .ant-progress .ant-progress-text {
+    font-size: 14px;
+    font-weight: 600;
+    margin-inline-start: $space-md;
+    color: $secondary-blue-4;
+  }
+
+  .ant-btn {
+    box-shadow: none;
+  }
+}

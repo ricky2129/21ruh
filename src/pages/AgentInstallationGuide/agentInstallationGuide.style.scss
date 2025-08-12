@@ -1,0 +1,71 @@
+@import "/src/themes/theme.scss";
+
+.agent-installation-layout {
+  background-color: $white;
+  margin-bottom: $space-md;
+  height: $height-100;
+
+  .agent-installation-header {
+    background-color: $sidenav-gray;
+    padding: $space-sm $space-md !important;
+    border: 1px solid $cool-gray-2;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .prerequistics-points {
+    list-style: none;
+    line-height: 3;
+
+    .prequistic-points-point {
+      display: flex;
+      align-items: center;
+    }
+
+    .point-number {
+      background-color: $primary-blue;
+      padding: $space-xxs;
+      border-radius: 50px;
+      color: $white;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-inline-end: $space-xxs;
+    }
+  }
+
+  .download-configFile-container {
+    padding: $space-md $space-lg;
+    border: 2px solid $primary-blue;
+    border-radius: 6px;
+    width: 50%;
+  }
+
+  .installation-steps {
+    padding: $space-sm;
+    line-height: 1;
+  }
+
+  .tip-container {
+    background-color: $daybreak-blue-1;
+    border-top: 3px solid $primary-blue;
+    padding: $space-xl;
+  }
+}
+
+.codeblock-heading-container {
+  background-color: $cool-gray-11-dark;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  padding: $space-xs;
+  .copy-btn {
+    background-color: $black;
+  }
+
+  .copy-btn:hover {
+    background-color: $white !important;
+  }
+}

@@ -1,0 +1,43 @@
+@import "/src/themes/theme.scss";
+
+.header-container {
+  padding: $space-md;
+  height: calc($space-sm * 6);
+  border-block-end: 1px solid $cool-gray-13;
+}
+
+.toggle-text {
+  color: $cool-gray-12 !important;
+}
+
+.organization-dropdown {
+  border-radius: 4px;
+}
+
+.organization-dropdown-button {
+  justify-content: start;
+  display: flex;
+  border: 1px solid $secondary-blue-0;
+  min-width: 244px;
+  align-items: center;
+  color: $black-1;
+
+  .dropdown-arrow-icon {
+    margin-left: auto;
+  }
+}
+
+.organisation-selected-option {
+  color: $black-1;
+}
+
+.route-breadcrumb-container {
+  padding: 6px $space-md;
+  font-stretch: expanded;
+  border-block-end: 1px solid $cool-gray-13;
+  height: 32px;
+
+  .ant-breadcrumb ol {
+    margin-top: -2px;
+  }
+}

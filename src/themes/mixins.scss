@@ -1,0 +1,104 @@
+@import "./theme.scss";
+
+@mixin heading-1 {
+  font-size: 40px;
+  font-weight: 400;
+}
+
+@mixin heading-2 {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+@mixin heading-3 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+@mixin title-regular {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+@mixin title-semibold {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+@mixin input-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@mixin card-title {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+}
+
+@mixin input-title-grey {
+  color: $cool-gray-11;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@mixin subtitile-regular {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+@mixin subtitile-semibold {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+@mixin subtitile-bold {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+@mixin card-title-regular {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+@mixin card-title-semibold {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@mixin card-title-bold {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+@mixin body-copy-regular {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+@mixin body-copy-semibold {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@mixin body-copy-bold {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@mixin footernote {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+@mixin footernote {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@mixin caption {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2.88px;
+}

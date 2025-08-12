@@ -1,0 +1,23 @@
+@import "/src/themes/theme.scss";
+
+.chaos-experiments-container {
+  padding: $space-lg $space-md;
+
+  .chaos-active-link {
+    color: $primary-blue;
+    border: 1px solid $primary-blue !important;
+  }
+
+  .chaos-link {
+    border: 1px solid $cool-gray-6 !important;
+  }
+  
+  .gremlin-title {
+    background-color: $cool-gray-1;
+    padding: $space-xs;
+    border: 0.7px solid $cool-gray-2; 
+    border-radius: 4.2px;
+    color: $golden-purple-5;
+    font-weight: bolder;
+  }
+}

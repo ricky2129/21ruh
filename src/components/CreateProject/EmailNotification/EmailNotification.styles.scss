@@ -1,0 +1,20 @@
+@import "/src/themes/theme.scss";
+
+.publish-text-container {
+  border-radius: calc(2 * $space-xl);
+  background-color: $primary-green-700;
+  padding: $space-xs $space-md;
+  color: $primary-green-600;
+}
+
+.publish-text-table-container {
+  border-radius: calc(2 * $space-xl);
+  width: $width-100;
+  justify-content: center;
+  background-color: $primary-green-700;
+  padding: calc($space-xxs/2) $space-xxs;
+  cursor:  pointer;
+  .publish-text {
+    color: $primary-green-600 !important;
+  }
+}

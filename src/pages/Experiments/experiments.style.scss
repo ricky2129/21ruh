@@ -1,0 +1,31 @@
+@import "/src/themes/theme.scss";
+
+.application-experiments-container {
+  background-color: $white;
+  padding: $space-md;
+
+  .application-experiments-content {
+    padding: $space-sm;
+  }
+
+  .obseration-results-container {
+    border: 1px solid $cool-gray-2;
+    padding: $space-sm;
+    border-radius: 6px;
+  }
+
+  .server-utilization-graph-container {
+    border: 1px solid $cool-gray-2;
+    border-radius: 6px;
+    height: 100%;;
+    padding: $space-xxs;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .experiment-slo-container {
+    border: 1px solid $cool-gray-2;
+    padding: $space-sm;
+    border-radius: 4px;
+  }
+}

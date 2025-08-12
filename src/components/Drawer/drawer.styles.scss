@@ -1,0 +1,11 @@
+@import "/src/themes/theme.scss";
+
+.drawer-container {
+  .ant-drawer-body {
+    padding: $space-lg;
+  }
+
+  & .ant-drawer-footer {
+    padding: $space-lg;
+  }
+}

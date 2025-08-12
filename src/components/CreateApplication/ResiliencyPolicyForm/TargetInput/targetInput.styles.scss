@@ -1,0 +1,38 @@
+@import "/src/themes/theme.scss";
+
+.target-input-wrapper {
+  .target-input-container {
+    border-radius: $space-xxs;
+    padding: $space-md;
+    background: $cool-gray-3;
+
+    .target-input-form {
+      flex: 1;
+    }
+
+    .target-input {
+      width: 100%;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  .collapse-btn {
+    transition: transform 0.15s ease-in-out;
+  }
+
+  .collapse-btn.collapsed {
+    transform: rotate(-90deg);
+  }
+}
+
+.ant-collapse-content-box {
+  padding-block: 0 !important;
+}
+
+.target-input-collapse.ant-collapse-ghost.target-input-collapse {
+  padding-block-end: $space-md;
+  border: 1px solid $cool-gray-2;
+}

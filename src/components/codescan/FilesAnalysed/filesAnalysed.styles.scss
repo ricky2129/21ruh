@@ -1,0 +1,12 @@
+@import "/src/themes/theme.scss";
+
+.files-container {
+  max-height: 178px;
+  overflow-y: auto;
+  scrollbar-width:thin;
+  .file-details-container {
+    padding: $space-xs;
+    border: 1px solid $cool-gray-1;
+    background-color: $sidenav-gray;
+  }
+}

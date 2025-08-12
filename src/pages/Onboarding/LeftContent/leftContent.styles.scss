@@ -1,0 +1,28 @@
+@import "/src/themes/theme.scss";
+
+.left-content {
+  width: 552px;
+
+  .left-content-title {
+    background-image: linear-gradient(
+      180deg,
+      #c4d600 0%,
+      #43b02a 47.5%,
+      #046a38 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: "Open Sans";
+    font-size: 3.75rem;
+    font-weight: 700;
+    line-height: 4.313rem;
+    letter-spacing: -0.15rem;
+    align-self: stretch;
+  }
+
+  .left-content-subtitle {
+    color: $cool-gray-2;
+    font-weight: 400;
+  }
+}

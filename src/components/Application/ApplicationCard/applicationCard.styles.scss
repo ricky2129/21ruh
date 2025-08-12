@@ -1,0 +1,45 @@
+@import "/src/themes/theme.scss";
+
+.application-card {
+  position: relative;
+
+  .resiliency {
+    width: 6px;
+    height: 57px;
+
+    position: absolute;
+    left: 0;
+
+    border-radius: 0px 3px 3px 0px;
+  }
+
+  .application-card-footer {
+    margin-top: auto;
+  }
+
+  .favorite-button {
+  border: none;
+  box-shadow: none;
+  margin-left: auto;
+}
+
+.favorite-button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.favorite-button:focus:not(.focus-visible) {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+
+.application-card-menu {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+}
+

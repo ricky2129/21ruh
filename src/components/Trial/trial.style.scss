@@ -1,0 +1,8 @@
+@import "/src/themes/theme.scss";
+
+.server-utilization-graph-container {
+    border: 3px solid $cool-gray-2;
+    border-radius: 6px;
+    height: 440px;
+    padding: $space-lg;
+}

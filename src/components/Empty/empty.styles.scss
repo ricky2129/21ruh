@@ -1,0 +1,21 @@
+@import "/src/themes/mixins.scss";
+@import "/src/themes/theme.scss";
+
+.empty-container {
+  padding: calc($base-unit * 5) 0;
+
+  .empty-header {
+    text-align: center;
+
+    .header-subtitle {
+      color: $cool-gray-12;
+    }
+  }
+
+  .empty-poster {
+    background-image: url("/src/assets/empty-bg.svg");
+    background-size: cover;
+    width: 240px;
+    height: 164px;
+  }
+}

@@ -1,0 +1,8 @@
+@import "/src/themes/theme.scss";
+
+.group-resource-container {
+    border: 1px solid $cool-gray-2;
+    background-color: $cool-gray-3;
+    border-radius: $space-xxs;
+    padding: $space-xs;
+}

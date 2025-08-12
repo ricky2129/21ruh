@@ -1,0 +1,27 @@
+@import "/src/themes/mixins.scss";
+@import "/src/themes/theme.scss";
+
+.auth-container {
+  padding: calc($space-lg * 2);
+
+  .signup-container {
+    min-width: 25rem;
+
+    .error-message {
+      border-radius: 0.125rem;
+    }
+
+    .login-link {
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .sso-link {
+      text-align: center;
+    }
+
+    .multi-factor-authentication {
+      color: $cool-gray-12;
+    }
+  }
+}

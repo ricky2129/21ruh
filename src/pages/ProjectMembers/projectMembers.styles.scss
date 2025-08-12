@@ -1,0 +1,236 @@
+@import "/src/themes/mixins.scss";
+
+.project-members {
+
+  max-width: 800px;
+  margin: 48px auto;
+  padding: 32px 32px 24px 32px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+
+  &__title {
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #222;
+    letter-spacing: 0.3px;
+    text-align: center;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fafbfc;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    table-layout: auto;
+
+    th, td {
+      padding: 10px 16px;
+      font-size: 1rem;
+      border-bottom: 1px solid #e3e7ea;
+      color: #333;
+    }
+
+    th {
+      background: #f6f8fa;
+      font-weight: 500;
+      border-bottom: 2px solid #e3e7ea;
+      color: #333;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    td {
+      vertical-align: middle;
+      // Prevent wrapping for ID and Email columns
+      &:first-child, &:nth-child(3) {
+        white-space: nowrap;
+      }
+    }
+
+    tr {
+      transition: background 0.18s;
+      &:hover {
+        background: #f2f4f8;
+      }
+    }
+  }
+
+  &__loading,
+  &__error,
+  &__empty {
+    text-align: center;
+    color: #888;
+    padding: 28px 0 12px 0;
+    font-size: 1.08rem;
+    width: 100%;
+  }
+
+  &__error button {
+    margin-left: 10px;
+    padding: 6px 14px;
+    background: #e53935;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #b71c1c;
+    }
+  }
+
+  // Add Members Button
+  &__add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 9px 22px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+
+    span {
+      color: #fff !important; // Ensures plus icon is white
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+
+    &:hover {
+      background: #115293;
+      box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
+      transform: translateY(-1px) scale(1.03);
+    }
+
+    &:active {
+      background: #0d3c61;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.10);
+    }
+  }
+
+  &__update-btn,
+  &__delete-btn,
+  &__save-btn,
+  &__cancel-btn {
+    background: none;
+    border: none;
+    padding: 4px 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.13s, color 0.13s, box-shadow 0.13s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__update-btn {
+    color: #333;
+    &:hover {
+      background: #e3e7ea;
+      color: #1976d2;
+      box-shadow: 0 1px 4px rgba(25, 118, 210, 0.07);
+    }
+  }
+
+  &__delete-btn {
+    color: #e53935;
+    &:hover {
+      background: #fbe9e7;
+      color: #b71c1c;
+      box-shadow: 0 1px 4px rgba(229, 57, 53, 0.08);
+    }
+  }
+
+  &__save-btn {
+    color: #388e3c;
+    &:hover {
+      background: #e8f5e9;
+      color: #256029;
+      box-shadow: 0 1px 4px rgba(56, 142, 60, 0.08);
+    }
+  }
+
+  &__cancel-btn {
+    color: #888;
+    &:hover {
+      background: #f5f5f5;
+      color: #333;
+      box-shadow: 0 1px 4px rgba(158, 158, 158, 0.08);
+    }
+  }
+
+  &__role-select {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #cfd8dc;
+    font-size: 1rem;
+    background: #fff;
+    min-width: 100px;
+    transition: border 0.15s;
+
+    &:focus {
+      border: 1.5px solid #1976d2;
+      outline: none;
+    }
+  }
+
+  .project-members__add-btn {
+  padding: 0 10px;      
+  height: 24px;         
+  min-width: 90px;      
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  }
+  .landing-add-members-controls {
+  margin-bottom: $space-xs;
+}
+
+.add-members-btn {
+  color: #fff; 
+  background: #1976d2;
+  border-color: #1976d2;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  padding: 0 16px;
+  min-width: 120px;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+  transition: box-shadow 0.18s;
+
+  &:hover,
+  &:focus {
+    background: #115293;
+    border-color: #115293;
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.18);
+  }
+}
+
+}
+

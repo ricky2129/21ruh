@@ -1,0 +1,19 @@
+@import "/src/themes/mixins.scss";
+
+.greeting {
+  line-height: 26px;
+}
+
+.landing-project-controls {
+  .filter-button {
+    color: $cool-gray-6;
+  }
+}
+
+.project-count {
+  color: $primary-85;
+}
+
+.landing-page-container {
+  padding: $space-sm;
+}

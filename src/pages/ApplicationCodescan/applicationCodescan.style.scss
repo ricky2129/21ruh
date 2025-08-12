@@ -1,0 +1,86 @@
+@import "/src/themes/theme.scss";
+
+.application-codescan-container {
+  background-color: $white;
+  padding: $space-sm;
+
+  .published-btn-container {
+    border-radius: calc(2 * $space-xl);
+    background-color: $polar-green-7;
+    color: $primary-green-600;
+    width: $width-100;
+  }
+
+  .summary-container {
+    border: 1px solid $secondary-blue-0;
+    width: $width-100;
+    padding: $space-sm;
+    border-radius: $space-xs;
+    min-height: 97px;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+
+    .summary-column:not(:last-child) ::after {
+      position: absolute;
+      top: 40%;
+      inset-inline-end: 0;
+      width: 1px;
+      height: $space-xxl;
+      background-color: $secondary-blue-0;
+      transform: translateY(-50%);
+      transition: background-color 0.2s;
+      content: "";
+    }
+
+    .summary-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+  }
+
+  .details-container {
+    border: 1px solid $cool-gray-2;
+    padding: $space-md;
+    border-radius: 6px;
+  }
+
+  .recommendation-tab {
+    width: 100%;
+    & .tablist {
+      border: 2px solid $cool-gray-2 !important;
+      margin-bottom: 0px !important;
+    }
+
+    & .ant-tabs-content-holder {
+      border: 1px solid $cool-gray-2;
+      padding: $space-md;
+    }
+
+    & .ant-tabs-nav {
+      margin-bottom: 0px !important;
+    }
+    & .ant-tabs-tab {
+      background-color: $cool-gray-2;
+      color: #53565a;
+      font-weight: 600;
+      border: 1px solid $cool-gray-2;
+    }
+
+    & .ant-tabs-tab-active {
+      background-color: $white !important;
+    }
+  }
+}
+
+.antipattern-tag {
+  background-color: $cool-gray-2-light !important;
+  color: $cool-gray-11;
+  padding: $space-xxs;
+  border-radius: 4px;
+  border: none;
+  max-width: 120px;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

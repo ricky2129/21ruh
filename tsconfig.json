@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
+    "outDir": "dist"
+  },
+  "include": ["./src", "./src/test/vitest.setup.ts"],
+  "types": ["node", "jest", "@testing-library/jest-dom"]
+}

@@ -1,0 +1,10 @@
+@import "/src/themes/theme.scss";
+
+.ant-layout-sider.sidebar {
+  background-color: $sidenav-gray;
+  border-right: 1px solid $cool-gray-2;
+
+  .sidenav {
+    height: $height-100;
+  }
+}

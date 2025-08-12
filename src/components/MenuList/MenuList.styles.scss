@@ -1,0 +1,30 @@
+@import "/src/themes/theme.scss";
+
+.menu-list-title {
+  color: $cool-gray-9;
+}
+
+.menu-list-container {
+  padding: $space-md;
+  border-radius: $space-xxs;
+  border: 1px solid $cool-gray-2;
+  .menu-list-item {
+    min-height: $space-lg;
+  }
+}
+
+.tags-header-text {
+  width: 48%;
+  font-size: 12px !important;
+}
+
+.form-list-container {
+  margin-top: $space-sm;
+  background-color: $white;
+
+  .formlist-input-container {
+    width: 15rem;
+    margin-bottom: 0px;
+  }
+}
+

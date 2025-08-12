@@ -1,0 +1,17 @@
+@import "/src/themes/theme.scss";
+
+.dropdown-container {
+  padding: $space-md;
+}
+
+.select-with-search {
+  & .ant-select-selector {
+    padding-left: 0 !important;
+    min-width: 5rem;
+  }
+
+  & .ant-select-selection-item {
+    font-weight: 600;
+    font-size: 18px;
+  }
+}

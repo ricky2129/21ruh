@@ -1,0 +1,40 @@
+@import "/src/themes/theme.scss";
+
+.chart-container {
+  border: 1px solid $cool-gray-2;
+  padding: $space-md;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: fit-content;
+
+  .chart-annotation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+}
+
+.chart-legend {
+  flex: 1;
+  justify-content: center;
+  padding: $space-xxs $space-xs;
+  height: 46px;
+}
+
+.chart {
+  flex-grow: 0 !important;
+}
+
+.chart-right-box {
+  background: $sidenav-gray;
+  padding: $space-xs $space-md;
+  flex-wrap: wrap;
+
+  .chart-right-text {
+    flex-grow: 1;
+  }
+}

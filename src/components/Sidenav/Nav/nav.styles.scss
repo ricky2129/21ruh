@@ -1,0 +1,28 @@
+@import "/src/themes/theme.scss";
+@import "/src/themes/mixins.scss";
+
+.sidenav-nav-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 0 $space-md 0 $space-md;
+
+  .sidenav-title {
+    padding: $space-xs 0;
+    width: max-content;
+  }
+}
+
+.sidenav-nav {
+  .ant-menu-title-content {
+    @include body-copy-semibold;
+  }
+
+  .ant-menu-item {
+    padding: 7px 10px;
+
+    .ant-menu-item-icon {
+      display: flex;
+    }
+  }
+}

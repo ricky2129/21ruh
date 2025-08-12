@@ -1,0 +1,11 @@
+@import "/src/themes/theme.scss";
+
+.sidenav-header {
+  padding: $space-xl $space-md;
+  border-bottom: 1px solid $cool-gray-2;
+  height: $base-unit * 4.5;
+
+  .close-cross {
+    stroke: $cool-gray-9;
+  }
+}

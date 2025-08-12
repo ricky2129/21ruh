@@ -1,0 +1,30 @@
+@import "/src/themes/theme.scss";
+
+.aws-sign-in-modal-content-container {
+  .aws-signIn-btn {
+    background-color: $bright-orange;
+    width: 100%;
+    color: $white;
+  }
+
+  .aws-signIn-btn:disabled {
+    background: $cool-gray-1;
+    color: $black;
+  }
+
+  .tags-input-cloud {
+    margin-top: calc(-1 * $space-sm);
+    margin-left: calc($space-sm * 2);
+  }
+}
+
+.aws-icon-header-container {
+  background-color: $sidenav-gray;
+  padding: $space-sm;
+  border-radius: 6px;
+  .aws-icon-container {
+    background-color: $white;
+    border-radius: 80px;
+    padding: $space-xxs;
+  }
+}

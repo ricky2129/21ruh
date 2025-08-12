@@ -1,0 +1,73 @@
+@import "/src/themes/theme.scss";
+@import "/src/themes/mixins.scss";
+
+.container {
+  padding: $space-xl;
+}
+
+.summary-container {
+  border: 1px solid $secondary-blue-0;
+  width: $width-100;
+  padding: $space-sm;
+  border-radius: $space-xs;
+  min-height: 92px;
+
+  .summary-column:not(:last-child) ::after {
+    position: absolute;
+    top: 40%;
+    inset-inline-end: 0;
+    width: 1px;
+    height: $space-xxl;
+    background-color: $secondary-blue-0;
+    transform: translateY(-50%);
+    transition: background-color 0.2s;
+    content: "";
+  }
+
+  .summary-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+.recommendations-container {
+  border: 1px solid $secondary-blue-0;
+  width: $width-100;
+  padding: $space-sm;
+  border-radius: $space-xs;
+  min-height: 97px;
+}
+
+.fixed-height-card {
+  height: 410px;
+  border-radius: $space-xs;
+}
+
+.fixed-height-content {
+  flex: 1;
+  overflow: auto;
+}
+
+.heading-row {
+  justify-content: space-between;
+  align-items: space;
+  margin-bottom: 8px;
+  padding-right: 2px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 2.8rem;
+  }
+
+  .download,
+  .fullscreen {
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,20 @@
+@import "/src/themes/theme.scss";
+
+.layout {
+  height: 100vh;
+  background-color: $white;
+
+  .header {
+    background-color: $white;
+    padding: $space-md;
+  }
+
+  .content {
+    overflow-y: auto;
+  }
+
+  .layout-right {
+    max-height: 100vh;
+    background-color: $white;
+  }
+}

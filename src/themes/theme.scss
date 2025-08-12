@@ -1,0 +1,261 @@
+/**
+ * theme.js contains all the styles for this project.
+ */
+
+$primary-green-deloitte: #86bc25;
+$primary-green-400: #43b02a;
+$primary-green-600: #26890d;
+$primary-green-700: #53ae334d;
+$primary-green-800: #046a38;
+$secondary-green-1: #e3e48d;
+$secondary-green-2: #c4d600;
+$secondary-green-5: #009a44;
+$secondary-green-7: #2c5234;
+
+$primary-blueish-green: #0d8390;
+$primary-blue: #007cb0;
+$secondary-blue-0: #d6e0ea;
+$secondary-blue-1: #a0dcff;
+$secondary-blue-2: #62b5e5;
+$secondary-blue-3: #00a3e0;
+$secondary-blue-4: #0076a8;
+$secondary-blue-5: #005587;
+$secondary-blue-6: #012169;
+$secondary-blue-7: #041e42;
+$cool-blue-10: #f2f4f7;
+$cool-blue-200: #e4e7ec;
+$cool-blue-300: #a0dcff66;
+$daybreak-blue-1: #e6f7ff;
+
+$teal-1: #ddefe8;
+$teal-2: #9dd4cf;
+$teal-3: #6fc2b4;
+$teal-4: #00abab;
+$teal-5: #0097a9;
+$teal-6: #007680;
+$teal-7: hsl(187, 100%, 17%);
+
+$cool-gray-1-light: #f6f8fa;
+$cool-gray-2-light: #e9e9e9;
+
+$golden-purple-5: #9254de;
+$golden-purple-2: #efdbff;
+$golden-purple-1: #f9f0ff;
+
+$cool-gray-1: #ededed;
+$cool-gray-2: #d0d0ce;
+$cool-gray-3: #f2f3f5;
+$cool-gray-4: #bbbcbc;
+$cool-gray-5: #ffffffe6;
+$cool-gray-6: #a7a8aa;
+$cool-gray-7: #97999b;
+$cool-gray-8: #bdbdbd;
+$cool-gray-9: #75787b;
+$cool-gray-10: #63666a;
+$cool-gray-11: #53565a;
+$cool-gray-11-dark: #030A13;
+$cool-gray-12: #646668;
+$cool-gray-13: #bcc4cd66;
+$sidenav-gray: #f7f7f7;
+
+$bright-green: #0df200;
+$bright-teal: #3efac5;
+$bright-blue: #33f0ff;
+$bright-red: #da291c;
+$bright-yellow: #ffcd00;
+$bright-orange: #ed8b00;
+$sunset-orange-2: #ffe7ba;
+$sunset-orange-7: #d46b08;
+
+$black-1: #0a1e40;
+$black: #000;
+$white: #fff;
+$dust-red-5: #ff4d4f;
+$dust-red-9: #820014;
+$dust-red-6: #f5222d;
+$polar-green-7: #43b02a66;
+$polar-green-2: #d9f7be;
+$polar-green-6: #52c41a;
+
+$title-85: #000000d9;
+$primary-85: #000000d9;
+$secondary-85: #00000073;
+$neutral-1: #ffffff;
+$neutral-5: #d9d9d9;
+
+$fontWeight-light: 300;
+$fontWeight-medium: 500;
+$fontWeight-bolder: 900;
+$fontWeight-extra-medium: 600;
+$fontWeight-bold: bold;
+$fontWeight-normal: normal;
+
+$fontFamily-regular: "Proxima Nova Regular";
+$fontFamily-bold: "Proxima Nova Bold";
+$fontFamily-medium: "Proxima Nova Medium";
+$fontFamily-semibold: "Proxima Nova SemiBold";
+
+$height: 100vh;
+$width-10: 10%;
+$width-20: 20%;
+$width-30: 30%;
+$width-40: 40%;
+$width-50: 50%;
+$width-60: 60%;
+$width-70: 70%;
+$width-80: 80%;
+$width-89: 89%;
+$width-90: 90%;
+$width-93: 93%;
+$width-95: 95%;
+$width-100: 100%;
+$width-110: 110%;
+
+$height-10: 10%;
+$height-20: 20%;
+$height-30: 30%;
+$height-40: 40%;
+$height-50: 50%;
+$height-60: 60%;
+$height-70: 70%;
+$height-80: 80%;
+$height-90: 90%;
+$height-100: 100%;
+
+$base-unit: 16px;
+$space-xxxs: calc(0.125 * $base-unit); // 2px
+$space-xxs: calc(0.25 * $base-unit); // 4px
+$space-xs: calc(0.5 * $base-unit); // 8px
+$space-sm: calc(0.75 * $base-unit); // 12px
+$space-md: calc(1 * $base-unit); // 16px
+$space-lg: calc(1.25 * $base-unit); // 20px
+$space-xl: calc(1.5 * $base-unit); // 24px
+$space-xxl: calc(2 * $base-unit); // 32px
+
+$base-unit: 16px;
+$padding-xxs: calc(0.25 * $base-unit); // 4px
+$padding-xs: calc(0.5 * $base-unit); // 8px
+$padding-sm: calc(0.75 * $base-unit); // 12px
+$padding-md: calc(1 * $base-unit); // 16px
+$padding-lg: calc(1.25 * $base-unit); // 20px
+$padding-xl: calc(1.5 * $base-unit); // 24px
+$padding-xxl: calc(2 * $base-unit); // 32px
+
+$lineheight-TableHead: initial;
+$lineheight-medium: 2em;
+
+$header-height: calc(6.5 * $base-unit);
+$sidebar-width: calc(15 * $base-unit);
+
+.header1 {
+  font-size: 40px !important;
+}
+
+.header2 {
+  font-size: 32px !important;
+}
+
+.header3 {
+  font-size: 24px !important;
+}
+
+.title {
+  font-size: 20px !important;
+}
+
+.subtitle {
+  font-size: 18px !important;
+}
+
+.cardtitle {
+  font-size: 16px !important;
+}
+
+.bodycopy {
+  font-size: 14px !important;
+}
+
+.footnote {
+  font-size: 12px !important;
+}
+
+.footnote2 {
+  font-size: 10px !important;
+}
+
+.caption {
+  font-size: 12px !important;
+  letter-spacing: 2.88px !important;
+}
+
+.regular {
+  font-weight: 400 !important;
+}
+
+.semibold {
+  font-weight: 600 !important;
+}
+
+.bold {
+  font-weight: 700 !important;
+}
+
+.input-title-grey {
+  color: $cool-gray-11;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.icon-white {
+  color: $white;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-link {
+  color: $primary-blue;
+}
+
+.custom-table {
+  .ant-table-thead {
+    .ant-table-cell {
+      border-top: 1px solid #d6e0ea;
+    }
+  }
+
+  .ant-table-thead .ant-table-cell::before {
+    height: $space-xl !important;
+  }
+
+  .ant-table-cell::before {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 0;
+    width: 1px;
+    height: $space-xl;
+    background-color: $secondary-blue-0;
+    transform: translateY(-50%);
+    transition: background-color 0.2s;
+    content: "";
+  }
+
+  .ant-table-cell:last-child::before {
+    content: none;
+  }
+
+  .ant-table-thead,
+  .ant-table-row {
+    line-height: 30px;
+  }
+}
