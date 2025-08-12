@@ -730,50 +730,407 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
           </Text>
         </div>
 
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Collapse 
+          activeKey={Array.from(expandedItems)}
+          onChange={(keys) => setExpandedItems(new Set(keys as string[]))}
+          style={{ background: 'transparent' }}
+        >
           {filteredItems.map((item, index) => (
-            <Card key={item.id} size="small" style={{ marginBottom: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <Title level={5} style={{ margin: 0, marginBottom: 4 }}>
-                    {item.title}
-                  </Title>
-                  <Text type="secondary">{item.subtitle}</Text>
-                  {item.status && (
-                    <div style={{ marginTop: 4 }}>
+            <Panel
+              key={item.id}
+              header={
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <div style={{ 
+                        fontSize: '20px',
+                        color: item.priority ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]?.color : '#1890ff'
+                      }}>
+                        {item.priority ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]?.icon : 
+                         item.driftType ? DRIFT_TYPE_CONFIG[item.driftType as keyof typeof DRIFT_TYPE_CONFIG]?.icon : '📋'}
+                      </div>
+                      <div>
+                        <Title level={5} style={{ margin: 0, marginBottom: 2 }}>
+                          {item.title}
+                        </Title>
+                        <Text type="secondary" style={{ fontSize: 14 }}>{item.subtitle}</Text>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Space onClick={(e) => e.stopPropagation()}>
+                    {item.driftCount !== undefined && item.driftCount > 0 && (
+                      <Tag color="orange" style={{ margin: 0 }}>
+                        {item.driftCount} drift{item.driftCount !== 1 ? 's' : ''}
+                      </Tag>
+                    )}
+                    {item.priority && (
+                      <Tag 
+                        color={PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]?.color}
+                        style={{ margin: 0 }}
+                      >
+                        {item.priority.toUpperCase()}
+                      </Tag>
+                    )}
+                    {item.status && (
                       <Badge 
                         status={item.hasError ? 'error' : item.isReady ? 'success' : 'processing'}
                         text={item.status}
                       />
-                    </div>
-                  )}
+                    )}
+                    
+                    {/* Download Actions */}
+                    <Space.Compact>
+                      <Button
+                        size="small"
+                        icon={<DownloadOutlined />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadAsJson(item, `${item.title}_analysis.json`);
+                        }}
+                        title="Download JSON"
+                      />
+                      <Button
+                        size="small"
+                        icon={<FileTextOutlined />}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadAsPdf(item, item.type, item.title);
+                        }}
+                        title="Download PDF Report"
+                        loading={pdfGenerationState[`${item.type}_${item.title}`]?.isGenerating}
+                      />
+                    </Space.Compact>
+                  </Space>
                 </div>
-                
-                <Space>
-                  {item.driftCount !== undefined && item.driftCount > 0 && (
-                    <Tag color="orange">
-                      {item.driftCount} drift{item.driftCount !== 1 ? 's' : ''}
-                    </Tag>
-                  )}
-                  {item.priority && (
-                    <Tag color={PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]?.color}>
-                      {item.priority.toUpperCase()}
-                    </Tag>
-                  )}
-                </Space>
-              </div>
+              }
+              style={{ 
+                marginBottom: 16,
+                border: `1px solid ${item.priority ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]?.borderColor : '#f0f0f0'}`,
+                borderRadius: 8,
+                background: item.priority ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]?.bgColor : 'white'
+              }}
+            >
+              {/* Detailed Report Content */}
+              <div style={{ padding: '16px 0' }}>
+                {/* Error Display */}
+                {item.error && (
+                  <Alert
+                    message="Analysis Error"
+                    description={item.error}
+                    type="error"
+                    style={{ marginBottom: 16 }}
+                    showIcon
+                  />
+                )}
 
-              {item.error && (
-                <Alert
-                  message="Error"
-                  description={item.error}
-                  type="error"
-                  style={{ marginTop: 12 }}
-                />
-              )}
-            </Card>
+                {/* PDF Generation Status */}
+                {pdfGenerationState[`${item.type}_${item.title}`] && (
+                  <Alert
+                    message={pdfGenerationState[`${item.type}_${item.title}`].message}
+                    type={pdfGenerationState[`${item.type}_${item.title}`].stage === 'error' ? 'error' : 'info'}
+                    style={{ marginBottom: 16 }}
+                    showIcon
+                    icon={pdfGenerationState[`${item.type}_${item.title}`].stage === 'error' ? 
+                      <BugOutlined /> : <LoadingOutlined spin />}
+                  />
+                )}
+
+                {/* S3 File Details */}
+                {item.type === 's3_file' && (
+                  <div>
+                    <Title level={5} style={{ marginBottom: 12 }}>📁 File Information</Title>
+                    <Row gutter={[16, 8]} style={{ marginBottom: 16 }}>
+                      <Col span={8}>
+                        <Text strong>File Size:</Text>
+                        <div>{item.metadata?.size ? formatFileSize(item.metadata.size) : 'Unknown'}</div>
+                      </Col>
+                      <Col span={8}>
+                        <Text strong>Last Modified:</Text>
+                        <div>{item.metadata?.lastModified ? formatDate(item.metadata.lastModified) : 'Unknown'}</div>
+                      </Col>
+                      <Col span={8}>
+                        <Text strong>S3 Bucket:</Text>
+                        <div>{item.metadata?.bucket || 'Unknown'}</div>
+                      </Col>
+                    </Row>
+                    
+                    {item.analysisData && (
+                      <div>
+                        <Title level={5} style={{ marginBottom: 12 }}>🔍 Analysis Data</Title>
+                        <Card size="small" style={{ background: '#fafafa' }}>
+                          <pre style={{ 
+                            margin: 0, 
+                            fontSize: 12, 
+                            maxHeight: 300, 
+                            overflow: 'auto',
+                            whiteSpace: 'pre-wrap'
+                          }}>
+                            {JSON.stringify(item.analysisData, null, 2)}
+                          </pre>
+                        </Card>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Comprehensive Report Details */}
+                {item.type === 'comprehensive_report' && item.report && (
+                  <div>
+                    {/* Drift Analysis Section */}
+                    {item.report.drift_analysis && (
+                      <div style={{ marginBottom: 24 }}>
+                        <Title level={5} style={{ marginBottom: 12 }}>
+                          <SecurityScanOutlined style={{ marginRight: 8, color: '#fa8c16' }} />
+                          Drift Analysis
+                        </Title>
+                        <Card size="small" style={{ background: '#fff7e6', border: '1px solid #ffd591' }}>
+                          <Row gutter={[16, 8]}>
+                            <Col span={8}>
+                              <Text strong>Drift Count:</Text>
+                              <div style={{ fontSize: 18, color: '#fa8c16' }}>
+                                {item.report.drift_analysis.drift_count || 0}
+                              </div>
+                            </Col>
+                            <Col span={8}>
+                              <Text strong>Has Drift:</Text>
+                              <div>
+                                <Badge 
+                                  status={item.report.drift_analysis.has_drift ? 'error' : 'success'}
+                                  text={item.report.drift_analysis.has_drift ? 'Yes' : 'No'}
+                                />
+                              </div>
+                            </Col>
+                            <Col span={8}>
+                              <Text strong>Severity:</Text>
+                              <div>
+                                <Tag color={item.priority === 'high' ? 'red' : item.priority === 'medium' ? 'orange' : 'blue'}>
+                                  {item.priority?.toUpperCase() || 'UNKNOWN'}
+                                </Tag>
+                              </div>
+                            </Col>
+                          </Row>
+                          
+                          {item.report.drift_analysis.details && (
+                            <div style={{ marginTop: 12 }}>
+                              <Text strong>Details:</Text>
+                              <div style={{ 
+                                marginTop: 8, 
+                                padding: 12, 
+                                background: 'white', 
+                                borderRadius: 6,
+                                border: '1px solid #f0f0f0'
+                              }}>
+                                <pre style={{ 
+                                  margin: 0, 
+                                  fontSize: 12, 
+                                  whiteSpace: 'pre-wrap',
+                                  maxHeight: 200,
+                                  overflow: 'auto'
+                                }}>
+                                  {typeof item.report.drift_analysis.details === 'string' 
+                                    ? item.report.drift_analysis.details 
+                                    : JSON.stringify(item.report.drift_analysis.details, null, 2)}
+                                </pre>
+                              </div>
+                            </div>
+                          )}
+                        </Card>
+                      </div>
+                    )}
+
+                    {/* Impact Assessment Section */}
+                    {item.report.impact_assessment && (
+                      <div style={{ marginBottom: 24 }}>
+                        <Title level={5} style={{ marginBottom: 12 }}>
+                          <WarningOutlined style={{ marginRight: 8, color: '#f5222d' }} />
+                          Impact Assessment
+                        </Title>
+                        <Card size="small" style={{ background: '#fff1f0', border: '1px solid #ffccc7' }}>
+                          <Row gutter={[16, 8]}>
+                            <Col span={12}>
+                              <Text strong>Risk Level:</Text>
+                              <div>
+                                <Tag color={
+                                  item.report.impact_assessment.risk_level === 'high' ? 'red' :
+                                  item.report.impact_assessment.risk_level === 'medium' ? 'orange' : 'green'
+                                }>
+                                  {item.report.impact_assessment.risk_level?.toUpperCase() || 'UNKNOWN'}
+                                </Tag>
+                              </div>
+                            </Col>
+                            <Col span={12}>
+                              <Text strong>Business Impact:</Text>
+                              <div>{item.report.impact_assessment.business_impact || 'Not specified'}</div>
+                            </Col>
+                          </Row>
+                          
+                          {item.report.impact_assessment.affected_services && (
+                            <div style={{ marginTop: 12 }}>
+                              <Text strong>Affected Services:</Text>
+                              <div style={{ marginTop: 4 }}>
+                                {Array.isArray(item.report.impact_assessment.affected_services) 
+                                  ? item.report.impact_assessment.affected_services.map((service: string, idx: number) => (
+                                      <Tag key={idx} style={{ marginBottom: 4 }}>{service}</Tag>
+                                    ))
+                                  : <Text type="secondary">None specified</Text>
+                                }
+                              </div>
+                            </div>
+                          )}
+                        </Card>
+                      </div>
+                    )}
+
+                    {/* Remediation Guidance Section */}
+                    {item.report.remediation_guidance && (
+                      <div style={{ marginBottom: 24 }}>
+                        <Title level={5} style={{ marginBottom: 12 }}>
+                          <SettingOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+                          Remediation Guidance
+                        </Title>
+                        <Card size="small" style={{ background: '#f6ffed', border: '1px solid #b7eb8f' }}>
+                          {item.report.remediation_guidance.recommended_actions && (
+                            <div style={{ marginBottom: 12 }}>
+                              <Text strong>Recommended Actions:</Text>
+                              <ul style={{ marginTop: 8, marginBottom: 0 }}>
+                                {Array.isArray(item.report.remediation_guidance.recommended_actions)
+                                  ? item.report.remediation_guidance.recommended_actions.map((action: string, idx: number) => (
+                                      <li key={idx} style={{ marginBottom: 4 }}>{action}</li>
+                                    ))
+                                  : <li>{item.report.remediation_guidance.recommended_actions}</li>
+                                }
+                              </ul>
+                            </div>
+                          )}
+                          
+                          {item.report.remediation_guidance.automation_script && (
+                            <div>
+                              <Text strong>Automation Script:</Text>
+                              <div style={{ 
+                                marginTop: 8, 
+                                padding: 12, 
+                                background: '#f0f0f0', 
+                                borderRadius: 6,
+                                fontFamily: 'monospace',
+                                fontSize: 12
+                              }}>
+                                <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+                                  {item.report.remediation_guidance.automation_script}
+                                </pre>
+                              </div>
+                            </div>
+                          )}
+                        </Card>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Legacy Drift Details */}
+                {item.type === 'legacy_drift' && item.drift && (
+                  <div>
+                    <Title level={5} style={{ marginBottom: 12 }}>
+                      <BugOutlined style={{ marginRight: 8, color: '#fa8c16' }} />
+                      Drift Details
+                    </Title>
+                    <Card size="small" style={{ background: '#fff7e6', border: '1px solid #ffd591' }}>
+                      <Row gutter={[16, 8]}>
+                        <Col span={12}>
+                          <Text strong>Drift Type:</Text>
+                          <div>
+                            <Tag color={DRIFT_TYPE_CONFIG[item.driftType as keyof typeof DRIFT_TYPE_CONFIG]?.color}>
+                              {item.driftType?.toUpperCase() || 'UNKNOWN'}
+                            </Tag>
+                          </div>
+                        </Col>
+                        <Col span={12}>
+                          <Text strong>Resource:</Text>
+                          <div>{formatResourceName(item.drift.resource)}</div>
+                        </Col>
+                      </Row>
+                      
+                      {item.drift.details && (
+                        <div style={{ marginTop: 12 }}>
+                          <Text strong>Details:</Text>
+                          <div style={{ 
+                            marginTop: 8, 
+                            padding: 12, 
+                            background: 'white', 
+                            borderRadius: 6,
+                            border: '1px solid #f0f0f0'
+                          }}>
+                            <pre style={{ 
+                              margin: 0, 
+                              fontSize: 12, 
+                              whiteSpace: 'pre-wrap',
+                              maxHeight: 200,
+                              overflow: 'auto'
+                            }}>
+                              {typeof item.drift.details === 'string' 
+                                ? item.drift.details 
+                                : JSON.stringify(item.drift.details, null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+                      )}
+                    </Card>
+                  </div>
+                )}
+
+                {/* Resource Group Details */}
+                {item.type === 'resource_group' && item.resources && (
+                  <div>
+                    <Title level={5} style={{ marginBottom: 12 }}>
+                      <BarChartOutlined style={{ marginRight: 8, color: '#1890ff' }} />
+                      Resource Analysis ({item.resources.length} resources)
+                    </Title>
+                    
+                    <div style={{ maxHeight: 400, overflowY: 'auto' }}>
+                      {item.resources.map((resource: any, idx: number) => (
+                        <Card 
+                          key={idx} 
+                          size="small" 
+                          style={{ 
+                            marginBottom: 12,
+                            border: resource.hasDrift ? '1px solid #ffd591' : '1px solid #f0f0f0',
+                            background: resource.hasDrift ? '#fff7e6' : 'white'
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                              <Text strong>{resource.title}</Text>
+                              <div style={{ marginTop: 4 }}>
+                                <Badge 
+                                  status={resource.hasDrift ? 'warning' : 'success'}
+                                  text={resource.status || 'Unknown'}
+                                />
+                              </div>
+                            </div>
+                            
+                            {resource.hasDrift && resource.driftResult && (
+                              <Tag color="orange">
+                                {resource.driftResult.drift_count || 1} drift{(resource.driftResult.drift_count || 1) !== 1 ? 's' : ''}
+                              </Tag>
+                            )}
+                          </div>
+                          
+                          {resource.explanation && (
+                            <div style={{ marginTop: 12, padding: 8, background: '#fafafa', borderRadius: 4 }}>
+                              <Text type="secondary" style={{ fontSize: 12 }}>
+                                {resource.explanation}
+                              </Text>
+                            </div>
+                          )}
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Panel>
           ))}
-        </Space>
+        </Collapse>
 
         <div style={{ textAlign: 'center', marginTop: 24 }}>
           <Button 
