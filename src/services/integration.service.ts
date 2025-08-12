@@ -55,12 +55,18 @@ const useIntegrationService = () => {
     id: number,
     application_id: string,
   ): Promise<Array<SecretResponse>> => {
-    const res = await get(
-      resolveUrlParams(ApiUrl.GET_SECRETS_APPLICATIONID, {
-        infrastructure_id: id.toString(),
-        application_id,
-      }),
-    );
+    const url = resolveUrlParams(ApiUrl.GET_SECRETS_APPLICATIONID, {
+      infrastructure_id: id.toString(),
+      application_id,
+    });
+    
+    console.log("🔍 DEBUG - URL Construction:");
+    console.log("  ApiUrl.GET_SECRETS_APPLICATIONID:", ApiUrl.GET_SECRETS_APPLICATIONID);
+    console.log("  infrastructure_id:", id.toString());
+    console.log("  application_id:", application_id);
+    console.log("  Final URL:", url);
+    
+    const res = await get(url);
 
     return res || "";
   };
