@@ -719,13 +719,13 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
   }
 
   return (
-    <div style={{ padding: '24px 0' }}>
+    <div style={{ padding: '24px', maxWidth: '100%' }}>
       {renderSummary()}
 
-      <Card>
-        <div style={{ marginBottom: 16 }}>
-          <Title level={4}>Analysis Details</Title>
-          <Text type="secondary">
+      <Card style={{ borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
+        <div style={{ marginBottom: 24, padding: '8px 0' }}>
+          <Title level={3} style={{ margin: 0, marginBottom: 8, color: '#1f2937' }}>Analysis Details</Title>
+          <Text type="secondary" style={{ fontSize: 16 }}>
             {filteredItems.length} of {processedData.items.length} items shown
           </Text>
         </div>
@@ -734,6 +734,7 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
           activeKey={Array.from(expandedItems)}
           onChange={(keys) => setExpandedItems(new Set(keys as string[]))}
           style={{ background: 'transparent' }}
+          size="large"
         >
           {filteredItems.map((item, index) => (
             <Panel

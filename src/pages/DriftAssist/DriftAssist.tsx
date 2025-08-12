@@ -646,7 +646,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
       case 0:
         return (
-          <div style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px' }}>
+          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
             <Card 
               style={{ 
                 borderRadius: 16,
@@ -931,53 +931,66 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                 </div>
 
                 {/* Resource Cards */}
-                <Row gutter={[24, 24]}>
+                <Row gutter={[32, 32]}>
                   {resourceTypes.map(resource => (
-                    <Col xs={24} sm={12} lg={8} key={resource.id}>
+                    <Col xs={24} sm={24} lg={12} key={resource.id}>
                       <Card
                         className={`resource-card ${resource.selected ? 'selected' : ''}`}
                         style={{ 
-                          borderColor: resource.selected ? resource.color : '#f0f0f0',
+                          borderColor: resource.selected ? resource.color : '#e8e8e8',
                           borderWidth: resource.selected ? 2 : 1,
                           cursor: 'pointer',
-                          borderRadius: 16,
+                          borderRadius: 12,
                           transition: 'all 0.3s ease',
                           position: 'relative',
-                          background: resource.selected ? `${resource.color}08` : 'white',
-                          height: '100%'
+                          background: resource.selected ? '#f8fafc' : 'white',
+                          height: '100%',
+                          boxShadow: resource.selected ? '0 8px 24px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.06)',
+                          padding: '8px'
                         }}
                         onClick={() => handleResourceToggle(resource.id)}
                         hoverable
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 20, padding: '16px' }}>
                           <div 
                             style={{ 
-                              backgroundColor: resource.color,
-                              color: 'white',
-                              padding: '16px',
+                              backgroundColor: resource.selected ? resource.color : '#f1f5f9',
+                              color: resource.selected ? 'white' : resource.color,
+                              padding: '20px',
                               borderRadius: '12px',
-                              marginRight: '16px',
+                              marginRight: '20px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: 20
+                              fontSize: 24,
+                              minWidth: '64px',
+                              height: '64px',
+                              transition: 'all 0.3s ease'
                             }}
                           >
                             {resource.icon}
                           </div>
-                          <div style={{ flex: 1 }}>
-                            <Title level={5} style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>
+                          <div style={{ flex: 1, minHeight: '64px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: '20px', fontWeight: 600, color: '#1f2937' }}>
                               {resource.name}
                             </Title>
-                            <Text type="secondary" style={{ fontSize: '14px' }}>
-                              {resource.category} • {resource.priority} Priority
+                            <Text style={{ fontSize: '16px', color: '#6b7280', marginBottom: 8 }}>
+                              {resource.description}
                             </Text>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                              <Text type="secondary" style={{ fontSize: '14px', background: '#f3f4f6', padding: '4px 8px', borderRadius: '6px' }}>
+                                {resource.category}
+                              </Text>
+                              <Text type="secondary" style={{ fontSize: '14px', background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', padding: '4px 8px', borderRadius: '6px' }}>
+                                {resource.priority} Priority
+                              </Text>
+                            </div>
                           </div>
                         </div>
                         
                         {showDetails && (
-                          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #f0f0f0' }}>
-                            <Text type="secondary" style={{ fontSize: '14px', lineHeight: 1.5 }}>
+                          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e5e7eb', padding: '0 16px 16px 16px' }}>
+                            <Text type="secondary" style={{ fontSize: '15px', lineHeight: 1.6, color: '#4b5563' }}>
                               {resource.description}
                             </Text>
                           </div>
@@ -986,18 +999,19 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                         {resource.selected && (
                           <div style={{ 
                             position: 'absolute', 
-                            top: 16, 
-                            right: 16,
+                            top: 20, 
+                            right: 20,
                             background: resource.color,
                             color: 'white',
                             borderRadius: '50%',
-                            width: 28,
-                            height: 28,
+                            width: 32,
+                            height: 32,
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                           }}>
-                            <CheckCircleOutlined style={{ fontSize: 16 }} />
+                            <CheckCircleOutlined style={{ fontSize: 18 }} />
                           </div>
                         )}
                       </Card>
