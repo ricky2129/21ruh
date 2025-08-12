@@ -91,7 +91,7 @@ function useGetAWSIntegrationsByApplicationId(application_id: string) {
   const { refetch, data, isLoading, isError } = useQuery({
     queryKey: [QUERY_KEY.GET_AWS_INTEGRATIONS_BY_APPLICATIONID, application_id],
     queryFn: () => getSecretKeysByApplicationId(1, application_id),
-    enabled: true,
+    enabled: !!application_id && application_id !== 'undefined',
     refetchOnWindowFocus: false,
   });
 
@@ -150,7 +150,7 @@ function useGetGremlinIntegrationsByApplicationId(application_id: string) {
   const { refetch, data, isLoading, isError } = useQuery({
     queryKey: [QUERY_KEY.GET_GREMLIN_INTEGRATIONS_BY_PROJECTID, application_id],
     queryFn: () => getSecretKeysByApplicationId(3, application_id),
-    enabled: true,
+    enabled: !!application_id && application_id !== 'undefined',
     refetchOnWindowFocus: false,
   });
 
@@ -211,7 +211,7 @@ function useGetGithubIntegrationsByApplicationId(application_id: string) {
       application_id,
     ],
     queryFn: () => getSecretKeysByApplicationId(2, application_id),
-    enabled: true,
+    enabled: !!application_id && application_id !== 'undefined',
     refetchOnWindowFocus: false,
   });
 
