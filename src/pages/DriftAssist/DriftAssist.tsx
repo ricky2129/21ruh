@@ -30,7 +30,8 @@ import {
   ReloadOutlined,
   EyeInvisibleOutlined, 
   EyeTwoTone,
-  RightOutlined
+  RightOutlined,
+  SettingOutlined
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -80,7 +81,10 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   // Initialize step and session state based on whether sessionId is available
   const [currentStep, setCurrentStep] = useState(() => {
     // If sessionId is available from dashboard configuration, skip AWS setup
-    return (sessionId || initialSessionId) ? 1 : 0;
+    const hasSessionId = sessionId || initialSessionId;
+    const hasCredentials = awsCredentials || initialAwsCredentials;
+    console.log('DriftAssist: Initial state check', { hasSessionId, hasCredentials });
+    return (hasSessionId && hasCredentials) ? 1 : 0;
   });
   
   const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(
@@ -95,12 +99,24 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
+    console.log('DriftAssist: useEffect triggered', { 
+      finalSessionId, 
+      finalCredentials, 
+      currentStep 
+    });
+    
     if (finalSessionId && finalCredentials) {
       console.log('DriftAssist: Setting up with existing credentials');
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
+      
+      // Ensure we're on the correct step when credentials are available
+      if (currentStep === 0) {
+        console.log('DriftAssist: Moving from step 0 to step 1');
+        setCurrentStep(1);
+      }
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, currentStep]);
 
   // API hooks
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);
@@ -425,28 +441,28 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
   const steps = [
     {
-      title: 'Connect AWS',
-      description: 'Configure cloud credentials',
-      icon: <CloudOutlined />
-    },
-    {
-      title: 'Select Bucket',
-      description: 'Choose S3 bucket with state files',
+      title: 'S3 Bucket',
+      description: 'Select bucket',
       icon: <DatabaseOutlined />
     },
     {
-      title: 'Choose Resources',
-      description: 'Select AWS resources to analyze',
+      title: 'Scan Files',
+      description: 'Find state files',
       icon: <SecurityScanOutlined />
     },
     {
-      title: 'Live Analysis',
-      description: 'Monitor drift detection progress',
+      title: 'Resources',
+      description: 'Choose resources',
+      icon: <SettingOutlined />
+    },
+    {
+      title: 'Analysis',
+      description: 'Drift detection',
       icon: <BarChartOutlined />
     },
     {
-      title: 'Results',
-      description: 'View analysis results',
+      title: 'Report',
+      description: 'Export results',
       icon: <CheckCircleOutlined />
     }
   ];
