@@ -551,7 +551,310 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   }, [showMessage]);
 
   /**
-   * Render drift detection results
+   * Render comprehensive AI-generated report
+   */
+  const renderComprehensiveReport = useCallback((detectionData: any, resourceType: string) => {
+    if (!detectionData) return null;
+
+    // Extract drift data
+    let drifts: any[] = [];
+    if (detectionData.drifts && Array.isArray(detectionData.drifts)) {
+      drifts = detectionData.drifts;
+    } else if (Array.isArray(detectionData)) {
+      drifts = detectionData;
+    } else if (detectionData.differences && Array.isArray(detectionData.differences)) {
+      drifts = detectionData.differences;
+    }
+
+    const driftCount = drifts.length;
+    const resource = AWS_RESOURCE_CONFIG[resourceType.toLowerCase() as keyof typeof AWS_RESOURCE_CONFIG] || {
+      name: resourceType.toUpperCase(),
+      description: 'AWS Resource',
+      icon: <DesktopOutlined />,
+      color: '#6c757d',
+      category: 'Other'
+    };
+
+    return (
+      <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+        {/* Executive Summary */}
+        <div style={{ 
+          background: driftCount === 0 ? 'linear-gradient(135deg, #f6ffed 0%, #f0f9e8 100%)' : 'linear-gradient(135deg, #fff2e8 0%, #ffebe6 100%)',
+          border: driftCount === 0 ? '1px solid #b7eb8f' : '1px solid #ffbb96',
+          borderRadius: '12px',
+          padding: '20px',
+          marginBottom: '24px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
+            <div style={{
+              background: resource.color,
+              color: 'white',
+              padding: '12px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              {resource.icon}
+            </div>
+            <div>
+              <Title level={4} style={{ margin: 0, color: '#262626' }}>
+                {resource.name} Analysis Report
+              </Title>
+              <Text style={{ color: '#8c8c8c', fontSize: '14px' }}>
+                {resource.category} • Infrastructure Drift Analysis
+              </Text>
+            </div>
+          </div>
+
+          {driftCount === 0 ? (
+            <Alert 
+              message="✅ No Infrastructure Drift Detected"
+              description="Excellent! Your resources match the expected configuration perfectly. Infrastructure is compliant with IaC definitions."
+              type="success" 
+              showIcon={false}
+              style={{ 
+                background: 'transparent',
+                border: 'none',
+                padding: 0
+              }}
+            />
+          ) : (
+            <Alert 
+              message={`⚠️ ${driftCount} Configuration Issue${driftCount !== 1 ? 's' : ''} Detected`}
+              description="Infrastructure configuration differs from expected state. Review the detailed analysis below for remediation guidance."
+              type="warning" 
+              showIcon={false}
+              style={{ 
+                background: 'transparent',
+                border: 'none',
+                padding: 0
+              }}
+            />
+          )}
+        </div>
+
+        {/* Detailed Analysis */}
+        {driftCount > 0 && (
+          <>
+            <Title level={4} style={{ color: '#262626', marginBottom: 16 }}>
+              📊 Detailed Drift Analysis
+            </Title>
+            
+            <Space direction="vertical" style={{ width: '100%', marginBottom: 24 }}>
+              {drifts.map((drift: any, index: number) => (
+                <Card 
+                  key={index} 
+                  size="small" 
+                  style={{ 
+                    borderLeft: '4px solid #ff9800',
+                    borderRadius: '8px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+                  }}
+                >
+                  <div style={{ marginBottom: 12 }}>
+                    <Title level={5} style={{ margin: 0, marginBottom: 8, color: '#262626' }}>
+                      {getDriftTypeIcon(drift.type)} {formatDriftType(drift.type)}
+                    </Title>
+                    {drift.details && (
+                      <Paragraph style={{ margin: 0, marginBottom: 8, color: '#595959', lineHeight: 1.6 }}>
+                        {drift.details}
+                      </Paragraph>
+                    )}
+                    {drift.resource && (
+                      <div style={{ marginTop: 8 }}>
+                        <Badge 
+                          text={`Resource: ${Array.isArray(drift.resource) ? drift.resource.join(' / ') : drift.resource}`}
+                          color="blue"
+                          style={{ fontSize: '12px' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Remediation Guidance */}
+                  <div style={{ 
+                    background: '#fafafa',
+                    borderRadius: '6px',
+                    padding: '12px',
+                    marginTop: 12
+                  }}>
+                    <Text strong style={{ color: '#262626', fontSize: '13px' }}>
+                      🔧 Recommended Action:
+                    </Text>
+                    <div style={{ marginTop: 8 }}>
+                      <Text style={{ color: '#595959', fontSize: '12px', lineHeight: 1.5 }}>
+                        {getRemediationGuidance(drift.type)}
+                      </Text>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </Space>
+
+            {/* Impact Assessment */}
+            <Title level={4} style={{ color: '#262626', marginBottom: 16 }}>
+              🎯 Impact Assessment
+            </Title>
+            
+            <div style={{ 
+              background: '#f0f8ff',
+              border: '1px solid #d6f7ff',
+              borderRadius: '8px',
+              padding: '16px',
+              marginBottom: 24
+            }}>
+              <Row gutter={[16, 16]}>
+                <Col span={12}>
+                  <div>
+                    <Text strong style={{ color: '#262626', fontSize: '14px' }}>
+                      🏢 Business Impact:
+                    </Text>
+                    <div style={{ marginTop: 8 }}>
+                      <Text style={{ color: '#595959', fontSize: '13px', lineHeight: 1.5 }}>
+                        {getBusinessImpact(drifts, resourceType)}
+                      </Text>
+                    </div>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <div>
+                    <Text strong style={{ color: '#262626', fontSize: '14px' }}>
+                      ⚙️ Technical Impact:
+                    </Text>
+                    <div style={{ marginTop: 8 }}>
+                      <Text style={{ color: '#595959', fontSize: '13px', lineHeight: 1.5 }}>
+                        {getTechnicalImpact(drifts, resourceType)}
+                      </Text>
+                    </div>
+                  </div>
+                </Col>
+              </Row>
+            </div>
+
+            {/* Best Practices */}
+            <Title level={4} style={{ color: '#262626', marginBottom: 16 }}>
+              💡 Prevention Best Practices
+            </Title>
+            
+            <div style={{ 
+              background: '#f6ffed',
+              border: '1px solid #b7eb8f',
+              borderRadius: '8px',
+              padding: '16px'
+            }}>
+              <ul style={{ margin: 0, paddingLeft: 20 }}>
+                <li style={{ marginBottom: 8 }}>
+                  <Text style={{ color: '#595959', fontSize: '13px' }}>
+                    <strong>Regular Monitoring:</strong> Schedule weekly drift detection scans for {resource.name.toLowerCase()}
+                  </Text>
+                </li>
+                <li style={{ marginBottom: 8 }}>
+                  <Text style={{ color: '#595959', fontSize: '13px' }}>
+                    <strong>Change Management:</strong> Require all infrastructure changes to go through Terraform
+                  </Text>
+                </li>
+                <li style={{ marginBottom: 8 }}>
+                  <Text style={{ color: '#595959', fontSize: '13px' }}>
+                    <strong>Access Control:</strong> Limit direct cloud console access to emergency situations only
+                  </Text>
+                </li>
+                <li style={{ marginBottom: 0 }}>
+                  <Text style={{ color: '#595959', fontSize: '13px' }}>
+                    <strong>Automation:</strong> Implement CI/CD pipelines for infrastructure deployments
+                  </Text>
+                </li>
+              </ul>
+            </div>
+          </>
+        )}
+
+        {/* No Drift - Best Practices */}
+        {driftCount === 0 && (
+          <>
+            <Title level={4} style={{ color: '#262626', marginBottom: 16 }}>
+              🎉 Excellent Infrastructure Management
+            </Title>
+            
+            <div style={{ 
+              background: '#f6ffed',
+              border: '1px solid #b7eb8f',
+              borderRadius: '8px',
+              padding: '16px'
+            }}>
+              <Text style={{ color: '#595959', fontSize: '14px', lineHeight: 1.6 }}>
+                Your {resource.name.toLowerCase()} infrastructure is perfectly aligned with your IaC configuration. 
+                This indicates excellent infrastructure governance and change management practices. 
+                Continue monitoring regularly to maintain this high standard.
+              </Text>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }, []);
+
+  // Helper functions for the comprehensive report
+  const getDriftTypeIcon = (type: string) => {
+    switch (type) {
+      case 'missing': return '❌';
+      case 'orphaned': return '🔗';
+      case 'configuration_drift': return '⚙️';
+      case 'error': return '⚠️';
+      default: return '📋';
+    }
+  };
+
+  const formatDriftType = (type: string) => {
+    switch (type) {
+      case 'missing': return 'Missing Resources';
+      case 'orphaned': return 'Orphaned Resources';
+      case 'configuration_drift': return 'Configuration Drift';
+      case 'error': return 'Analysis Error';
+      default: return 'Configuration Issue';
+    }
+  };
+
+  const getRemediationGuidance = (type: string) => {
+    switch (type) {
+      case 'missing':
+        return 'Run "terraform plan" to review changes, then "terraform apply" to create the missing resource.';
+      case 'orphaned':
+        return 'Import the resource into Terraform state using "terraform import" or remove it if no longer needed.';
+      case 'configuration_drift':
+        return 'Update your Terraform configuration to match the current state or revert cloud changes.';
+      case 'error':
+        return 'Check your AWS credentials and permissions, then retry the analysis.';
+      default:
+        return 'Review the configuration and align with your infrastructure as code standards.';
+    }
+  };
+
+  const getBusinessImpact = (drifts: any[], resourceType: string) => {
+    const highPriorityTypes = ['missing', 'error'];
+    const hasHighPriority = drifts.some(d => highPriorityTypes.includes(d.type));
+    
+    if (hasHighPriority) {
+      return `High impact: Missing or error conditions may cause service disruptions for ${resourceType} resources.`;
+    } else {
+      return `Medium impact: Configuration drift may lead to compliance issues and unexpected behavior.`;
+    }
+  };
+
+  const getTechnicalImpact = (drifts: any[], resourceType: string) => {
+    const driftCount = drifts.length;
+    
+    if (driftCount > 3) {
+      return `Significant technical debt: ${driftCount} issues indicate systematic infrastructure management problems.`;
+    } else if (driftCount > 1) {
+      return `Moderate complexity: Multiple configuration differences require coordinated remediation.`;
+    } else {
+      return `Low complexity: Single issue can be resolved quickly with minimal risk.`;
+    }
+  };
+
+  /**
+   * Render drift detection results (legacy function for backward compatibility)
    */
   const renderDetectionResults = useCallback((detectionData: any) => {
     if (!detectionData) return null;
@@ -692,96 +995,34 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
             <div>
               <Divider />
               
-              {/* Download Buttons */}
-              <Space style={{ marginBottom: 16 }}>
-                {results?.detectionResults && (
-                  <>
-                    <Button
-                      size="small"
-                      icon={<DownloadOutlined />}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        downloadAsJson(results.detectionResults, `${fileName}_${resourceId}_detection.json`);
-                      }}
-                    >
-                      JSON
-                    </Button>
-                    {(() => {
-                      const pdfKey = `${resourceId}_${fileName}`;
-                      const pdfState = pdfGenerationState[pdfKey];
-                      const isGenerating = pdfState?.isGenerating;
-
-                      return (
-                        <Button
-                          size="small"
-                          type="primary"
-                          icon={isGenerating ? <LoadingOutlined /> : <FileTextOutlined />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!isGenerating) {
-                              downloadAsPdf(results.detectionResults, resourceId, fileName);
-                            }
-                          }}
-                          disabled={isGenerating}
-                          loading={isGenerating}
-                        >
-                          {isGenerating ? (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <Progress
-                                type="circle"
-                                percent={pdfState.progress}
-                                size={16}
-                                strokeWidth={8}
-                                showInfo={false}
-                              />
-                              <span style={{ fontSize: '10px', minWidth: '25px' }}>
-                                {pdfState.progress}%
-                              </span>
-                            </div>
-                          ) : (
-                            'PDF'
-                          )}
-                        </Button>
-                      );
-                    })()}
-                  </>
-                )}
-              </Space>
-
-              {/* PDF Generation Status */}
-              {(() => {
-                const pdfKey = `${resourceId}_${fileName}`;
-                const pdfState = pdfGenerationState[pdfKey];
-                
-                if (pdfState?.isGenerating) {
-                  return (
-                    <div style={{ 
-                      marginBottom: 12, 
-                      padding: 8, 
-                      backgroundColor: '#f0f8ff', 
-                      borderRadius: 4,
-                      border: '1px solid #d6f7ff'
-                    }}>
-                      <Text style={{ fontSize: '12px', color: '#1890ff' }}>
-                        {pdfState.message}
-                      </Text>
-                    </div>
-                  );
-                }
-                
-                return null;
-              })()}
-
-              {/* Detection Results */}
+              {/* AI-Generated Report Display */}
               {results?.detectionResults && (
                 <div style={{ 
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: '4px',
-                  padding: '12px'
+                  backgroundColor: '#fafafa',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  border: '1px solid #f0f0f0'
                 }}>
-                  {renderDetectionResults(results.detectionResults)}
+                  {renderComprehensiveReport(results.detectionResults, resourceId)}
                 </div>
               )}
+
+              {/* Download Options (Minimized) */}
+              <div style={{ marginTop: 12, textAlign: 'right' }}>
+                <Space size="small">
+                  <Button
+                    size="small"
+                    icon={<DownloadOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      downloadAsJson(results.detectionResults, `${fileName}_${resourceId}_detection.json`);
+                    }}
+                    style={{ fontSize: '11px' }}
+                  >
+                    Export JSON
+                  </Button>
+                </Space>
+              </div>
             </div>
           )}
         </Card>

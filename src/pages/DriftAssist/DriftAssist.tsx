@@ -76,17 +76,29 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [currentAnalysisData, setCurrentAnalysisData] = useState<any>(null);
-  const [currentStep, setCurrentStep] = useState(sessionId ? 1 : 0);
+  
+  // Initialize step based on whether sessionId is available
+  const [currentStep, setCurrentStep] = useState(() => {
+    // If sessionId is available from dashboard configuration, skip AWS setup
+    return (sessionId || initialSessionId) ? 1 : 0;
+  });
+  
   const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(sessionId);
   const [currentAwsCredentials, setCurrentAwsCredentials] = useState<any>(awsCredentials);
 
   // Handle sessionId and credentials from navigation state or props
   useEffect(() => {
-    if (sessionId) {
-      setCurrentSessionId(sessionId);
-      setCurrentAwsCredentials(awsCredentials);
-      setCurrentStep(1); // Skip AWS configuration step
-      console.log('DriftAssist: Received sessionId, skipping to step 1');
+    if (sessionId || initialSessionId) {
+      const finalSessionId = sessionId || initialSessionId;
+      const finalCredentials = awsCredentials || initialAwsCredentials;
+      
+      setCurrentSessionId(finalSessionId);
+      setCurrentAwsCredentials(finalCredentials);
+      setCurrentStep(1); // Skip AWS configuration step - go directly to bucket selection
+      
+      console.log('DriftAssist: Received sessionId from dashboard configuration, skipping AWS setup');
+      console.log('SessionId:', finalSessionId);
+      console.log('AWS Credentials:', finalCredentials);
     }
   }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
 
@@ -1030,21 +1042,195 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
             fileName={currentAnalysisData.fileName}
           />
         ) : (
-          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
             <Card 
               style={{ 
                 borderRadius: 16,
                 boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
                 border: '1px solid #e8e8e8',
-                textAlign: 'center',
-                padding: '80px 24px'
+                marginBottom: 32
               }}
             >
-              <BarChartOutlined style={{ fontSize: 64, color: '#1890ff', marginBottom: 24 }} />
-              <Title level={3}>Analysis in Progress</Title>
-              <Paragraph type="secondary" style={{ fontSize: 16 }}>
-                Please wait while we analyze your infrastructure for drift...
-              </Paragraph>
+              <div style={{ 
+                padding: '32px 32px 20px 32px',
+                borderBottom: '1px solid #f0f0f0',
+                background: 'linear-gradient(135deg, #722ed1 0%, #531dab 100%)',
+                color: 'white',
+                borderRadius: '16px 16px 0 0',
+                marginBottom: 32
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <BarChartOutlined style={{ fontSize: 32 }} />
+                  <div>
+                    <Title level={2} style={{ margin: 0, color: 'white' }}>
+                      Live Drift Analysis
+                    </Title>
+                    <Paragraph style={{ margin: 0, color: 'rgba(255,255,255,0.9)', fontSize: 16 }}>
+                      Real-time infrastructure drift detection in progress
+                    </Paragraph>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ padding: '0 32px 32px 32px' }}>
+                {/* Analysis Status */}
+                <div style={{ 
+                  background: 'linear-gradient(135deg, #f9f0ff 0%, #efdbff 100%)', 
+                  padding: '24px', 
+                  borderRadius: '16px', 
+                  marginBottom: 32,
+                  border: '1px solid #d3adf7'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                    <ReloadOutlined spin style={{ color: '#722ed1', fontSize: 24, marginRight: 12 }} />
+                    <Title level={4} style={{ margin: 0, color: '#531dab' }}>
+                      Analyzing Infrastructure State
+                    </Title>
+                  </div>
+                  <div style={{ marginBottom: 20 }}>
+                    <Text type="secondary" style={{ fontSize: 16 }}>
+                      Processing {stateFiles.length} Terraform state files across {selectedCount} resource types
+                    </Text>
+                  </div>
+                  
+                  {/* Progress Indicators */}
+                  <Row gutter={[24, 16]}>
+                    <Col xs={24} sm={8}>
+                      <div style={{ 
+                        background: 'white', 
+                        padding: '20px', 
+                        borderRadius: '12px',
+                        border: '1px solid #d3adf7',
+                        textAlign: 'center'
+                      }}>
+                        <DatabaseOutlined style={{ fontSize: 24, color: '#722ed1', marginBottom: 8 }} />
+                        <div style={{ fontWeight: 600, fontSize: 18, color: '#262626' }}>
+                          {stateFiles.length}
+                        </div>
+                        <div style={{ fontSize: 14, color: '#8c8c8c' }}>State Files</div>
+                      </div>
+                    </Col>
+                    <Col xs={24} sm={8}>
+                      <div style={{ 
+                        background: 'white', 
+                        padding: '20px', 
+                        borderRadius: '12px',
+                        border: '1px solid #d3adf7',
+                        textAlign: 'center'
+                      }}>
+                        <SecurityScanOutlined style={{ fontSize: 24, color: '#722ed1', marginBottom: 8 }} />
+                        <div style={{ fontWeight: 600, fontSize: 18, color: '#262626' }}>
+                          {selectedCount}
+                        </div>
+                        <div style={{ fontSize: 14, color: '#8c8c8c' }}>Resource Types</div>
+                      </div>
+                    </Col>
+                    <Col xs={24} sm={8}>
+                      <div style={{ 
+                        background: 'white', 
+                        padding: '20px', 
+                        borderRadius: '12px',
+                        border: '1px solid #d3adf7',
+                        textAlign: 'center'
+                      }}>
+                        <CloudOutlined style={{ fontSize: 24, color: '#722ed1', marginBottom: 8 }} />
+                        <div style={{ fontWeight: 600, fontSize: 18, color: '#262626' }}>
+                          {currentAwsCredentials?.region || 'AWS'}
+                        </div>
+                        <div style={{ fontSize: 14, color: '#8c8c8c' }}>Cloud Region</div>
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+
+                {/* Analysis Steps */}
+                <div style={{ 
+                  background: 'white',
+                  border: '1px solid #f0f0f0',
+                  borderRadius: '16px',
+                  padding: '32px',
+                  marginBottom: 32
+                }}>
+                  <Title level={4} style={{ marginBottom: 24, color: '#262626', fontWeight: 600 }}>
+                    <InfoCircleOutlined style={{ marginRight: 8, color: '#722ed1' }} />
+                    Analysis Process
+                  </Title>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    {[
+                      { icon: <DatabaseOutlined />, title: 'Parsing Terraform State Files', desc: 'Extracting resource configurations and metadata', status: 'active' },
+                      { icon: <CloudOutlined />, title: 'Querying AWS Resources', desc: 'Fetching current infrastructure state from AWS APIs', status: 'active' },
+                      { icon: <SecurityScanOutlined />, title: 'Detecting Configuration Drift', desc: 'Comparing expected vs actual resource configurations', status: 'pending' },
+                      { icon: <BarChartOutlined />, title: 'Generating Analysis Report', desc: 'Creating comprehensive drift analysis with recommendations', status: 'pending' }
+                    ].map((step, index) => (
+                      <div key={index} style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        padding: '16px 20px',
+                        background: step.status === 'active' ? '#f9f0ff' : '#fafafa',
+                        borderRadius: '12px',
+                        border: `1px solid ${step.status === 'active' ? '#d3adf7' : '#f0f0f0'}`
+                      }}>
+                        <div style={{ 
+                          backgroundColor: step.status === 'active' ? '#722ed1' : '#d9d9d9',
+                          color: 'white',
+                          padding: '12px',
+                          borderRadius: '8px',
+                          marginRight: '16px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: 16
+                        }}>
+                          {step.status === 'active' ? <ReloadOutlined spin /> : step.icon}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ 
+                            fontWeight: 600, 
+                            color: step.status === 'active' ? '#531dab' : '#8c8c8c',
+                            marginBottom: '4px',
+                            fontSize: 16
+                          }}>
+                            {step.title}
+                          </div>
+                          <div style={{ 
+                            fontSize: '14px', 
+                            color: step.status === 'active' ? '#722ed1' : '#bfbfbf'
+                          }}>
+                            {step.desc}
+                          </div>
+                        </div>
+                        {step.status === 'active' && (
+                          <Badge 
+                            status="processing" 
+                            text="In Progress" 
+                            style={{ color: '#722ed1' }}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Estimated Time */}
+                <div style={{ 
+                  background: 'linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%)',
+                  padding: '24px',
+                  borderRadius: '16px',
+                  border: '1px solid #91d5ff',
+                  textAlign: 'center'
+                }}>
+                  <InfoCircleOutlined style={{ color: '#1890ff', fontSize: 20, marginRight: 8 }} />
+                  <Text strong style={{ fontSize: 16, color: '#262626' }}>
+                    Estimated completion time: {estimatedTime} minutes
+                  </Text>
+                  <div style={{ marginTop: 8 }}>
+                    <Text type="secondary" style={{ fontSize: 14 }}>
+                      Analysis time depends on the number of resources and state file complexity
+                    </Text>
+                  </div>
+                </div>
+              </div>
             </Card>
           </div>
         );
