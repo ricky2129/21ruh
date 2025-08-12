@@ -90,56 +90,91 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
   // Handle sessionId and credentials from navigation state or props
   useEffect(() => {
+    console.group('🎯 DRIFT ASSIST DEBUG: Session Initialization');
+    
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
-    console.log('🎯 DriftAssist: useEffect triggered - Processing session data', { 
-      finalSessionId, 
-      finalCredentials, 
-      currentStep,
+    console.log('📍 Props Analysis:', {
       sessionIdFromProps: sessionId,
       initialSessionIdFromProps: initialSessionId,
       awsCredentialsFromProps: awsCredentials,
       initialAwsCredentialsFromProps: initialAwsCredentials,
-      locationState: location.state,
+      finalSessionId,
+      finalCredentials,
+      currentStep,
+      currentSessionId,
+      currentAwsCredentials
+    });
+    
+    console.log('📍 Location State:', location.state);
+    
+    console.log('📍 Credentials Analysis:', {
+      hasCredentials: !!finalCredentials,
       hasAccessKey: !!(finalCredentials?.access_key),
       hasSecretKey: !!(finalCredentials?.secret_key),
-      credentialKeys: finalCredentials ? Object.keys(finalCredentials) : []
+      credentialKeys: finalCredentials ? Object.keys(finalCredentials) : [],
+      accessKeyPrefix: finalCredentials?.access_key?.substring(0, 4),
+      secretKeyLength: finalCredentials?.secret_key?.length
     });
     
     if (finalSessionId && finalCredentials) {
-      console.log('✅ DriftAssist: Setting up with existing credentials', {
+      console.log('✅ Valid session and credentials found');
+      console.log('📍 Setting up session:', {
         sessionId: finalSessionId,
-        credentials: {
-          ...finalCredentials,
-          access_key: finalCredentials.access_key ? `${finalCredentials.access_key.substring(0, 4)}...` : 'MISSING',
-          secret_key: finalCredentials.secret_key ? `${finalCredentials.secret_key.substring(0, 4)}...` : 'MISSING'
-        },
-        willSkipToStep: 1
+        region: finalCredentials.region,
+        provider: finalCredentials.provider,
+        hasAccessKey: !!finalCredentials.access_key,
+        hasSecretKey: !!finalCredentials.secret_key
       });
+      
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
       
       // If we have complete credentials, start at bucket selection
       if (finalCredentials.access_key && finalCredentials.secret_key) {
-        setCurrentStep(0); // S3 bucket selection step
+        console.log('✅ Complete credentials found - Moving to S3 bucket selection (step 0)');
+        setCurrentStep(0);
+      } else {
+        console.log('⚠️ Incomplete credentials - Missing access_key or secret_key');
       }
     } else if (finalSessionId) {
-      // If we have sessionId but no credentials, still set the sessionId
-      console.log('⚠️ DriftAssist: Setting up with sessionId only (no credentials)', {
-        sessionId: finalSessionId
-      });
+      console.log('⚠️ SessionId found but no credentials');
       setCurrentSessionId(finalSessionId);
     } else {
-      console.warn('❌ DriftAssist: No sessionId or credentials found - User will need to configure AWS', {
-        sessionId,
-        initialSessionId,
-        awsCredentials,
-        initialAwsCredentials,
-        locationState: location.state
-      });
+      console.log('❌ No valid session or credentials found');
+      console.log('📍 User will need to configure AWS connection');
     }
+    
+    console.groupEnd();
   }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, location.state]);
+
+  // Add backend health check
+  useEffect(() => {
+    const checkBackendHealth = async () => {
+      try {
+        const healthUrl = `${import.meta.env.VITE_DRIFT_ASSIST_URL}/api/health`;
+        console.log('🏥 DRIFT ASSIST DEBUG: Checking backend health at:', healthUrl);
+        
+        const response = await fetch(healthUrl);
+        console.log('🏥 Backend health response status:', response.status);
+        
+        if (response.ok) {
+          const health = await response.json();
+          console.log('🏥 Backend health data:', health);
+          console.log('✅ Drift Analysis Platform backend is running and healthy');
+        } else {
+          console.error('🏥 Backend health check failed with status:', response.status);
+        }
+      } catch (error) {
+        console.error('🏥 Backend health check failed:', error);
+        console.error('❌ Make sure Drift Analysis Platform backend is running on port 8004');
+        console.error('❌ Expected URL:', `${import.meta.env.VITE_DRIFT_ASSIST_URL}/api/health`);
+      }
+    };
+    
+    checkBackendHealth();
+  }, []);
 
   // API hooks
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);
@@ -412,26 +447,77 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   };
 
   const handleConnectToAWS = async (values: any) => {
+    console.group('🔐 DRIFT ASSIST DEBUG: handleConnectToAWS called');
+    console.log('📍 Form values received:', {
+      hasProvider: !!values.provider,
+      hasAccessKey: !!values.access_key,
+      hasSecretKey: !!values.secret_key,
+      hasRegion: !!values.region,
+      provider: values.provider,
+      region: values.region,
+      accessKeyLength: values.access_key?.length,
+      secretKeyLength: values.secret_key?.length,
+      accessKeyPrefix: values.access_key?.substring(0, 4),
+      formKeys: Object.keys(values)
+    });
+    
+    // Validate inputs before sending
+    if (!values.access_key || !values.secret_key) {
+      console.error('❌ Missing credentials in form values');
+      message.error('Please enter both access key and secret key');
+      console.groupEnd();
+      return;
+    }
+    
     try {
       const connectRequest: ConnectAWSRequest = {
-        provider: values.provider,
+        provider: values.provider || "aws",
         credentials: {
-          access_key: values.access_key,
-          secret_key: values.secret_key,
+          access_key: values.access_key.trim(),
+          secret_key: values.secret_key.trim(),
         },
-        region: values.region,
+        region: values.region || "us-east-1",
       };
 
+      console.log('📤 Prepared request for backend:', {
+        provider: connectRequest.provider,
+        region: connectRequest.region,
+        hasAccessKey: !!connectRequest.credentials.access_key,
+        hasSecretKey: !!connectRequest.credentials.secret_key,
+        accessKeyLength: connectRequest.credentials.access_key.length,
+        secretKeyLength: connectRequest.credentials.secret_key.length,
+        accessKeyFormat: connectRequest.credentials.access_key.match(/^AKIA[0-9A-Z]{16}$/) ? 'valid' : 'invalid'
+      });
+
+      console.log('📤 Calling connectToAWSMutation.mutateAsync...');
       const response = await connectToAWSMutation.mutateAsync(connectRequest);
       
+      console.log('✅ AWS connection successful:', response);
+      
       handleAwsConnected(response.session_id, {
-        region: values.region,
-        provider: values.provider,
-        access_key: values.access_key,    // ✅ NOW INCLUDED
-        secret_key: values.secret_key     // ✅ NOW INCLUDED
+        region: connectRequest.region,
+        provider: connectRequest.provider,
+        access_key: connectRequest.credentials.access_key,
+        secret_key: connectRequest.credentials.secret_key
       });
     } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Failed to connect to AWS');
+      console.error('❌ AWS connection failed:', error);
+      
+      // Better error messages based on error type
+      let errorMessage = 'Failed to connect to AWS';
+      if (error instanceof Error) {
+        if (error.message.includes('422')) {
+          errorMessage = 'Invalid request format. Please check your credentials.';
+        } else if (error.message.includes('401') || error.message.includes('403')) {
+          errorMessage = 'Invalid AWS credentials. Please check your access key and secret key.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      message.error(errorMessage);
+    } finally {
+      console.groupEnd();
     }
   };
 

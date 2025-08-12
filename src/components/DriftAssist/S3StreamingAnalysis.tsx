@@ -381,7 +381,7 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
       console.log('useEffect triggering startAnalysis for:', fileName);
       startAnalysis();
     }
-  }, []);
+  }, [analysisData, hasStarted, isAnalyzing, fileName, startAnalysis]);
 
   /**
    * Handle resource expansion toggle

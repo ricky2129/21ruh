@@ -65,11 +65,18 @@ interface AnalyzeBucketResponse {
 
 // API Functions
 const connectToAWS = async (data: ConnectAWSRequest): Promise<ConnectAWSResponse> => {
-  console.log('🌐 API: connectToAWS called with:', {
+  console.log('🔐 DRIFT ASSIST DEBUG: connectToAWS called');
+  console.log('📍 Backend URL:', DriftAssistUrl.CONNECT_AWS);
+  console.log('📤 Request payload:', JSON.stringify(data, null, 2));
+  console.log('📤 Request details:', {
     provider: data.provider,
     region: data.region,
     hasCredentials: !!data.credentials,
-    url: DriftAssistUrl.CONNECT_AWS
+    hasAccessKey: !!data.credentials?.access_key,
+    hasSecretKey: !!data.credentials?.secret_key,
+    accessKeyLength: data.credentials?.access_key?.length,
+    secretKeyLength: data.credentials?.secret_key?.length,
+    accessKeyPrefix: data.credentials?.access_key?.substring(0, 4)
   });
 
   const response = await fetch(DriftAssistUrl.CONNECT_AWS, {
@@ -80,16 +87,33 @@ const connectToAWS = async (data: ConnectAWSRequest): Promise<ConnectAWSResponse
     body: JSON.stringify(data),
   });
 
-  console.log('🌐 API: connectToAWS response status:', response.status);
+  console.log('📥 Response status:', response.status);
+  console.log('📥 Response headers:', response.headers);
 
   if (!response.ok) {
-    const errorData = await response.json();
-    console.error('❌ API: connectToAWS failed:', errorData);
-    throw new Error(errorData.detail || errorData.error || 'Failed to connect to AWS');
+    const responseText = await response.text();
+    console.error('❌ Error response body (raw):', responseText);
+    
+    let errorData;
+    try {
+      errorData = JSON.parse(responseText);
+    } catch {
+      errorData = { error: 'Invalid JSON response', raw: responseText };
+    }
+    
+    console.error('❌ Parsed error:', errorData);
+    console.error('❌ Request that failed:', {
+      url: DriftAssistUrl.CONNECT_AWS,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data, null, 2)
+    });
+    
+    throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}: ${response.statusText}`);
   }
 
   const result = await response.json();
-  console.log('✅ API: connectToAWS success:', { sessionId: result.session_id });
+  console.log('✅ Success response:', result);
   return result;
 };
 
@@ -197,10 +221,21 @@ export const useConnectToAWS = () => {
 };
 
 export const useGetS3Buckets = (sessionId: string, enabled: boolean = true) => {
+  console.log('🪣 useGetS3Buckets called:', { 
+    sessionId, 
+    enabled, 
+    hasSessionId: !!sessionId,
+    sessionIdType: typeof sessionId,
+    sessionIdValue: sessionId
+  });
+  
   return useQuery({
     queryKey: [QUERY_KEY.GET_S3_BUCKETS, sessionId],
-    queryFn: () => getS3Buckets(sessionId),
-    enabled: enabled && !!sessionId,
+    queryFn: () => {
+      console.log('🪣 Executing getS3Buckets for session:', sessionId);
+      return getS3Buckets(sessionId);
+    },
+    enabled: enabled && !!sessionId && sessionId !== 'undefined' && sessionId !== 'null',
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
