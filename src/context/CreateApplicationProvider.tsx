@@ -42,7 +42,7 @@ const CreateApplicationContext =
   createContext<ICreateApplicationContext>(initialValue);
 
 const CreateApplicationProvider = ({ children }: ContextState) => {
-  const [applicationId, setApplicationId] = useState<number>(null);
+  const [applicationId, setApplicationId] = useState<number | null>(null);
   const [sloTableData, setSloTableData] = useState<SLOType[]>([]);
   const [basicDetailsForm] = Form.useForm<BasicDetailsApplicationFormField>();
 

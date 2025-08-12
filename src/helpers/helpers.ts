@@ -28,7 +28,10 @@ export const resolveUrlParams = (
 ) => {
   let updatedUrl = url;
   Object.keys(params).forEach((key) => {
-    updatedUrl = updatedUrl.replace(`:${key}`, params[key]);
+    // Only replace if the parameter value is defined and not 'undefined'
+    if (params[key] !== undefined && params[key] !== 'undefined') {
+      updatedUrl = updatedUrl.replace(`:${key}`, params[key]);
+    }
   });
   return updatedUrl;
 };
