@@ -78,14 +78,8 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [currentAnalysisData, setCurrentAnalysisData] = useState<any>(null);
   
-  // Initialize step and session state based on whether sessionId is available
-  const [currentStep, setCurrentStep] = useState(() => {
-    // If sessionId is available from dashboard configuration, skip AWS setup
-    const hasSessionId = sessionId || initialSessionId;
-    const hasCredentials = awsCredentials || initialAwsCredentials;
-    console.log('DriftAssist: Initial state check', { hasSessionId, hasCredentials });
-    return (hasSessionId && hasCredentials) ? 1 : 0;
-  });
+  // Initialize step - always start at S3 bucket selection since credentials come from ConfigureDriftAssist
+  const [currentStep, setCurrentStep] = useState(0);
   
   const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(
     sessionId || initialSessionId
@@ -109,14 +103,8 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       console.log('DriftAssist: Setting up with existing credentials');
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
-      
-      // Ensure we're on the correct step when credentials are available
-      if (currentStep === 0) {
-        console.log('DriftAssist: Moving from step 0 to step 1');
-        setCurrentStep(1);
-      }
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, currentStep]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
 
   // API hooks
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);
@@ -471,243 +459,48 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     switch (currentStep) {
       case 0:
         return (
-          <div style={{ maxWidth: 600, margin: '0 auto', padding: '40px 24px' }}>
-            <Card 
-              style={{ 
-                borderRadius: 16,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                border: '1px solid #e8e8e8'
-              }}
-            >
-              <div style={{ 
-                padding: '32px 32px 20px 32px',
-                borderBottom: '1px solid #f0f0f0',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                borderRadius: '16px 16px 0 0',
-                marginBottom: 32
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <CloudOutlined style={{ fontSize: 32 }} />
-                  <div>
-                    <Title level={2} style={{ margin: 0, color: 'white' }}>
-                      Connect to AWS
-                    </Title>
-                    <Paragraph style={{ margin: 0, color: 'rgba(255,255,255,0.9)', fontSize: 16 }}>
-                      Enter your cloud provider credentials to begin infrastructure drift analysis
-                    </Paragraph>
-                  </div>
-                </div>
-              </div>
-              
-              <div style={{ padding: '0 32px 32px 32px' }}>
-                <Form
-                  layout="vertical"
-                  onFinish={handleConnectToAWS}
-                  initialValues={{ 
-                    provider: 'aws', 
-                    region: 'us-east-1'
-                  }}
-                  style={{ marginTop: 24 }}
-                >
-                  <Form.Item
-                    label={
-                      <span style={{ fontWeight: 600, color: '#262626', fontSize: 16 }}>
-                        <CloudOutlined style={{ marginRight: 8, color: '#1890ff' }} />
-                        Cloud Provider
-                      </span>
-                    }
-                    name="provider"
-                    rules={[{ required: true, message: 'Cloud provider is required' }]}
-                  >
-                    <Select
-                      size="large"
-                      placeholder="Select cloud provider"
-                      options={[{ 
-                        label: (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <CloudOutlined />
-                            Amazon Web Services (AWS)
-                          </div>
-                        ), 
-                        value: "aws" 
-                      }]}
-                      style={{ borderRadius: 8 }}
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    label={
-                      <span style={{ fontWeight: 600, color: '#262626', fontSize: 16 }}>
-                        <UserOutlined style={{ marginRight: 8, color: '#52c41a' }} />
-                        AWS Access Key
-                      </span>
-                    }
-                    name="access_key"
-                    rules={[
-                      { required: true, message: 'AWS Access Key is required' },
-                      { pattern: /^AKIA[0-9A-Z]{16}$/, message: 'Invalid AWS Access Key format (should start with AKIA)' }
-                    ]}
-                  >
-                    <AntInput
-                      size="large"
-                      placeholder="AKIA..."
-                      autoComplete="off"
-                      prefix={<UserOutlined style={{ color: '#bfbfbf' }} />}
-                      style={{ borderRadius: 8 }}
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    label={
-                      <span style={{ fontWeight: 600, color: '#262626', fontSize: 16 }}>
-                        <SecurityScanOutlined style={{ marginRight: 8, color: '#fa8c16' }} />
-                        AWS Secret Key
-                      </span>
-                    }
-                    name="secret_key"
-                    rules={[
-                      { required: true, message: 'AWS Secret Key is required' },
-                      { len: 40, message: 'AWS Secret Key should be exactly 40 characters long' }
-                    ]}
-                  >
-                    <AntInput.Password
-                      size="large"
-                      placeholder="Enter your AWS Secret Access Key"
-                      autoComplete="off"
-                      prefix={<SecurityScanOutlined style={{ color: '#bfbfbf' }} />}
-                      iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                      style={{ borderRadius: 8 }}
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    label={
-                      <span style={{ fontWeight: 600, color: '#262626', fontSize: 16 }}>
-                        <GlobalOutlined style={{ marginRight: 8, color: '#722ed1' }} />
-                        AWS Region
-                      </span>
-                    }
-                    name="region"
-                    rules={[{ required: true, message: 'AWS region is required' }]}
-                  >
-                    <Select
-                      size="large"
-                      placeholder="Select AWS region"
-                      options={AWS_REGIONS}
-                      showSearch
-                      filterOption={(input, option) =>
-                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                      }
-                      style={{ borderRadius: 8 }}
-                    />
-                  </Form.Item>
-
-                  <Form.Item style={{ marginTop: 40, marginBottom: 16 }}>
-                    <Space style={{ width: '100%', justifyContent: 'center' }}>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        size="large"
-                        loading={connectToAWSMutation.isPending}
-                        icon={<CloudOutlined />}
-                        style={{ 
-                          minWidth: 240,
-                          height: 56,
-                          borderRadius: 12,
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          border: 'none',
-                          fontWeight: 600,
-                          fontSize: 18
-                        }}
-                      >
-                        {connectToAWSMutation.isPending ? 'Connecting...' : 'Connect to AWS'}
-                      </Button>
-                      {onClose && (
-                        <Button 
-                          size="large"
-                          onClick={onClose}
-                          style={{ 
-                            height: 56,
-                            borderRadius: 12,
-                            fontWeight: 600
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                    </Space>
-                  </Form.Item>
-                </Form>
-
-                <Alert
-                  message={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <SecurityScanOutlined />
-                      <strong>Security Notice</strong>
-                    </div>
-                  }
-                  description="Your credentials are used only for validation and are not stored permanently. They are kept in memory for the duration of your session only."
-                  type="info"
-                  showIcon={false}
-                  style={{ 
-                    marginTop: 32,
-                    borderRadius: 12,
-                    background: '#e6f7ff',
-                    border: '1px solid #91d5ff'
-                  }}
-                />
-              </div>
-            </Card>
-          </div>
-        );
-
-      case 1:
-        return (
           <div style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px' }}>
             <Card 
               style={{ 
                 borderRadius: 16,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 border: '1px solid #e8e8e8',
                 marginBottom: 32
               }}
             >
               <div style={{ 
-                padding: '32px 32px 20px 32px',
+                padding: '24px 32px',
                 borderBottom: '1px solid #f0f0f0',
-                background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
-                color: 'white',
+                background: '#fafafa',
                 borderRadius: '16px 16px 0 0',
-                marginBottom: 32
+                marginBottom: 24
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <DatabaseOutlined style={{ fontSize: 32 }} />
+                  <DatabaseOutlined style={{ fontSize: 24, color: '#52c41a' }} />
                   <div>
-                    <Title level={2} style={{ margin: 0, color: 'white' }}>
+                    <Title level={3} style={{ margin: 0, color: '#262626' }}>
                       Select S3 Bucket
                     </Title>
-                    <Paragraph style={{ margin: 0, color: 'rgba(255,255,255,0.9)', fontSize: 16 }}>
+                    <Text type="secondary" style={{ fontSize: 14 }}>
                       Choose an S3 bucket to scan for Terraform state files
-                    </Paragraph>
+                    </Text>
                   </div>
                 </div>
               </div>
 
               <div style={{ padding: '0 32px 32px 32px' }}>
-                <div style={{ marginBottom: 32 }}>
-                  <Title level={4} style={{ marginBottom: 12, color: '#262626', fontWeight: 600 }}>
-                    <DatabaseOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+                <div style={{ marginBottom: 24 }}>
+                  <Text strong style={{ fontSize: 16, color: '#262626', display: 'block', marginBottom: 12 }}>
                     Available S3 Buckets
-                  </Title>
-                  <Paragraph type="secondary" style={{ marginBottom: 20, fontSize: 16 }}>
+                  </Text>
+                  <Text type="secondary" style={{ marginBottom: 16, display: 'block' }}>
                     Select a bucket that contains your Terraform state files for analysis.
-                  </Paragraph>
+                  </Text>
 
                   <Select
                     size="large"
                     placeholder={isLoadingBuckets ? "Loading buckets..." : "Select a bucket"}
-                    style={{ width: '100%', marginBottom: 20 }}
+                    style={{ width: '100%', marginBottom: 16 }}
                     value={selectedBucket}
                     onChange={handleBucketSelect}
                     loading={isLoadingBuckets}
@@ -729,7 +522,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                       description={bucketsError instanceof Error ? bucketsError.message : 'Unknown error'}
                       type="error"
                       showIcon
-                      style={{ marginBottom: 20, borderRadius: 8 }}
+                      style={{ marginBottom: 16, borderRadius: 8 }}
                     />
                   )}
 
@@ -737,63 +530,62 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                   {selectedBucket && isLoadingStateFiles && (
                     <div style={{ 
                       textAlign: 'center', 
-                      padding: '40px', 
+                      padding: '32px', 
                       color: '#666',
                       background: '#fafafa',
-                      borderRadius: 12,
+                      borderRadius: 8,
                       border: '1px dashed #d9d9d9'
                     }}>
-                      <DatabaseOutlined style={{ fontSize: 32, marginBottom: 12, color: '#1890ff' }} />
-                      <div style={{ fontSize: 16 }}>Scanning bucket for state files...</div>
+                      <DatabaseOutlined style={{ fontSize: 24, marginBottom: 8, color: '#1890ff' }} />
+                      <div>Scanning bucket for state files...</div>
                     </div>
                   )}
 
                   {selectedBucket && stateFiles.length > 0 && (
                     <div style={{ 
-                      background: 'linear-gradient(135deg, #f6ffed 0%, #f0f9e8 100%)', 
-                      padding: '24px', 
-                      borderRadius: '16px', 
-                      marginTop: '20px',
+                      background: '#f6ffed', 
+                      padding: '16px', 
+                      borderRadius: '8px', 
+                      marginTop: '16px',
                       border: '1px solid #b7eb8f'
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 20 }}>
-                        <CheckCircleOutlined style={{ color: '#52c41a', fontSize: 24, marginRight: 12 }} />
-                        <Title level={4} style={{ margin: 0, color: '#389e0d' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+                        <CheckCircleOutlined style={{ color: '#52c41a', fontSize: 16, marginRight: 8 }} />
+                        <Text strong style={{ color: '#389e0d' }}>
                           Found {stateFiles.length} State File{stateFiles.length !== 1 ? 's' : ''}
-                        </Title>
+                        </Text>
                       </div>
                       <div style={{ 
-                        maxHeight: '300px', 
+                        maxHeight: '200px', 
                         overflowY: 'auto', 
                         background: 'white',
                         border: '1px solid #d9f7be', 
-                        borderRadius: '12px'
+                        borderRadius: '6px'
                       }}>
                         {stateFiles.map((file, index) => (
                           <div 
                             key={index} 
                             style={{ 
-                              padding: '20px 24px', 
-                              borderBottom: index < stateFiles.length - 1 ? '1px solid #f0f0f0' : 'none',
-                              transition: 'background-color 0.2s'
+                              padding: '12px 16px', 
+                              borderBottom: index < stateFiles.length - 1 ? '1px solid #f0f0f0' : 'none'
                             }}
                           >
                             <div style={{ 
-                              fontWeight: 600, 
+                              fontWeight: 500, 
                               color: '#262626', 
-                              marginBottom: '8px',
-                              fontSize: 16
+                              marginBottom: '4px',
+                              fontSize: 14
                             }}>
                               📄 {file.key}
                             </div>
                             <div style={{ 
                               display: 'flex', 
-                              gap: '24px', 
-                              fontSize: '14px', 
+                              gap: '16px', 
+                              fontSize: '12px', 
                               color: '#8c8c8c'
                             }}>
-                              <span>📁 {formatFileSize(file.size)}</span>
-                              <span>📅 Modified: {formatDate(file.last_modified)}</span>
+                              <span>{formatFileSize(file.size)}</span>
+                              <span>Modified: {formatDate(file.last_modified)}</span>
                             </div>
                           </div>
                         ))}
@@ -807,27 +599,24 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                       description={`The selected bucket '${selectedBucket}' does not contain any Terraform state files.`}
                       type="warning"
                       showIcon
-                      style={{ marginTop: 20, borderRadius: 12 }}
+                      style={{ marginTop: 16, borderRadius: 8 }}
                     />
                   )}
                 </div>
 
                 {/* Next Step Button */}
                 {selectedBucket && stateFiles.length > 0 && (
-                  <div style={{ textAlign: 'center', marginTop: 32 }}>
+                  <div style={{ textAlign: 'center', marginTop: 24 }}>
                     <Button
                       type="primary"
                       size="large"
-                      onClick={() => setCurrentStep(2)}
+                      onClick={() => setCurrentStep(1)}
                       icon={<RightOutlined />}
                       style={{ 
-                        minWidth: 200,
-                        height: 56,
-                        borderRadius: 12,
-                        background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
-                        border: 'none',
-                        fontWeight: 600,
-                        fontSize: 16
+                        minWidth: 180,
+                        height: 48,
+                        borderRadius: 8,
+                        fontWeight: 500
                       }}
                     >
                       Continue to Resource Selection
@@ -839,7 +628,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           </div>
         );
 
-      case 2:
+      case 1:
         return (
           <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
             <Card 
