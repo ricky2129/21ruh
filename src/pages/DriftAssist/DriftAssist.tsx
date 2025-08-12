@@ -144,6 +144,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     } else {
       console.log('❌ No valid session or credentials found');
       console.log('📍 User will need to configure AWS connection');
+      setCurrentStep(-1); // Show AWS credentials form
     }
     
     console.groupEnd();
@@ -434,7 +435,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const handleAwsConnected = (sessionId: string, credentials: any) => {
     setCurrentSessionId(sessionId);
     setCurrentAwsCredentials(credentials);
-    setCurrentStep(1);
+    setCurrentStep(0); // Move to S3 bucket selection
     message.success('Successfully connected to AWS!');
     
     // Navigate to workflow tab if callback is provided
@@ -580,6 +581,69 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
   const renderStepContent = () => {
     switch (currentStep) {
+      case -1:
+        // AWS Credentials Input Form
+        return (
+          <div style={{ maxWidth: 600, margin: '0 auto', padding: '40px 24px' }}>
+            <Card style={{ borderRadius: 16, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+              <div style={{ padding: '24px', textAlign: 'center' }}>
+                <CloudOutlined style={{ fontSize: 48, color: '#1890ff', marginBottom: 16 }} />
+                <Title level={3}>Connect to AWS</Title>
+                <Text type="secondary">Enter your AWS credentials to begin drift analysis</Text>
+                
+                <Form
+                  layout="vertical"
+                  onFinish={handleConnectToAWS}
+                  style={{ marginTop: 32, textAlign: 'left' }}
+                >
+                  <Form.Item
+                    label="AWS Access Key"
+                    name="access_key"
+                    rules={[{ required: true, message: 'Please enter your AWS access key' }]}
+                  >
+                    <AntInput placeholder="AKIA..." />
+                  </Form.Item>
+                  
+                  <Form.Item
+                    label="AWS Secret Key"
+                    name="secret_key"
+                    rules={[{ required: true, message: 'Please enter your AWS secret key' }]}
+                  >
+                    <AntInput.Password placeholder="Enter secret key" />
+                  </Form.Item>
+                  
+                  <Form.Item
+                    label="AWS Region"
+                    name="region"
+                    initialValue="us-east-1"
+                    rules={[{ required: true, message: 'Please select a region' }]}
+                  >
+                    <Select>
+                      {AWS_REGIONS.map(region => (
+                        <Option key={region.value} value={region.value}>
+                          {region.label}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                  
+                  <Form.Item style={{ marginTop: 32, textAlign: 'center' }}>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      size="large"
+                      loading={connectToAWSMutation.isLoading}
+                      style={{ minWidth: 200 }}
+                    >
+                      Connect to AWS
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
+            </Card>
+          </div>
+        );
+
       case 0:
         return (
           <div style={{ maxWidth: 800, margin: '0 auto', padding: '40px 24px' }}>
