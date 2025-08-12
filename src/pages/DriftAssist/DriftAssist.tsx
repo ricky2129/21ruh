@@ -119,7 +119,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     } else {
       console.log('DriftAssist: No sessionId found, staying on AWS setup step');
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, currentStep]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
 
   // API hooks
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);
