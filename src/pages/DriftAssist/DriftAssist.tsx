@@ -77,14 +77,18 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const [analysisResults, setAnalysisResults] = useState<any>(null);
   const [currentAnalysisData, setCurrentAnalysisData] = useState<any>(null);
   
-  // Initialize step based on whether sessionId is available
+  // Initialize step and session state based on whether sessionId is available
   const [currentStep, setCurrentStep] = useState(() => {
     // If sessionId is available from dashboard configuration, skip AWS setup
     return (sessionId || initialSessionId) ? 1 : 0;
   });
   
-  const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(sessionId);
-  const [currentAwsCredentials, setCurrentAwsCredentials] = useState<any>(awsCredentials);
+  const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(
+    sessionId || initialSessionId
+  );
+  const [currentAwsCredentials, setCurrentAwsCredentials] = useState<any>(
+    awsCredentials || initialAwsCredentials
+  );
 
   // Handle sessionId and credentials from navigation state or props
   useEffect(() => {
@@ -96,10 +100,10 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       currentStep
     });
     
-    if (sessionId || initialSessionId) {
-      const finalSessionId = sessionId || initialSessionId;
-      const finalCredentials = awsCredentials || initialAwsCredentials;
-      
+    const finalSessionId = sessionId || initialSessionId;
+    const finalCredentials = awsCredentials || initialAwsCredentials;
+    
+    if (finalSessionId) {
       console.log('DriftAssist: Found sessionId, setting up component');
       console.log('Final SessionId:', finalSessionId);
       console.log('Final AWS Credentials:', finalCredentials);
@@ -107,7 +111,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
       
-      // Force skip to bucket selection step
+      // Ensure we're on the correct step when sessionId is available
       if (currentStep === 0) {
         console.log('DriftAssist: Skipping AWS setup step, moving to bucket selection');
         setCurrentStep(1);
@@ -115,15 +119,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     } else {
       console.log('DriftAssist: No sessionId found, staying on AWS setup step');
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
-
-  // Additional effect to ensure we skip AWS setup when sessionId is available
-  useEffect(() => {
-    if ((currentSessionId || sessionId || initialSessionId) && currentStep === 0) {
-      console.log('DriftAssist: Force skipping to step 1 due to existing session');
-      setCurrentStep(1);
-    }
-  }, [currentSessionId, sessionId, initialSessionId, currentStep]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, currentStep]);
 
   // API hooks
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);

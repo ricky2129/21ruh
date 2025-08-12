@@ -1295,18 +1295,19 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
 
   return (
     <div style={{ background: '#f5f5f5', minHeight: 'calc(100vh - 64px)' }}>
-      <div style={{ padding: '24px' }}>
+      <div style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
         <Card 
           style={{ 
-            borderRadius: 8,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            border: '1px solid #d9d9d9'
+            borderRadius: 12,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+            border: '1px solid #d9d9d9',
+            overflow: 'hidden'
           }}
         >
           <div style={{ 
-            padding: '24px',
+            padding: '28px 32px',
             borderBottom: '1px solid #f0f0f0',
-            background: '#fafafa',
+            background: 'linear-gradient(to right, #fafafa, #f5f5f5)',
             marginBottom: 24
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -1343,7 +1344,7 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
             </div>
           </div>
 
-          <div style={{ padding: '0 24px 24px 24px' }}>
+          <div style={{ padding: '0 32px 32px 32px' }}>
             {/* Progress indicator */}
           {isAnalyzing && resources.length > 0 && (
             <div style={{ 
@@ -1431,7 +1432,7 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
 
           {/* Resource Grid */}
           {resources.length > 0 && (
-            <Row gutter={[16, 16]}>
+            <Row gutter={[24, 24]}>
               {resources.map(resourceId => 
                 renderResourceCard(resourceId, resourceResults[resourceId])
               )}
