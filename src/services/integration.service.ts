@@ -55,6 +55,12 @@ const useIntegrationService = () => {
     id: number,
     application_id: string,
   ): Promise<Array<SecretResponse>> => {
+    // Validate application_id before making the request
+    if (!application_id || application_id === 'undefined' || application_id === 'null') {
+      console.error("❌ Invalid application_id provided:", application_id);
+      throw new Error("Invalid application ID. Please ensure you have selected a valid application.");
+    }
+
     const url = resolveUrlParams(ApiUrl.GET_SECRETS_APPLICATIONID, {
       infrastructure_id: id.toString(),
       application_id,

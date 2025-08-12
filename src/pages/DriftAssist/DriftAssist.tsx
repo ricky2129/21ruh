@@ -426,7 +426,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       
       handleAwsConnected(response.session_id, {
         region: values.region,
-        provider: values.provider
+        provider: values.provider,
+        access_key: values.access_key,    // ✅ NOW INCLUDED
+        secret_key: values.secret_key     // ✅ NOW INCLUDED
       });
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Failed to connect to AWS');
