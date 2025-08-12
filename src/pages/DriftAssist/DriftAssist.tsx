@@ -908,7 +908,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         return currentAnalysisData ? (
           <S3StreamingAnalysis
             analysisData={currentAnalysisData}
-            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8000'}
+            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8001'}
             fileName={currentAnalysisData.fileName}
           />
         ) : (
@@ -1171,7 +1171,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           <UnifiedResultsDisplay
             data={analysisResults}
             onReset={handleResetAnalysis}
-            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8000'}
+            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8001'}
           />
         ) : (
           <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>

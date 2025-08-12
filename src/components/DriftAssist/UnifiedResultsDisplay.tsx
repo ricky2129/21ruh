@@ -148,7 +148,7 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
   displayMode = 'auto',
   onReset,
   onResourceSelect,
-  apiBaseUrl = 'http://localhost:8000'
+  apiBaseUrl = import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8001'
 }) => {
   const [selectedType, setSelectedType] = useState('all');
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set(['all']));
