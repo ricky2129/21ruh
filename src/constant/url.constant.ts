@@ -77,7 +77,7 @@ export const ApiUrl = {
   GET_SECRETS_PROJECTID:
     "/integration/list_secrets/:infrastructure_id/:project_id",
   GET_SECRETS_APPLICATIONID:
-    "integration/list_secret_keys/:infrastructure_id/:application_id",
+    "/integration/list_secret_keys/:infrastructure_id/:application_id",
   CREATE_AWS_SECRET: "/integration/createAwsSecret",
   CREATE_GITHUB_SECRET: "/integration/createGithubSecret",
   UPDATE_INTEGRATION: "/integration/updateIntegration",
