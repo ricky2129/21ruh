@@ -93,33 +93,41 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
-    console.log('DriftAssist: useEffect triggered', { 
+    console.log('🎯 DriftAssist: useEffect triggered - Processing session data', { 
       finalSessionId, 
       finalCredentials, 
       currentStep,
       sessionIdFromProps: sessionId,
       initialSessionIdFromProps: initialSessionId,
       awsCredentialsFromProps: awsCredentials,
-      initialAwsCredentialsFromProps: initialAwsCredentials
+      initialAwsCredentialsFromProps: initialAwsCredentials,
+      locationState: location.state
     });
     
     if (finalSessionId && finalCredentials) {
-      console.log('DriftAssist: Setting up with existing credentials');
+      console.log('✅ DriftAssist: Setting up with existing credentials', {
+        sessionId: finalSessionId,
+        credentials: finalCredentials,
+        willSkipToStep: 1
+      });
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
     } else if (finalSessionId) {
       // If we have sessionId but no credentials, still set the sessionId
-      console.log('DriftAssist: Setting up with sessionId only');
+      console.log('⚠️ DriftAssist: Setting up with sessionId only (no credentials)', {
+        sessionId: finalSessionId
+      });
       setCurrentSessionId(finalSessionId);
     } else {
-      console.warn('DriftAssist: No sessionId or credentials found', {
+      console.warn('❌ DriftAssist: No sessionId or credentials found - User will need to configure AWS', {
         sessionId,
         initialSessionId,
         awsCredentials,
-        initialAwsCredentials
+        initialAwsCredentials,
+        locationState: location.state
       });
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, location.state]);
 
   // API hooks
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);
@@ -908,7 +916,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         return currentAnalysisData ? (
           <S3StreamingAnalysis
             analysisData={currentAnalysisData}
-            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8001'}
+            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL}
             fileName={currentAnalysisData.fileName}
           />
         ) : (

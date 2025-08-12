@@ -111,6 +111,35 @@ const ApplicationWorkflow: React.FC = () => {
 
   // Check if user is coming from Drift Assist configuration
   const driftAssistState = location.state?.sessionId ? location.state : null;
+  
+  // Log navigation state for debugging
+  useEffect(() => {
+    console.log('🏗️ ApplicationWorkflow: Component mounted/updated');
+    console.log('📍 ApplicationWorkflow: Current location:', {
+      pathname: location.pathname,
+      search: location.search,
+      hash: location.hash,
+      state: location.state
+    });
+    
+    if (location.state) {
+      console.log('📦 ApplicationWorkflow: Navigation state received:', {
+        hasSessionId: !!location.state.sessionId,
+        sessionId: location.state.sessionId,
+        hasAwsCredentials: !!location.state.awsCredentials,
+        awsCredentials: location.state.awsCredentials,
+        allStateKeys: Object.keys(location.state)
+      });
+    } else {
+      console.log('📦 ApplicationWorkflow: No navigation state found');
+    }
+    
+    if (driftAssistState) {
+      console.log('🎯 ApplicationWorkflow: DriftAssist state detected:', driftAssistState);
+    } else {
+      console.log('🎯 ApplicationWorkflow: No DriftAssist state detected');
+    }
+  }, [location, driftAssistState]);
 
   const applicationData = useGetApplicationDetails(params?.application);
   const addServiceToApplicationQuery = useAddServiceToApplication();

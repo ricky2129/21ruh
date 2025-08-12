@@ -65,7 +65,17 @@ const ConfigureDriftAssist: React.FC<ConfigureDriftAssistProps> = ({
 
   const handleConnectToAWS = async () => {
     try {
+      console.log('🔧 ConfigureDriftAssist: Starting AWS connection process...');
+      
       const values = await configureDriftAssistForm.validateFields();
+      
+      console.log('📝 ConfigureDriftAssist: Form values collected:', {
+        provider: values.CLOUD_PROVIDER,
+        region: values.AWS_REGION,
+        accessKeyLength: values.AWS_ACCESS_KEY?.length || 0,
+        secretKeyLength: values.AWS_SECRET_KEY?.length || 0,
+        accessKeyPrefix: values.AWS_ACCESS_KEY?.substring(0, 4) || 'N/A'
+      });
       
       const connectRequest: ConnectAWSRequest = {
         provider: values.CLOUD_PROVIDER,
@@ -76,23 +86,51 @@ const ConfigureDriftAssist: React.FC<ConfigureDriftAssistProps> = ({
         region: values.AWS_REGION,
       };
 
+      console.log('🌐 ConfigureDriftAssist: Sending connect request to backend:', {
+        provider: connectRequest.provider,
+        region: connectRequest.region,
+        credentialsProvided: {
+          accessKey: !!connectRequest.credentials.access_key,
+          secretKey: !!connectRequest.credentials.secret_key,
+          accessKeyLength: connectRequest.credentials.access_key?.length || 0,
+          secretKeyLength: connectRequest.credentials.secret_key?.length || 0
+        }
+      });
+
       const response = await connectToAWSMutation.mutateAsync(connectRequest);
+      
+      console.log('✅ ConfigureDriftAssist: AWS connection successful! Response:', {
+        sessionId: response.session_id,
+        responseKeys: Object.keys(response)
+      });
+      
+      const navigationState = {
+        sessionId: response.session_id,
+        awsCredentials: {
+          region: values.AWS_REGION,
+          provider: values.CLOUD_PROVIDER
+        }
+      };
+      
+      console.log('🧭 ConfigureDriftAssist: Navigating to workflow with state:', {
+        navigationPath: `/project/${project}/application/${application}/workflow`,
+        state: navigationState
+      });
       
       message.success('Successfully connected to AWS!');
       
       // Navigate to workflows section with sessionId
       navigate(`/project/${project}/application/${application}/workflow`, {
-        state: {
-          sessionId: response.session_id,
-          awsCredentials: {
-            region: values.AWS_REGION,
-            provider: values.CLOUD_PROVIDER
-          }
-        }
+        state: navigationState
       });
 
       if (onFinish) onFinish();
     } catch (error) {
+      console.error('❌ ConfigureDriftAssist: AWS connection failed:', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        errorType: error?.constructor?.name || 'Unknown',
+        stack: error instanceof Error ? error.stack : undefined
+      });
       message.error(error instanceof Error ? error.message : 'Failed to connect to AWS');
     }
   };

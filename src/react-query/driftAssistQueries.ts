@@ -65,6 +65,13 @@ interface AnalyzeBucketResponse {
 
 // API Functions
 const connectToAWS = async (data: ConnectAWSRequest): Promise<ConnectAWSResponse> => {
+  console.log('🌐 API: connectToAWS called with:', {
+    provider: data.provider,
+    region: data.region,
+    hasCredentials: !!data.credentials,
+    url: DriftAssistUrl.CONNECT_AWS
+  });
+
   const response = await fetch(DriftAssistUrl.CONNECT_AWS, {
     method: 'POST',
     headers: {
@@ -73,15 +80,25 @@ const connectToAWS = async (data: ConnectAWSRequest): Promise<ConnectAWSResponse
     body: JSON.stringify(data),
   });
 
+  console.log('🌐 API: connectToAWS response status:', response.status);
+
   if (!response.ok) {
     const errorData = await response.json();
+    console.error('❌ API: connectToAWS failed:', errorData);
     throw new Error(errorData.detail || errorData.error || 'Failed to connect to AWS');
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('✅ API: connectToAWS success:', { sessionId: result.session_id });
+  return result;
 };
 
 const getS3Buckets = async (sessionId: string): Promise<GetS3BucketsResponse> => {
+  console.log('🪣 API: getS3Buckets called with:', {
+    sessionId,
+    url: `${DriftAssistUrl.GET_S3_BUCKETS}/${sessionId}`
+  });
+
   const response = await fetch(`${DriftAssistUrl.GET_S3_BUCKETS}/${sessionId}`, {
     method: 'GET',
     headers: {
@@ -89,15 +106,26 @@ const getS3Buckets = async (sessionId: string): Promise<GetS3BucketsResponse> =>
     },
   });
 
+  console.log('🪣 API: getS3Buckets response status:', response.status);
+
   if (!response.ok) {
     const errorData = await response.json();
+    console.error('❌ API: getS3Buckets failed:', errorData);
     throw new Error(errorData.detail?.details || errorData.detail || errorData.error || 'Failed to load S3 buckets');
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('✅ API: getS3Buckets success:', { bucketCount: result.buckets?.length || 0 });
+  return result;
 };
 
 const getStateFiles = async (sessionId: string, bucketName: string): Promise<GetStateFilesResponse> => {
+  console.log('📄 API: getStateFiles called with:', {
+    sessionId,
+    bucketName,
+    url: `${DriftAssistUrl.GET_STATE_FILES}/${sessionId}/${bucketName}/state-files`
+  });
+
   const response = await fetch(`${DriftAssistUrl.GET_STATE_FILES}/${sessionId}/${bucketName}/state-files`, {
     method: 'GET',
     headers: {
@@ -105,18 +133,34 @@ const getStateFiles = async (sessionId: string, bucketName: string): Promise<Get
     },
   });
 
+  console.log('📄 API: getStateFiles response status:', response.status);
+
   if (!response.ok) {
     const errorData = await response.json();
+    console.error('❌ API: getStateFiles failed:', errorData);
     if (response.status === 404) {
       throw new Error(errorData.detail?.details || errorData.detail || `Selected bucket '${bucketName}' has no state files.`);
     }
     throw new Error(errorData.detail?.details || errorData.detail || errorData.error || 'Failed to scan bucket for state files');
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('✅ API: getStateFiles success:', { 
+    stateFileCount: result.state_files?.length || 0,
+    files: result.state_files?.map(f => f.key) || []
+  });
+  return result;
 };
 
 const analyzeBucket = async (data: AnalyzeBucketRequest): Promise<AnalyzeBucketResponse> => {
+  console.log('🔍 API: analyzeBucket called with:', {
+    sessionId: data.session_id,
+    bucketName: data.bucket_name,
+    selectedResources: data.selected_resources,
+    resourceCount: data.selected_resources.length,
+    url: DriftAssistUrl.ANALYZE_BUCKET
+  });
+
   const response = await fetch(DriftAssistUrl.ANALYZE_BUCKET, {
     method: 'POST',
     headers: {
@@ -125,12 +169,23 @@ const analyzeBucket = async (data: AnalyzeBucketRequest): Promise<AnalyzeBucketR
     body: JSON.stringify(data),
   });
 
+  console.log('🔍 API: analyzeBucket response status:', response.status);
+
   if (!response.ok) {
     const errorData = await response.json();
+    console.error('❌ API: analyzeBucket failed:', errorData);
     throw new Error(errorData.details || errorData.error || 'Failed to analyze S3 state files');
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('✅ API: analyzeBucket success:', {
+    status: result.status,
+    totalFiles: result.total_files,
+    successfulAnalyses: result.successful_analyses,
+    failedAnalyses: result.failed_analyses,
+    analysisResultsCount: result.analysis_results?.length || 0
+  });
+  return result;
 };
 
 // React Query Hooks
