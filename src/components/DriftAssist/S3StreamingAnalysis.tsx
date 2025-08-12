@@ -1294,21 +1294,22 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   const resources = analysisResults.resources || [];
 
   return (
-    <div style={{ background: '#f5f5f5', minHeight: 'calc(100vh - 64px)' }}>
-      <div style={{ padding: '24px', maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ background: '#f5f5f5', minHeight: 'calc(100vh - 64px)', padding: '20px' }}>
+      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <Card 
           style={{ 
-            borderRadius: 12,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            border: '1px solid #d9d9d9',
+            borderRadius: 16,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+            border: '1px solid #e8e8e8',
             overflow: 'hidden'
           }}
         >
           <div style={{ 
-            padding: '28px 32px',
+            padding: '32px 40px',
             borderBottom: '1px solid #f0f0f0',
-            background: 'linear-gradient(to right, #fafafa, #f5f5f5)',
-            marginBottom: 24
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            marginBottom: 32
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>

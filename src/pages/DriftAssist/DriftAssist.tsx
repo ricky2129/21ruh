@@ -92,32 +92,13 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
   // Handle sessionId and credentials from navigation state or props
   useEffect(() => {
-    console.log('DriftAssist useEffect triggered:', {
-      sessionId,
-      initialSessionId,
-      awsCredentials,
-      initialAwsCredentials,
-      currentStep
-    });
-    
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
-    if (finalSessionId) {
-      console.log('DriftAssist: Found sessionId, setting up component');
-      console.log('Final SessionId:', finalSessionId);
-      console.log('Final AWS Credentials:', finalCredentials);
-      
+    if (finalSessionId && finalCredentials) {
+      console.log('DriftAssist: Setting up with existing credentials');
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
-      
-      // Ensure we're on the correct step when sessionId is available
-      if (currentStep === 0) {
-        console.log('DriftAssist: Skipping AWS setup step, moving to bucket selection');
-        setCurrentStep(1);
-      }
-    } else {
-      console.log('DriftAssist: No sessionId found, staying on AWS setup step');
     }
   }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials]);
 
