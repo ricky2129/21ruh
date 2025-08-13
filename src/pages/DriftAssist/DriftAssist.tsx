@@ -931,122 +931,103 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                 {/* Selection Controls */}
                 <div style={{ 
                   display: 'flex', 
-                  justifyContent: 'space-between', 
+                  justifyContent: 'flex-start', 
                   alignItems: 'center', 
-                  marginBottom: 32,
-                  padding: '20px 24px',
-                  background: '#fafafa',
-                  borderRadius: 12,
-                  border: '1px solid #f0f0f0'
+                  marginBottom: 24,
+                  padding: '16px 20px',
+                  background: '#f8f9fa',
+                  borderRadius: 8,
+                  border: '1px solid #e9ecef'
                 }}>
-                  <Space size="large">
+                  <Space size="medium">
                     <Button 
                       icon={<CheckCircleOutlined />} 
                       onClick={handleSelectAll}
-                      style={{ borderRadius: 8, height: 40 }}
+                      style={{ borderRadius: 6, height: 36, fontSize: 14 }}
                     >
                       Select All
                     </Button>
                     <Button 
                       onClick={handleClearAll}
-                      style={{ borderRadius: 8, height: 40 }}
+                      style={{ borderRadius: 6, height: 36, fontSize: 14 }}
                     >
                       Clear All
                     </Button>
                   </Space>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <Text type="secondary" style={{ fontSize: 16 }}>Show Details</Text>
-                    <Switch 
-                      checked={showDetails}
-                      onChange={setShowDetails}
-                    />
-                  </div>
                 </div>
 
                 {/* Resource Cards */}
-                <Row gutter={[32, 32]}>
+                <Row gutter={[16, 16]}>
                   {resourceTypes.map(resource => (
-                    <Col xs={24} sm={24} lg={12} key={resource.id}>
+                    <Col xs={24} sm={12} lg={8} key={resource.id}>
                       <Card
                         className={`resource-card ${resource.selected ? 'selected' : ''}`}
                         style={{ 
                           borderColor: resource.selected ? resource.color : '#e8e8e8',
                           borderWidth: resource.selected ? 2 : 1,
                           cursor: 'pointer',
-                          borderRadius: 12,
+                          borderRadius: 8,
                           transition: 'all 0.3s ease',
                           position: 'relative',
                           background: resource.selected ? '#f8fafc' : 'white',
                           height: '100%',
-                          boxShadow: resource.selected ? '0 8px 24px rgba(0,0,0,0.12)' : '0 2px 8px rgba(0,0,0,0.06)',
-                          padding: '8px'
+                          boxShadow: resource.selected ? '0 4px 12px rgba(0,0,0,0.08)' : '0 1px 4px rgba(0,0,0,0.04)'
                         }}
                         onClick={() => handleResourceToggle(resource.id)}
                         hoverable
+                        size="small"
                       >
-                        <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 20, padding: '16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '12px' }}>
                           <div 
                             style={{ 
                               backgroundColor: resource.selected ? resource.color : '#f1f5f9',
                               color: resource.selected ? 'white' : resource.color,
-                              padding: '20px',
-                              borderRadius: '12px',
-                              marginRight: '20px',
+                              padding: '12px',
+                              borderRadius: '8px',
+                              marginRight: '12px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: 24,
-                              minWidth: '64px',
-                              height: '64px',
+                              fontSize: 18,
+                              minWidth: '40px',
+                              height: '40px',
                               transition: 'all 0.3s ease'
                             }}
                           >
                             {resource.icon}
                           </div>
-                          <div style={{ flex: 1, minHeight: '64px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                            <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: '20px', fontWeight: 600, color: '#1f2937' }}>
+                          <div style={{ flex: 1 }}>
+                            <Title level={5} style={{ margin: 0, marginBottom: 4, fontSize: '14px', fontWeight: 600, color: '#1f2937' }}>
                               {resource.name}
                             </Title>
-                            <Text style={{ fontSize: '16px', color: '#6b7280', marginBottom: 8 }}>
+                            <Text style={{ fontSize: '12px', color: '#6b7280', display: 'block', marginBottom: 6 }}>
                               {resource.description}
                             </Text>
-                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                              <Text type="secondary" style={{ fontSize: '14px', background: '#f3f4f6', padding: '4px 8px', borderRadius: '6px' }}>
+                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                              <Text type="secondary" style={{ fontSize: '10px', background: '#f3f4f6', padding: '2px 6px', borderRadius: '4px' }}>
                                 {resource.category}
                               </Text>
-                              <Text type="secondary" style={{ fontSize: '14px', background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', padding: '4px 8px', borderRadius: '6px' }}>
-                                {resource.priority} Priority
+                              <Text type="secondary" style={{ fontSize: '10px', background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', padding: '2px 6px', borderRadius: '4px' }}>
+                                {resource.priority}
                               </Text>
                             </div>
                           </div>
+                          {resource.selected && (
+                            <div style={{ 
+                              background: resource.color,
+                              color: 'white',
+                              borderRadius: '50%',
+                              width: 20,
+                              height: 20,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginLeft: '8px'
+                            }}>
+                              <CheckCircleOutlined style={{ fontSize: 12 }} />
+                            </div>
+                          )}
                         </div>
-                        
-                        {showDetails && (
-                          <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid #e5e7eb', padding: '0 16px 16px 16px' }}>
-                            <Text type="secondary" style={{ fontSize: '15px', lineHeight: 1.6, color: '#4b5563' }}>
-                              {resource.description}
-                            </Text>
-                          </div>
-                        )}
-                        
-                        {resource.selected && (
-                          <div style={{ 
-                            position: 'absolute', 
-                            top: 20, 
-                            right: 20,
-                            background: resource.color,
-                            color: 'white',
-                            borderRadius: '50%',
-                            width: 32,
-                            height: 32,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                          }}>
-                            <CheckCircleOutlined style={{ fontSize: 18 }} />
-                          </div>
-                        )}
                       </Card>
                     </Col>
                   ))}
@@ -1133,10 +1114,11 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         ) : (
           <div style={{ background: '#f5f5f5', minHeight: 'calc(100vh - 64px)', padding: 0 }}>
             <div style={{ 
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: '#f8f9fa',
               padding: '40px 24px',
               position: 'relative',
-              overflow: 'hidden'
+              overflow: 'hidden',
+              borderBottom: '1px solid #e9ecef'
             }}>
               {/* Animated background elements */}
               <div style={{
@@ -1162,28 +1144,27 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                   display: 'flex', 
                   alignItems: 'center', 
                   marginBottom: 32,
-                  color: 'white'
+                  color: '#1f2937'
                 }}>
                   <div style={{
-                    background: 'rgba(255,255,255,0.25)',
-                    borderRadius: '16px',
+                    background: '#e6f7ff',
+                    borderRadius: '12px',
                     padding: '16px',
                     marginRight: '20px',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+                    border: '1px solid #bae7ff',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
                   }}>
-                    <BarChartOutlined style={{ fontSize: 32, color: 'white' }} />
+                    <BarChartOutlined style={{ fontSize: 32, color: '#1890ff' }} />
                   </div>
                   <div>
-                    <Title level={2} style={{ margin: 0, color: 'white', fontWeight: 700, fontSize: '28px' }}>
+                    <Title level={2} style={{ margin: 0, color: '#1f2937', fontWeight: 600, fontSize: '24px' }}>
                       🚀 Live Infrastructure Analysis
                     </Title>
-                    <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: '16px', fontWeight: 500 }}>
+                    <Text style={{ color: '#6b7280', fontSize: '16px', fontWeight: 500 }}>
                       Real-time drift detection • AI-powered analysis • Cloud-native scanning
                     </Text>
                     <div style={{ marginTop: 8 }}>
-                      <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
+                      <Text style={{ color: '#6b7280', fontSize: '14px' }}>
                         Processing {stateFiles.length} state files across {selectedCount} resource types in {currentAwsCredentials?.region || 'AWS'}
                       </Text>
                     </div>
