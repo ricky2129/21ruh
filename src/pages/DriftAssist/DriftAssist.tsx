@@ -118,33 +118,55 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       secretKeyLength: finalCredentials?.secret_key?.length
     });
     
-    if (finalSessionId && finalCredentials) {
-      console.log('✅ Valid session and credentials found');
-      console.log('📍 Setting up session:', {
-        sessionId: finalSessionId,
-        region: finalCredentials.region,
-        provider: finalCredentials.provider,
-        hasAccessKey: !!finalCredentials.access_key,
-        hasSecretKey: !!finalCredentials.secret_key
-      });
-      
+    // First check props/navigation state
+    if (finalSessionId && finalCredentials?.access_key && finalCredentials?.secret_key) {
+      console.log('✅ Valid session and credentials found from props');
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
-      
-      // If we have complete credentials, start at bucket selection
-      if (finalCredentials.access_key && finalCredentials.secret_key) {
-        console.log('✅ Complete credentials found - Moving to S3 bucket selection (step 0)');
-        setCurrentStep(0);
-      } else {
-        console.log('⚠️ Incomplete credentials - Missing access_key or secret_key');
+      setCurrentStep(0); // Go directly to bucket selection
+    } 
+    // Then check session storage
+    else {
+      console.log('📦 Checking session storage for credentials...');
+      try {
+        const storedSession = sessionStorage.getItem('driftAssistSession');
+        if (storedSession) {
+          const session = JSON.parse(storedSession);
+          console.log('📦 Found session in storage:', {
+            hasSessionId: !!session.sessionId,
+            hasCredentials: !!session.awsCredentials,
+            hasAccessKey: !!(session.awsCredentials?.access_key),
+            hasSecretKey: !!(session.awsCredentials?.secret_key),
+            timestamp: session.timestamp,
+            age: Date.now() - session.timestamp
+          });
+          
+          if (session.sessionId && 
+              session.awsCredentials?.access_key && 
+              session.awsCredentials?.secret_key) {
+            
+            // Check if session is still fresh (less than 1 hour old)
+            if (Date.now() - session.timestamp < 3600000) {
+              console.log('✅ Using valid credentials from session storage');
+              setCurrentSessionId(session.sessionId);
+              setCurrentAwsCredentials(session.awsCredentials);
+              setCurrentStep(0); // Go directly to bucket selection
+            } else {
+              console.log('⚠️ Stored session expired');
+              setCurrentStep(0); // Force to bucket selection for testing
+            }
+          } else {
+            console.log('⚠️ Incomplete session data in storage');
+            setCurrentStep(0); // Force to bucket selection for testing
+          }
+        } else {
+          console.log('⚠️ No session found in storage');
+          setCurrentStep(0); // Force to bucket selection for testing
+        }
+      } catch (error) {
+        console.error('❌ Error reading from session storage:', error);
+        setCurrentStep(0); // Force to bucket selection for testing
       }
-    } else if (finalSessionId) {
-      console.log('⚠️ SessionId found but no credentials');
-      setCurrentSessionId(finalSessionId);
-    } else {
-      console.log('❌ No valid session or credentials found');
-      console.log('📍 User will need to configure AWS connection');
-      setCurrentStep(-1); // Show AWS credentials form
     }
     
     console.groupEnd();
@@ -419,6 +441,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const handleDisconnect = () => {
     // Show confirmation dialog
     if (window.confirm('Are you sure you want to disconnect? This will reset your current session and any unsaved analysis progress will be lost.')) {
+      // Clear state
       setCurrentSessionId(undefined);
       setCurrentAwsCredentials(undefined);
       setCurrentStep(0);
@@ -426,6 +449,15 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       setCurrentAnalysisData(null);
       setSelectedBucket(undefined);
       setStateFiles([]);
+      
+      // Clear session storage
+      try {
+        sessionStorage.removeItem('driftAssistSession');
+        console.log('✅ Session data cleared from storage');
+      } catch (error) {
+        console.error('❌ Error clearing session storage:', error);
+      }
+      
       message.info('Disconnected from AWS');
     }
   };

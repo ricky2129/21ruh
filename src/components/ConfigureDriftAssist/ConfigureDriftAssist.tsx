@@ -104,6 +104,25 @@ const ConfigureDriftAssist: React.FC<ConfigureDriftAssistProps> = ({
         responseKeys: Object.keys(response)
       });
       
+      // Store credentials in session storage for persistence
+      const sessionData = {
+        sessionId: response.session_id,
+        awsCredentials: {
+          region: values.AWS_REGION,
+          provider: values.CLOUD_PROVIDER,
+          access_key: values.AWS_ACCESS_KEY,
+          secret_key: values.AWS_SECRET_KEY
+        },
+        timestamp: Date.now()
+      };
+      
+      try {
+        sessionStorage.setItem('driftAssistSession', JSON.stringify(sessionData));
+        console.log('✅ ConfigureDriftAssist: Saved session data to storage');
+      } catch (error) {
+        console.error('❌ ConfigureDriftAssist: Failed to save session to storage:', error);
+      }
+      
       const navigationState = {
         sessionId: response.session_id,
         awsCredentials: {
