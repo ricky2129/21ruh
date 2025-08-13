@@ -90,56 +90,21 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
   // Handle sessionId and credentials from navigation state or props
   useEffect(() => {
-    console.group('🎯 DRIFT ASSIST DEBUG: Session Initialization');
-    
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
-    console.log('📍 Props Analysis:', {
-      sessionIdFromProps: sessionId,
-      initialSessionIdFromProps: initialSessionId,
-      awsCredentialsFromProps: awsCredentials,
-      initialAwsCredentialsFromProps: initialAwsCredentials,
-      finalSessionId,
-      finalCredentials,
-      currentStep,
-      currentSessionId,
-      currentAwsCredentials
-    });
-    
-    console.log('📍 Location State:', location.state);
-    
-    console.log('📍 Credentials Analysis:', {
-      hasCredentials: !!finalCredentials,
-      hasAccessKey: !!(finalCredentials?.access_key),
-      hasSecretKey: !!(finalCredentials?.secret_key),
-      credentialKeys: finalCredentials ? Object.keys(finalCredentials) : [],
-      accessKeyPrefix: finalCredentials?.access_key?.substring(0, 4),
-      secretKeyLength: finalCredentials?.secret_key?.length
-    });
-    
     // First check props/navigation state
     if (finalSessionId && finalCredentials?.access_key && finalCredentials?.secret_key) {
-      console.log('✅ Valid session and credentials found from props');
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
       setCurrentStep(0); // Go directly to bucket selection
     } 
     // Then check session storage
     else {
-      console.log('📦 Checking session storage for credentials...');
       try {
         const storedSession = sessionStorage.getItem('driftAssistSession');
         if (storedSession) {
           const session = JSON.parse(storedSession);
-          console.log('📦 Found session in storage:', {
-            hasSessionId: !!session.sessionId,
-            hasCredentials: !!session.awsCredentials,
-            hasAccessKey: !!(session.awsCredentials?.access_key),
-            hasSecretKey: !!(session.awsCredentials?.secret_key),
-            timestamp: session.timestamp,
-            age: Date.now() - session.timestamp
-          });
           
           if (session.sessionId && 
               session.awsCredentials?.access_key && 
@@ -147,29 +112,23 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
             
             // Check if session is still fresh (less than 1 hour old)
             if (Date.now() - session.timestamp < 3600000) {
-              console.log('✅ Using valid credentials from session storage');
               setCurrentSessionId(session.sessionId);
               setCurrentAwsCredentials(session.awsCredentials);
               setCurrentStep(0); // Go directly to bucket selection
             } else {
-              console.log('⚠️ Stored session expired');
               setCurrentStep(0); // Force to bucket selection for testing
             }
           } else {
-            console.log('⚠️ Incomplete session data in storage');
             setCurrentStep(0); // Force to bucket selection for testing
           }
         } else {
-          console.log('⚠️ No session found in storage');
           setCurrentStep(0); // Force to bucket selection for testing
         }
       } catch (error) {
-        console.error('❌ Error reading from session storage:', error);
+        console.error('Error reading from session storage:', error);
         setCurrentStep(0); // Force to bucket selection for testing
       }
     }
-    
-    console.groupEnd();
   }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, location.state]);
 
   // Add backend health check
@@ -177,22 +136,13 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     const checkBackendHealth = async () => {
       try {
         const healthUrl = `${import.meta.env.VITE_DRIFT_ASSIST_URL}/api/health`;
-        console.log('🏥 DRIFT ASSIST DEBUG: Checking backend health at:', healthUrl);
-        
         const response = await fetch(healthUrl);
-        console.log('🏥 Backend health response status:', response.status);
         
-        if (response.ok) {
-          const health = await response.json();
-          console.log('🏥 Backend health data:', health);
-          console.log('✅ Drift Analysis Platform backend is running and healthy');
-        } else {
-          console.error('🏥 Backend health check failed with status:', response.status);
+        if (!response.ok) {
+          console.error('Backend health check failed with status:', response.status);
         }
       } catch (error) {
-        console.error('🏥 Backend health check failed:', error);
-        console.error('❌ Make sure Drift Analysis Platform backend is running on port 8004');
-        console.error('❌ Expected URL:', `${import.meta.env.VITE_DRIFT_ASSIST_URL}/api/health`);
+        console.error('Backend health check failed:', error);
       }
     };
     
@@ -359,7 +309,6 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         selected_resources: selectedResources
       });
 
-      console.log('Bucket analysis result:', bucketAnalysisResult);
 
       // Set the analysis results for the results tab
       setAnalysisResults(bucketAnalysisResult);
@@ -453,9 +402,8 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       // Clear session storage
       try {
         sessionStorage.removeItem('driftAssistSession');
-        console.log('✅ Session data cleared from storage');
       } catch (error) {
-        console.error('❌ Error clearing session storage:', error);
+        console.error('Error clearing session storage:', error);
       }
       
       message.info('Disconnected from AWS');
@@ -480,25 +428,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   };
 
   const handleConnectToAWS = async (values: any) => {
-    console.group('🔐 DRIFT ASSIST DEBUG: handleConnectToAWS called');
-    console.log('📍 Form values received:', {
-      hasProvider: !!values.provider,
-      hasAccessKey: !!values.access_key,
-      hasSecretKey: !!values.secret_key,
-      hasRegion: !!values.region,
-      provider: values.provider,
-      region: values.region,
-      accessKeyLength: values.access_key?.length,
-      secretKeyLength: values.secret_key?.length,
-      accessKeyPrefix: values.access_key?.substring(0, 4),
-      formKeys: Object.keys(values)
-    });
-    
     // Validate inputs before sending
     if (!values.access_key || !values.secret_key) {
-      console.error('❌ Missing credentials in form values');
       message.error('Please enter both access key and secret key');
-      console.groupEnd();
       return;
     }
     
@@ -512,20 +444,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         region: values.region || "us-east-1",
       };
 
-      console.log('📤 Prepared request for backend:', {
-        provider: connectRequest.provider,
-        region: connectRequest.region,
-        hasAccessKey: !!connectRequest.credentials.access_key,
-        hasSecretKey: !!connectRequest.credentials.secret_key,
-        accessKeyLength: connectRequest.credentials.access_key.length,
-        secretKeyLength: connectRequest.credentials.secret_key.length,
-        accessKeyFormat: connectRequest.credentials.access_key.match(/^AKIA[0-9A-Z]{16}$/) ? 'valid' : 'invalid'
-      });
-
-      console.log('📤 Calling connectToAWSMutation.mutateAsync...');
       const response = await connectToAWSMutation.mutateAsync(connectRequest);
-      
-      console.log('✅ AWS connection successful:', response);
       
       handleAwsConnected(response.session_id, {
         region: connectRequest.region,
@@ -534,7 +453,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         secret_key: connectRequest.credentials.secret_key
       });
     } catch (error) {
-      console.error('❌ AWS connection failed:', error);
+      console.error('AWS connection failed:', error);
       
       // Better error messages based on error type
       let errorMessage = 'Failed to connect to AWS';
@@ -549,8 +468,6 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       }
       
       message.error(errorMessage);
-    } finally {
-      console.groupEnd();
     }
   };
 
@@ -957,9 +874,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                 </div>
 
                 {/* Resource Cards */}
-                <Row gutter={[16, 16]}>
+                <Row gutter={[24, 24]}>
                   {resourceTypes.map(resource => (
-                    <Col xs={24} sm={12} lg={8} key={resource.id}>
+                    <Col xs={24} sm={12} key={resource.id}>
                       <Card
                         className={`resource-card ${resource.selected ? 'selected' : ''}`}
                         style={{ 
@@ -977,54 +894,56 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                         hoverable
                         size="small"
                       >
-                        <div style={{ display: 'flex', alignItems: 'center', padding: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
                           <div 
                             style={{ 
-                              backgroundColor: resource.selected ? resource.color : '#f1f5f9',
+                              backgroundColor: resource.selected ? resource.color : '#f8fafc',
                               color: resource.selected ? 'white' : resource.color,
-                              padding: '12px',
-                              borderRadius: '8px',
-                              marginRight: '12px',
+                              padding: '16px',
+                              borderRadius: '12px',
+                              marginRight: '16px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              fontSize: 18,
-                              minWidth: '40px',
-                              height: '40px',
-                              transition: 'all 0.3s ease'
+                              fontSize: 20,
+                              minWidth: '48px',
+                              height: '48px',
+                              transition: 'all 0.3s ease',
+                              boxShadow: resource.selected ? `0 4px 12px ${resource.color}40` : '0 2px 4px rgba(0,0,0,0.05)'
                             }}
                           >
                             {resource.icon}
                           </div>
                           <div style={{ flex: 1 }}>
-                            <Title level={5} style={{ margin: 0, marginBottom: 4, fontSize: '14px', fontWeight: 600, color: '#1f2937' }}>
+                            <Title level={5} style={{ margin: 0, marginBottom: 6, fontSize: '16px', fontWeight: 600, color: '#1f2937' }}>
                               {resource.name}
                             </Title>
-                            <Text style={{ fontSize: '12px', color: '#6b7280', display: 'block', marginBottom: 6 }}>
+                            <Text style={{ fontSize: '14px', color: '#6b7280', display: 'block', marginBottom: 8, lineHeight: 1.4 }}>
                               {resource.description}
                             </Text>
-                            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                              <Text type="secondary" style={{ fontSize: '10px', background: '#f3f4f6', padding: '2px 6px', borderRadius: '4px' }}>
+                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                              <Text type="secondary" style={{ fontSize: '11px', background: '#f3f4f6', padding: '3px 8px', borderRadius: '6px', fontWeight: 500 }}>
                                 {resource.category}
                               </Text>
-                              <Text type="secondary" style={{ fontSize: '10px', background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', padding: '2px 6px', borderRadius: '4px' }}>
+                              <Text type="secondary" style={{ fontSize: '11px', background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', padding: '3px 8px', borderRadius: '6px', fontWeight: 500 }}>
                                 {resource.priority}
                               </Text>
                             </div>
                           </div>
                           {resource.selected && (
                             <div style={{ 
-                              background: resource.color,
+                              background: `linear-gradient(135deg, ${resource.color}, ${resource.color}dd)`,
                               color: 'white',
                               borderRadius: '50%',
-                              width: 20,
-                              height: 20,
+                              width: 24,
+                              height: 24,
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              marginLeft: '8px'
+                              marginLeft: '12px',
+                              boxShadow: `0 2px 8px ${resource.color}40`
                             }}>
-                              <CheckCircleOutlined style={{ fontSize: 12 }} />
+                              <CheckCircleOutlined style={{ fontSize: 14 }} />
                             </div>
                           )}
                         </div>

@@ -163,13 +163,11 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
    */
   const startAnalysis = useCallback(async () => {
     if (!analysisData || isAnalyzing || hasStarted || analysisStartedRef.current) {
-      console.log(`[${componentIdRef.current}] Skipping analysis start`);
       return;
     }
 
     analysisStartedRef.current = true;
     
-    console.log(`[${componentIdRef.current}] Starting S3 streaming analysis for:`, fileName);
     setHasStarted(true);
     setIsAnalyzing(true);
     setError(null);
@@ -206,21 +204,17 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
         }
         
         if (response.status === 423) {
-          console.warn('Analysis already in progress for this file:', fileName);
           setError('Analysis already in progress for this file. Please wait for it to complete.');
           return;
         } else if (response.status === 401) {
-          console.error('Authentication failed - session may have expired');
           setError('Authentication failed. Your session may have expired. Please reconnect to your cloud environment.');
           return;
         } else if (response.status === 403) {
-          console.error('Access forbidden - insufficient permissions');
           setError('Access forbidden. Please check your permissions and try again.');
           return;
         }
         
         const errorMessage = errorData.details || errorData.error || `Analysis failed with status ${response.status}`;
-        console.error('S3 streaming analysis error:', errorMessage);
         throw new Error(errorMessage);
       }
 
@@ -255,10 +249,9 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
       }
 
       setAnalysisComplete(true);
-      console.log('S3 streaming analysis completed for:', fileName);
 
     } catch (error) {
-      console.error(`[${componentIdRef.current}] S3 streaming analysis error:`, error);
+      console.error('S3 streaming analysis error:', error);
       setError(error instanceof Error ? error.message : 'Unknown error occurred');
       setHasStarted(false);
       analysisStartedRef.current = false;
@@ -271,8 +264,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
    * Handle streaming updates from the analysis
    */
   const handleStreamingUpdate = useCallback((data: any) => {
-    console.log('S3 Streaming update:', data);
-
     switch (data.type) {
       case 'session_initialized':
         setAnalysisResults(prev => ({
@@ -302,8 +293,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
         break;
 
       case 'resource_group_update':
-        console.log('Processing resource_group_update:', data);
-        
         if (data.data && data.data.resources) {
           setAnalysisResults(prev => ({
             ...prev,
@@ -314,8 +303,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
             const updated = { ...prev };
             
             Object.entries(data.data.resources).forEach(([resourceType, resourceData]: [string, any]) => {
-              console.log(`Processing resource ${resourceType}:`, resourceData);
-              
               const hasDetectionResults = resourceData.drift_result && 
                                         (resourceData.drift_result.drifts || resourceData.drift_result.has_drift !== undefined);
               const hasReport = resourceData.report && resourceData.report !== null;
@@ -369,7 +356,7 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
         break;
 
       default:
-        console.log('Unknown streaming update type:', data.type);
+        // Unknown streaming update type
     }
   }, []);
 
@@ -378,7 +365,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
    */
   useEffect(() => {
     if (analysisData && !hasStarted && !isAnalyzing) {
-      console.log('useEffect triggering startAnalysis for:', fileName);
       startAnalysis();
     }
   }, [analysisData, hasStarted, isAnalyzing, fileName, startAnalysis]);
@@ -522,7 +508,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
       }, 3000);
 
       showMessage('success', 'PDF report downloaded successfully!');
-      console.log('🎉 PDF report downloaded successfully with local generation');
 
     } catch (error) {
       console.error('PDF download failed:', error);
@@ -1034,8 +1019,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
    * Handle retry button click
    */
   const handleRetry = useCallback(() => {
-    console.log(`[${componentIdRef.current}] Retrying analysis for:`, fileName);
-    
     analysisStartedRef.current = false;
     setHasStarted(false);
     setError(null);
