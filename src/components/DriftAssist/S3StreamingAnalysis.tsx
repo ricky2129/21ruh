@@ -1277,36 +1277,69 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   const resources = analysisResults.resources || [];
 
   return (
-    <div style={{ background: '#f5f5f5', minHeight: 'calc(100vh - 64px)', padding: '20px' }}>
+    <div style={{ 
+      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%)', 
+      minHeight: 'calc(100vh - 64px)', 
+      padding: '32px 24px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    }}>
       <div style={{ maxWidth: 1400, margin: '0 auto' }}>
         <Card 
           style={{ 
-            borderRadius: 16,
-            boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-            border: '1px solid #e8e8e8',
-            overflow: 'hidden'
+            borderRadius: 20,
+            boxShadow: '0 12px 40px rgba(0,0,0,0.08)',
+            border: '1px solid rgba(24, 144, 255, 0.1)',
+            overflow: 'hidden',
+            background: 'white'
           }}
         >
           <div style={{ 
-            padding: '32px 40px',
-            borderBottom: '1px solid #f0f0f0',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            padding: '40px 48px',
+            borderBottom: '1px solid #e5e7eb',
+            background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
             color: 'white',
-            marginBottom: 32
+            marginBottom: 40,
+            position: 'relative',
+            overflow: 'hidden'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                <CloudOutlined style={{ fontSize: 24, color: '#1890ff' }} />
+            {/* Animated background pattern */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)',
+              pointerEvents: 'none'
+            }} />
+            
+            <div style={{ 
+              position: 'relative',
+              zIndex: 1,
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between' 
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                <div style={{
+                  background: 'rgba(255,255,255,0.2)',
+                  borderRadius: '16px',
+                  padding: '16px',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.3)'
+                }}>
+                  <CloudOutlined style={{ fontSize: 28, color: 'white' }} />
+                </div>
                 <div>
-                  <Title level={3} style={{ margin: 0, color: '#262626' }}>
-                    Live Analysis Results
+                  <Title level={2} style={{ margin: 0, color: 'white', fontWeight: 700, fontSize: '28px' }}>
+                    🚀 Live Analysis Results
                   </Title>
-                  <Text style={{ color: '#8c8c8c', fontSize: '14px' }}>
+                  <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: '16px', fontWeight: 500 }}>
                     {fileName}
                   </Text>
-                  <div style={{ marginTop: 4 }}>
-                    <Text style={{ color: '#bfbfbf', fontSize: '12px' }}>
-                      Real-time drift analysis for state file from S3 bucket
+                  <div style={{ marginTop: 6 }}>
+                    <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>
+                      Real-time drift analysis • S3 state file processing • AI-powered insights
                     </Text>
                   </div>
                 </div>
@@ -1314,14 +1347,15 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
               
               {analysisComplete && (
                 <div style={{
-                  background: '#f6ffed',
-                  borderRadius: '6px',
-                  padding: '4px 12px',
-                  border: '1px solid #b7eb8f'
+                  background: 'rgba(82, 196, 26, 0.2)',
+                  borderRadius: '12px',
+                  padding: '12px 20px',
+                  border: '1px solid rgba(82, 196, 26, 0.3)',
+                  backdropFilter: 'blur(10px)'
                 }}>
                   <Badge 
                     status="success" 
-                    text={<span style={{ color: '#52c41a', fontSize: '12px', fontWeight: 500 }}>Analysis Complete</span>}
+                    text={<span style={{ color: 'white', fontSize: '14px', fontWeight: 600 }}>✅ Analysis Complete</span>}
                   />
                 </div>
               )}

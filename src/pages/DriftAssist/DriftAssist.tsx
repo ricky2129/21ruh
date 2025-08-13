@@ -1478,7 +1478,11 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   };
 
   return (
-    <div className="drift-assist-container" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
+    <div className="drift-assist-container" style={{ 
+      minHeight: '100vh', 
+      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    }}>
       {/* Connection Status */}
       {currentSessionId && (
         <Alert
@@ -1493,28 +1497,43 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
               onClick={onClose || handleDisconnect}
               title="Disconnect from AWS"
               aria-label="Disconnect from AWS"
+              style={{
+                borderRadius: 6,
+                fontWeight: 500
+              }}
             >
               Disconnect
             </Button>
           }
-          style={{ margin: '24px 24px 0 24px', borderRadius: 8 }}
+          style={{ 
+            margin: '24px 24px 0 24px', 
+            borderRadius: 12,
+            border: '1px solid #52c41a',
+            background: 'linear-gradient(135deg, #f6ffed 0%, #f0f9e8 100%)',
+            boxShadow: '0 2px 8px rgba(82, 196, 26, 0.15)'
+          }}
         />
       )}
 
       {/* Progress Steps */}
-      <div style={{ padding: '32px 24px 0 24px', background: 'white', borderBottom: '1px solid #f0f0f0' }}>
+      <div style={{ 
+        padding: '32px 24px 24px 24px', 
+        background: 'white', 
+        borderBottom: '1px solid #e5e7eb',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+      }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <Steps
             current={currentStep}
             items={steps}
             size="default"
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 0 }}
           />
         </div>
       </div>
 
       {/* Step Content */}
-      <div style={{ padding: '24px' }}>
+      <div style={{ padding: '32px 24px' }}>
         {renderStepContent()}
       </div>
     </div>

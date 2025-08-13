@@ -720,26 +720,36 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
 
   return (
     <div style={{ 
-      padding: '24px 32px', 
+      padding: '32px 40px', 
       maxWidth: '100%', 
       margin: '0 auto',
-      background: '#fafbfc'
+      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%)',
+      minHeight: '100vh',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
       {renderSummary()}
 
       <Card style={{ 
-        borderRadius: 8, 
-        boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
-        border: '1px solid #f0f0f0',
+        borderRadius: 16, 
+        boxShadow: '0 8px 32px rgba(0,0,0,0.08)',
+        border: '1px solid rgba(24, 144, 255, 0.1)',
         background: 'white',
-        width: '100%'
+        width: '100%',
+        overflow: 'hidden'
       }}>
-        <div style={{ marginBottom: 24, padding: '16px 0' }}>
-          <Title level={3} style={{ margin: 0, marginBottom: 8, color: '#1f2937', fontWeight: 600 }}>
-            Analysis Details
+        <div style={{ 
+          marginBottom: 32, 
+          padding: '24px 32px',
+          background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+          color: 'white',
+          borderRadius: '16px 16px 0 0',
+          margin: '-24px -24px 32px -24px'
+        }}>
+          <Title level={3} style={{ margin: 0, marginBottom: 8, color: 'white', fontWeight: 700 }}>
+            📊 Analysis Details
           </Title>
-          <Text type="secondary" style={{ fontSize: 16 }}>
-            {filteredItems.length} of {processedData.items.length} items shown
+          <Text style={{ fontSize: 16, color: 'rgba(255,255,255,0.9)' }}>
+            {filteredItems.length} of {processedData.items.length} items shown • Comprehensive drift analysis
           </Text>
         </div>
 
