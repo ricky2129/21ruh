@@ -681,23 +681,24 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
             <Card 
               style={{ 
-                borderRadius: 16,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                border: '1px solid #e8e8e8',
-                marginBottom: 32
+                borderRadius: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                border: '1px solid #f0f0f0',
+                marginBottom: 32,
+                background: 'white'
               }}
             >
               <div style={{ 
                 padding: '24px 32px',
                 borderBottom: '1px solid #f0f0f0',
-                background: '#fafafa',
-                borderRadius: '16px 16px 0 0',
+                background: '#f8f9fa',
+                borderRadius: '12px 12px 0 0',
                 marginBottom: 24
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <DatabaseOutlined style={{ fontSize: 24, color: '#52c41a' }} />
+                  <DatabaseOutlined style={{ fontSize: 24, color: '#1890ff' }} />
                   <div>
-                    <Title level={3} style={{ margin: 0, color: '#262626' }}>
+                    <Title level={3} style={{ margin: 0, color: '#1f2937', fontWeight: 600 }}>
                       Select S3 Bucket
                     </Title>
                     <Text type="secondary" style={{ fontSize: 14 }}>
@@ -852,27 +853,27 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
             <Card 
               style={{ 
-                borderRadius: 16,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                border: '1px solid #e8e8e8',
-                marginBottom: 32
+                borderRadius: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                border: '1px solid #f0f0f0',
+                marginBottom: 32,
+                background: 'white'
               }}
             >
               <div style={{ 
                 padding: '32px 32px 20px 32px',
                 borderBottom: '1px solid #f0f0f0',
-                background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-                color: 'white',
-                borderRadius: '16px 16px 0 0',
+                background: '#f8f9fa',
+                borderRadius: '12px 12px 0 0',
                 marginBottom: 32
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                  <SecurityScanOutlined style={{ fontSize: 32 }} />
+                  <SecurityScanOutlined style={{ fontSize: 32, color: '#1890ff' }} />
                   <div>
-                    <Title level={2} style={{ margin: 0, color: 'white' }}>
+                    <Title level={2} style={{ margin: 0, color: '#1f2937', fontWeight: 600 }}>
                       Select AWS Resources
                     </Title>
-                    <Paragraph style={{ margin: 0, color: 'rgba(255,255,255,0.9)', fontSize: 16 }}>
+                    <Paragraph style={{ margin: 0, color: '#6b7280', fontSize: 16 }}>
                       Choose which AWS resources you want to analyze for drift
                     </Paragraph>
                   </div>
@@ -882,15 +883,15 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
               <div style={{ padding: '0 32px 32px 32px' }}>
                 {/* Selection Summary */}
                 <div style={{ 
-                  background: 'linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%)', 
+                  background: '#f8f9fa', 
                   padding: '24px', 
-                  borderRadius: '16px', 
+                  borderRadius: '12px', 
                   marginBottom: 32,
-                  border: '1px solid #91d5ff'
+                  border: '1px solid #e9ecef'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
                     <InfoCircleOutlined style={{ color: '#1890ff', fontSize: 20, marginRight: 12 }} />
-                    <Text strong style={{ fontSize: 18, color: '#262626' }}>
+                    <Text strong style={{ fontSize: 18, color: '#1f2937' }}>
                       {selectedCount} of {totalCount} Resources Selected
                     </Text>
                   </div>
@@ -1202,10 +1203,11 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                   overflow: 'hidden'
                 }}>
                   <div style={{ 
-                    background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    background: '#f8f9fa',
                     padding: '32px',
-                    color: 'white',
-                    position: 'relative'
+                    color: '#1f2937',
+                    position: 'relative',
+                    borderBottom: '1px solid #e9ecef'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 24 }}>
                       <div style={{

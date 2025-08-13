@@ -719,12 +719,24 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
   }
 
   return (
-    <div style={{ padding: '24px', maxWidth: '100%' }}>
+    <div style={{ 
+      padding: '24px 32px', 
+      maxWidth: '1400px', 
+      margin: '0 auto',
+      background: '#fafbfc'
+    }}>
       {renderSummary()}
 
-      <Card style={{ borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}>
-        <div style={{ marginBottom: 24, padding: '8px 0' }}>
-          <Title level={3} style={{ margin: 0, marginBottom: 8, color: '#1f2937' }}>Analysis Details</Title>
+      <Card style={{ 
+        borderRadius: 12, 
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        border: '1px solid #f0f0f0',
+        background: 'white'
+      }}>
+        <div style={{ marginBottom: 24, padding: '16px 0' }}>
+          <Title level={3} style={{ margin: 0, marginBottom: 8, color: '#1f2937', fontWeight: 600 }}>
+            Analysis Details
+          </Title>
           <Text type="secondary" style={{ fontSize: 16 }}>
             {filteredItems.length} of {processedData.items.length} items shown
           </Text>
