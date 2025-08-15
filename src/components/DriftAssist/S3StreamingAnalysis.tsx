@@ -26,8 +26,7 @@ import {
   DownloadOutlined,
   FileTextOutlined,
   WarningOutlined,
-  LoadingOutlined,
-  ExpandAltOutlined
+  LoadingOutlined
 } from "@ant-design/icons";
 import { pdfGeneratorService } from 'services/pdfGenerator.service';
 
@@ -1080,222 +1079,126 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   // Render loading state
   if (isAnalyzing && Object.keys(resourceResults).length === 0) {
     return (
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
         <Card 
           style={{ 
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            border: 'none',
-            borderRadius: '16px',
-            boxShadow: '0 20px 40px rgba(102, 126, 234, 0.3)',
-            overflow: 'hidden',
-            position: 'relative'
+            background: 'white',
+            border: '1px solid #f0f0f0',
+            borderRadius: '12px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
           }}
         >
-          {/* Animated background elements */}
-          <div style={{
-            position: 'absolute',
-            top: '-50%',
-            right: '-50%',
-            width: '200%',
-            height: '200%',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
-            backgroundSize: '20px 20px',
-            animation: 'float 20s infinite linear',
-            pointerEvents: 'none'
-          }} />
-          
-          <div style={{ 
-            position: 'relative',
-            zIndex: 1,
-            padding: '32px'
-          }}>
+          <div style={{ padding: '32px', textAlign: 'center' }}>
             {/* Header Section */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              marginBottom: 32,
-              color: 'white'
-            }}>
+            <div style={{ marginBottom: 32 }}>
               <div style={{
-                background: 'rgba(255,255,255,0.25)',
-                borderRadius: '16px',
+                background: '#1890ff',
+                borderRadius: '12px',
                 padding: '16px',
-                marginRight: '20px',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
+                width: 'fit-content',
+                margin: '0 auto 16px auto'
               }}>
-                <CloudOutlined style={{ fontSize: 28, color: 'white' }} />
+                <CloudOutlined style={{ fontSize: 32, color: 'white' }} />
               </div>
-              <div>
-                <Title level={3} style={{ margin: 0, color: 'white', fontWeight: 700, fontSize: '24px' }}>
-                  🚀 Live Infrastructure Analysis
-                </Title>
-                <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: '16px', fontWeight: 500 }}>
-                  {fileName}
+              <Title level={3} style={{ margin: 0, color: '#262626', fontWeight: 600, marginBottom: 8 }}>
+                Live Infrastructure Analysis
+              </Title>
+              <Text style={{ color: '#8c8c8c', fontSize: '16px' }}>
+                {fileName}
+              </Text>
+              <div style={{ marginTop: 8 }}>
+                <Text style={{ color: '#bfbfbf', fontSize: '14px' }}>
+                  Analyzing Terraform state and comparing with AWS infrastructure
                 </Text>
-                <div style={{ marginTop: 4 }}>
-                  <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
-                    Real-time drift detection • AI-powered analysis • Cloud-native scanning
-                  </Text>
-                </div>
               </div>
             </div>
             
-            {/* Main Analysis Card */}
-            <div style={{ 
-              background: 'rgba(255,255,255,0.15)',
-              borderRadius: '12px',
-              padding: '24px',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255,255,255,0.2)',
-              marginBottom: 20
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 20 }}>
-                <div style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  padding: '12px',
-                  backdropFilter: 'blur(10px)'
-                }}>
-                  <Spin 
-                    indicator={<LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />} 
-                  />
-                </div>
-                <div>
-                  <Text style={{ color: 'white', fontWeight: 600, fontSize: '18px', display: 'block' }}>
-                    Initializing Analysis Engine
-                  </Text>
-                  <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>
-                    Connecting to AWS infrastructure • Parsing Terraform state • Setting up drift detection
-                  </Text>
-                </div>
-              </div>
-              
+            {/* Simple Progress */}
+            <div style={{ marginBottom: 32 }}>
               <Progress 
                 percent={25}
-                strokeColor={{
-                  '0%': '#52c41a',
-                  '50%': '#1890ff',
-                  '100%': '#722ed1',
-                }}
-                trailColor="rgba(255,255,255,0.2)"
-                showInfo={true}
-                strokeWidth={12}
+                strokeColor="#1890ff"
+                trailColor="#f0f0f0"
+                showInfo={false}
+                strokeWidth={8}
                 style={{ marginBottom: 16 }}
-                format={(percent) => (
-                  <span style={{ color: 'white', fontSize: '14px', fontWeight: 600 }}>
-                    {percent}%
-                  </span>
-                )}
               />
-              
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-                gap: 16,
-                marginTop: 20
-              }}>
-                <div style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.1)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <SecurityScanOutlined style={{ color: '#52c41a', fontSize: 16 }} />
-                    <Text style={{ color: 'white', fontSize: '12px', fontWeight: 600 }}>
-                      SECURITY SCAN
-                    </Text>
-                  </div>
-                  <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>
-                    Analyzing IAM policies and security groups
-                  </Text>
-                </div>
-                
-                <div style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.1)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <DatabaseOutlined style={{ color: '#1890ff', fontSize: 16 }} />
-                    <Text style={{ color: 'white', fontSize: '12px', fontWeight: 600 }}>
-                      RESOURCE MAPPING
-                    </Text>
-                  </div>
-                  <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>
-                    Discovering and cataloging resources
-                  </Text>
-                </div>
-                
-                <div style={{
-                  background: 'rgba(255,255,255,0.1)',
-                  borderRadius: '8px',
-                  padding: '12px',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.1)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                    <WarningOutlined style={{ color: '#faad14', fontSize: 16 }} />
-                    <Text style={{ color: 'white', fontSize: '12px', fontWeight: 600 }}>
-                      DRIFT DETECTION
-                    </Text>
-                  </div>
-                  <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>
-                    Comparing actual vs expected state
-                  </Text>
-                </div>
-              </div>
+              <Text style={{ color: '#595959', fontSize: '14px' }}>
+                Initializing analysis engine...
+              </Text>
             </div>
             
-            {/* Status Footer */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              background: 'rgba(255,255,255,0.1)',
+            {/* Simple Status Cards */}
+            <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+              <Col xs={24} sm={8}>
+                <div style={{
+                  background: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  textAlign: 'center'
+                }}>
+                  <SecurityScanOutlined style={{ color: '#1890ff', fontSize: 20, marginBottom: 8 }} />
+                  <div style={{ color: '#262626', fontSize: '14px', fontWeight: 500 }}>
+                    Security Scan
+                  </div>
+                  <div style={{ color: '#8c8c8c', fontSize: '12px', marginTop: 4 }}>
+                    Analyzing IAM policies
+                  </div>
+                </div>
+              </Col>
+              
+              <Col xs={24} sm={8}>
+                <div style={{
+                  background: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  textAlign: 'center'
+                }}>
+                  <DatabaseOutlined style={{ color: '#1890ff', fontSize: 20, marginBottom: 8 }} />
+                  <div style={{ color: '#262626', fontSize: '14px', fontWeight: 500 }}>
+                    Resource Mapping
+                  </div>
+                  <div style={{ color: '#8c8c8c', fontSize: '12px', marginTop: 4 }}>
+                    Discovering resources
+                  </div>
+                </div>
+              </Col>
+              
+              <Col xs={24} sm={8}>
+                <div style={{
+                  background: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  textAlign: 'center'
+                }}>
+                  <WarningOutlined style={{ color: '#1890ff', fontSize: 20, marginBottom: 8 }} />
+                  <div style={{ color: '#262626', fontSize: '14px', fontWeight: 500 }}>
+                    Drift Detection
+                  </div>
+                  <div style={{ color: '#8c8c8c', fontSize: '12px', marginTop: 4 }}>
+                    Comparing configurations
+                  </div>
+                </div>
+              </Col>
+            </Row>
+            
+            {/* Simple Status */}
+            <div style={{
+              background: '#e6f7ff',
+              border: '1px solid #91d5ff',
               borderRadius: '8px',
-              padding: '16px',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255,255,255,0.1)'
+              padding: '16px'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <Badge 
-                  status="processing" 
-                  text={<span style={{ color: 'white', fontSize: '13px', fontWeight: 500 }}>Live Analysis Active</span>}
-                />
-                <div style={{ width: 1, height: 16, background: 'rgba(255,255,255,0.3)' }} />
-                <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px' }}>
-                  ⚡ Real-time streaming • 🔒 Secure connection • 🌐 Multi-region support
-                </Text>
-              </div>
-              <div style={{
-                background: 'rgba(255,255,255,0.2)',
-                borderRadius: '20px',
-                padding: '6px 12px',
-                backdropFilter: 'blur(10px)'
-              }}>
-                <Text style={{ color: 'white', fontSize: '11px', fontWeight: 600 }}>
-                  INITIALIZING...
-                </Text>
-              </div>
+              <Badge 
+                status="processing" 
+                text={<span style={{ color: '#262626', fontSize: '14px', fontWeight: 500 }}>Analysis in progress...</span>}
+              />
             </div>
           </div>
         </Card>
-        
-        {/* Add CSS animation using a style element */}
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            @keyframes float {
-              0% { transform: translateX(-100px) translateY(-100px); }
-              100% { transform: translateX(100px) translateY(100px); }
-            }
-          `
-        }} />
       </div>
     );
   }
@@ -1371,16 +1274,14 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
               
               {analysisComplete && (
                 <div style={{
-                  background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-                  borderRadius: '12px',
-                  padding: '12px 20px',
-                  border: '1px solid rgba(24, 144, 255, 0.3)',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 12px rgba(24, 144, 255, 0.2)'
+                  background: '#f6ffed',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  border: '1px solid #b7eb8f'
                 }}>
                   <Badge 
                     status="success" 
-                    text={<span style={{ color: 'white', fontSize: '14px', fontWeight: 600 }}>✅ Analysis Complete</span>}
+                    text={<span style={{ color: '#52c41a', fontSize: '14px', fontWeight: 500 }}>Analysis Complete</span>}
                   />
                 </div>
               )}
@@ -1392,58 +1293,52 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
           {isAnalyzing && resources.length > 0 && (
             <div style={{ 
               marginBottom: 24,
-              background: 'white',
-              borderRadius: '12px',
+              background: '#f8f9fa',
+              borderRadius: '8px',
               padding: '20px',
-              border: '1px solid #f0f0f0'
+              border: '1px solid #e9ecef'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
                 <div style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  borderRadius: '50%',
-                  padding: '8px',
-                  backdropFilter: 'blur(10px)'
+                  background: '#1890ff',
+                  borderRadius: '8px',
+                  padding: '8px'
                 }}>
-                  <Spin 
-                    indicator={<LoadingOutlined style={{ fontSize: 16, color: 'white' }} spin />} 
-                  />
+                  <LoadingOutlined style={{ fontSize: 16, color: 'white' }} spin />
                 </div>
                 <div>
-                  <Text style={{ color: 'white', fontWeight: 600, fontSize: '16px' }}>
-                    🔍 Live Resource Analysis in Progress
+                  <Text style={{ color: '#262626', fontWeight: 600, fontSize: '16px' }}>
+                    Live Resource Analysis in Progress
                   </Text>
-                  <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px', marginTop: '4px' }}>
+                  <div style={{ color: '#8c8c8c', fontSize: '12px', marginTop: '4px' }}>
                     Processing {resources.length} AWS resource type{resources.length !== 1 ? 's' : ''}
                   </div>
                 </div>
               </div>
               
               <div style={{ 
-                background: 'rgba(255,255,255,0.1)',
+                background: 'white',
                 borderRadius: '8px',
                 padding: '16px',
-                backdropFilter: 'blur(10px)'
+                border: '1px solid #f0f0f0'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <Text style={{ color: 'white', fontSize: '14px', fontWeight: 500 }}>
+                  <Text style={{ color: '#262626', fontSize: '14px', fontWeight: 500 }}>
                     Analysis Progress
                   </Text>
-                  <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '12px' }}>
+                  <Text style={{ color: '#8c8c8c', fontSize: '12px' }}>
                     {Object.keys(resourceResults).length} / {resources.length} resources
                   </Text>
                 </div>
                 
                 <Progress 
                   percent={Math.round((Object.keys(resourceResults).length / resources.length) * 100)}
-                  strokeColor={{
-                    '0%': '#52c41a',
-                    '100%': '#1890ff',
-                  }}
-                  trailColor="rgba(255,255,255,0.2)"
+                  strokeColor="#1890ff"
+                  trailColor="#f0f0f0"
                   showInfo={true}
-                  strokeWidth={10}
+                  strokeWidth={8}
                   format={(percent) => (
-                    <span style={{ color: 'white', fontSize: '12px', fontWeight: 600 }}>
+                    <span style={{ color: '#262626', fontSize: '12px', fontWeight: 500 }}>
                       {percent}%
                     </span>
                   )}
@@ -1458,15 +1353,15 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
                   <div style={{ display: 'flex', gap: 16 }}>
                     <Badge 
                       status="processing" 
-                      text={<span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Detecting drifts</span>}
+                      text={<span style={{ color: '#595959', fontSize: '11px' }}>Detecting drifts</span>}
                     />
                     <Badge 
                       status="processing" 
-                      text={<span style={{ color: 'rgba(255,255,255,0.8)', fontSize: '11px' }}>Generating reports</span>}
+                      text={<span style={{ color: '#595959', fontSize: '11px' }}>Generating reports</span>}
                     />
                   </div>
-                  <Text style={{ color: 'rgba(255,255,255,0.7)', fontSize: '11px' }}>
-                    ⚡ Real-time streaming
+                  <Text style={{ color: '#bfbfbf', fontSize: '11px' }}>
+                    Real-time streaming
                   </Text>
                 </div>
               </div>
