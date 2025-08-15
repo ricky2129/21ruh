@@ -955,25 +955,51 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
           </div>
 
           {/* Status Badges */}
-          <Space direction="vertical" style={{ width: '100%', marginBottom: 16 }}>
+          <div style={{ width: '100%', marginBottom: 16 }}>
             {driftCount > 0 && (
-              <Badge 
-                count={`${driftCount} issue${driftCount !== 1 ? 's' : ''}`}
-                style={{ backgroundColor: '#f5222d' }}
-              />
+              <div style={{ marginBottom: 12 }}>
+                <Badge 
+                  count={`${driftCount} issue${driftCount !== 1 ? 's' : ''}`}
+                  style={{ backgroundColor: '#f5222d' }}
+                />
+              </div>
             )}
             
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: 8, 
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              minHeight: '24px'
+            }}>
               <Badge 
                 status={detectionStatus === 'complete' ? 'success' : 'processing'}
-                text={`Detection: ${detectionStatus}`}
+                text={
+                  <span style={{ 
+                    fontSize: '12px', 
+                    lineHeight: '1.4',
+                    display: 'inline-block',
+                    verticalAlign: 'middle'
+                  }}>
+                    Detection: {detectionStatus}
+                  </span>
+                }
               />
               <Badge 
                 status={reportStatus === 'complete' ? 'success' : 'processing'}
-                text={`Report: ${reportStatus}`}
+                text={
+                  <span style={{ 
+                    fontSize: '12px', 
+                    lineHeight: '1.4',
+                    display: 'inline-block',
+                    verticalAlign: 'middle'
+                  }}>
+                    Report: {reportStatus}
+                  </span>
+                }
               />
             </div>
-          </Space>
+          </div>
 
           {/* Expanded Content */}
           {isExpanded && (results?.detectionResults || results?.reportResults) && (
@@ -1347,11 +1373,12 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
               
               {analysisComplete && (
                 <div style={{
-                  background: 'rgba(82, 196, 26, 0.2)',
+                  background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
                   borderRadius: '12px',
                   padding: '12px 20px',
-                  border: '1px solid rgba(82, 196, 26, 0.3)',
-                  backdropFilter: 'blur(10px)'
+                  border: '1px solid rgba(24, 144, 255, 0.3)',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 12px rgba(24, 144, 255, 0.2)'
                 }}>
                   <Badge 
                     status="success" 
