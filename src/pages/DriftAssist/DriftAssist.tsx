@@ -787,10 +787,10 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                 <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                   <SecurityScanOutlined style={{ fontSize: 32, color: '#1890ff' }} />
                   <div>
-                    <Title level={2} style={{ margin: 0, color: '#1f2937', fontWeight: 600 }}>
+                    <Title level={3} style={{ margin: 0, color: '#1f2937', fontWeight: 600, fontSize: '20px' }}>
                       Select AWS Resources
                     </Title>
-                    <Paragraph style={{ margin: 0, color: '#6b7280', fontSize: 16 }}>
+                    <Paragraph style={{ margin: 0, color: '#6b7280', fontSize: 14 }}>
                       Choose which AWS resources you want to analyze for drift
                     </Paragraph>
                   </div>
@@ -820,7 +820,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                 {/* Quick Selection Presets */}
                 <div style={{ marginBottom: 32 }}>
                   <div style={{ marginBottom: 16 }}>
-                    <Text strong style={{ fontSize: 18, color: '#262626' }}>
+                    <Text strong style={{ fontSize: 16, color: '#262626' }}>
                       <InfoCircleOutlined style={{ marginRight: 8, color: '#1890ff' }} />
                       Quick Selection Presets
                     </Text>

@@ -1392,10 +1392,10 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
           {isAnalyzing && resources.length > 0 && (
             <div style={{ 
               marginBottom: 24,
-              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              background: 'white',
               borderRadius: '12px',
               padding: '20px',
-              border: 'none'
+              border: '1px solid #f0f0f0'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 16 }}>
                 <div style={{

@@ -720,10 +720,10 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
 
   return (
     <div style={{ 
-      padding: '32px 40px', 
+      padding: '24px', 
       maxWidth: '100%', 
       margin: '0 auto',
-      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%)',
+      background: 'white',
       minHeight: '100vh',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
@@ -740,15 +740,16 @@ const UnifiedResultsDisplay: React.FC<UnifiedResultsDisplayProps> = ({
         <div style={{ 
           marginBottom: 32, 
           padding: '24px 32px',
-          background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-          color: 'white',
-          borderRadius: '16px 16px 0 0',
-          margin: '-24px -24px 32px -24px'
+          background: 'white',
+          color: '#262626',
+          borderRadius: '12px 12px 0 0',
+          margin: '-24px -24px 32px -24px',
+          borderBottom: '1px solid #f0f0f0'
         }}>
-          <Title level={3} style={{ margin: 0, marginBottom: 8, color: 'white', fontWeight: 700 }}>
+          <Title level={3} style={{ margin: 0, marginBottom: 8, color: '#262626', fontWeight: 600 }}>
             📊 Analysis Details
           </Title>
-          <Text style={{ fontSize: 16, color: 'rgba(255,255,255,0.9)' }}>
+          <Text style={{ fontSize: 14, color: '#8c8c8c' }}>
             {filteredItems.length} of {processedData.items.length} items shown • Comprehensive drift analysis
           </Text>
         </div>
