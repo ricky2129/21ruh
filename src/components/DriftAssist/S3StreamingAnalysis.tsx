@@ -1304,29 +1304,28 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
 
   return (
     <div style={{ 
-      background: 'linear-gradient(135deg, #fafbfc 0%, #f1f5f9 100%)', 
+      background: 'white', 
       minHeight: 'calc(100vh - 64px)', 
-      padding: '32px 24px',
+      padding: '24px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     }}>
-      <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+      <div style={{ maxWidth: '100%', margin: '0 auto' }}>
         <Card 
           style={{ 
-            borderRadius: 20,
-            boxShadow: '0 12px 40px rgba(0,0,0,0.08)',
-            border: '1px solid rgba(24, 144, 255, 0.1)',
+            borderRadius: 12,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            border: '1px solid #f0f0f0',
             overflow: 'hidden',
             background: 'white'
           }}
         >
           <div style={{ 
-            padding: '40px 48px',
-            borderBottom: '1px solid #e5e7eb',
-            background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-            color: 'white',
-            marginBottom: 40,
-            position: 'relative',
-            overflow: 'hidden'
+            padding: '24px 32px',
+            borderBottom: '1px solid #f0f0f0',
+            background: 'white',
+            color: '#262626',
+            marginBottom: 24,
+            position: 'relative'
           }}>
             {/* Animated background pattern */}
             <div style={{
@@ -1348,24 +1347,23 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
                 <div style={{
-                  background: 'rgba(255,255,255,0.2)',
-                  borderRadius: '16px',
-                  padding: '16px',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255,255,255,0.3)'
+                  background: '#1890ff',
+                  borderRadius: '12px',
+                  padding: '12px',
+                  border: '1px solid #1890ff'
                 }}>
-                  <CloudOutlined style={{ fontSize: 28, color: 'white' }} />
+                  <CloudOutlined style={{ fontSize: 24, color: 'white' }} />
                 </div>
                 <div>
-                  <Title level={2} style={{ margin: 0, color: 'white', fontWeight: 700, fontSize: '28px' }}>
-                    🚀 Live Analysis Results
+                  <Title level={3} style={{ margin: 0, color: '#262626', fontWeight: 600, fontSize: '20px' }}>
+                    Live Analysis Results
                   </Title>
-                  <Text style={{ color: 'rgba(255,255,255,0.9)', fontSize: '16px', fontWeight: 500 }}>
+                  <Text style={{ color: '#595959', fontSize: '14px', fontWeight: 400 }}>
                     {fileName}
                   </Text>
-                  <div style={{ marginTop: 6 }}>
-                    <Text style={{ color: 'rgba(255,255,255,0.8)', fontSize: '14px' }}>
-                      Real-time drift analysis • S3 state file processing • AI-powered insights
+                  <div style={{ marginTop: 4 }}>
+                    <Text style={{ color: '#8c8c8c', fontSize: '12px' }}>
+                      Real-time drift analysis • S3 state file processing
                     </Text>
                   </div>
                 </div>

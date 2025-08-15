@@ -921,11 +921,28 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                             <Text style={{ fontSize: '14px', color: '#6b7280', display: 'block', marginBottom: 8, lineHeight: 1.4 }}>
                               {resource.description}
                             </Text>
-                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                              <Text type="secondary" style={{ fontSize: '11px', background: '#f3f4f6', padding: '3px 8px', borderRadius: '6px', fontWeight: 500 }}>
+                            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'nowrap' }}>
+                              <Text type="secondary" style={{ 
+                                fontSize: '11px', 
+                                background: '#f3f4f6', 
+                                padding: '3px 8px', 
+                                borderRadius: '6px', 
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap',
+                                lineHeight: '1.2'
+                              }}>
                                 {resource.category}
                               </Text>
-                              <Text type="secondary" style={{ fontSize: '11px', background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', padding: '3px 8px', borderRadius: '6px', fontWeight: 500 }}>
+                              <Text type="secondary" style={{ 
+                                fontSize: '11px', 
+                                background: resource.priority === 'High' ? '#fef2f2' : resource.priority === 'Medium' ? '#fffbeb' : '#f0fdf4', 
+                                color: resource.priority === 'High' ? '#dc2626' : resource.priority === 'Medium' ? '#d97706' : '#059669', 
+                                padding: '3px 8px', 
+                                borderRadius: '6px', 
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap',
+                                lineHeight: '1.2'
+                              }}>
                                 {resource.priority}
                               </Text>
                             </div>
@@ -1487,7 +1504,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       {currentSessionId && (
         <Alert
           message={`Connected to AWS (${currentAwsCredentials?.region || 'Unknown Region'})`}
-          type="success"
+          type="info"
           showIcon
           icon={<CloudOutlined />}
           action={
@@ -1499,7 +1516,10 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
               aria-label="Disconnect from AWS"
               style={{
                 borderRadius: 6,
-                fontWeight: 500
+                fontWeight: 500,
+                background: '#1890ff',
+                borderColor: '#1890ff',
+                color: 'white'
               }}
             >
               Disconnect
@@ -1508,32 +1528,15 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           style={{ 
             margin: '24px 24px 0 24px', 
             borderRadius: 12,
-            border: '1px solid #52c41a',
-            background: 'linear-gradient(135deg, #f6ffed 0%, #f0f9e8 100%)',
-            boxShadow: '0 2px 8px rgba(82, 196, 26, 0.15)'
+            border: '1px solid #1890ff',
+            background: 'linear-gradient(135deg, #e6f7ff 0%, #f0f8ff 100%)',
+            boxShadow: '0 2px 8px rgba(24, 144, 255, 0.15)'
           }}
         />
       )}
 
-      {/* Progress Steps */}
-      <div style={{ 
-        padding: '32px 24px 24px 24px', 
-        background: 'white', 
-        borderBottom: '1px solid #e5e7eb',
-        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-      }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Steps
-            current={currentStep}
-            items={steps}
-            size="default"
-            style={{ marginBottom: 0 }}
-          />
-        </div>
-      </div>
-
       {/* Step Content */}
-      <div style={{ padding: '32px 24px' }}>
+      <div style={{ padding: '24px' }}>
         {renderStepContent()}
       </div>
     </div>
