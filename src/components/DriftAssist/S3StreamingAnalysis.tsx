@@ -901,7 +901,7 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   }, []);
 
   /**
-   * Render beautiful resource card
+   * Render beautiful resource card with direct report display
    */
   const renderResourceCard = (resourceId: string, results?: ResourceResult) => {
     const resource = AWS_RESOURCE_CONFIG[resourceId.toLowerCase() as keyof typeof AWS_RESOURCE_CONFIG] || {
@@ -914,28 +914,25 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
 
     const detectionStatus = results?.detectionStatus || 'pending';
     const reportStatus = results?.reportStatus || 'pending';
-    const isExpanded = expandedResources.has(resourceId);
     const driftCount = getDriftCount(results);
 
     return (
-      <Col xs={24} sm={12} lg={8} key={resourceId}>
+      <Col xs={24} key={resourceId}>
         <Card
           style={{ 
-            borderColor: isExpanded ? resource.color : undefined,
-            cursor: 'pointer',
-            transition: 'all 0.3s ease'
+            borderColor: resource.color,
+            marginBottom: 24
           }}
-          onClick={() => handleResourceToggle(resourceId)}
-          hoverable
         >
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+          {/* Header Section */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: 24, paddingBottom: 16, borderBottom: '1px solid #f0f0f0' }}>
             <div 
               style={{ 
                 backgroundColor: resource.color,
                 color: 'white',
-                padding: '8px',
-                borderRadius: '4px',
-                marginRight: '12px',
+                padding: '12px',
+                borderRadius: '8px',
+                marginRight: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -943,95 +940,96 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
             >
               {resource.icon}
             </div>
-            <div>
-              <Title level={5} style={{ margin: 0, fontSize: '14px' }}>
+            <div style={{ flex: 1 }}>
+              <Title level={4} style={{ margin: 0, fontSize: '18px', marginBottom: 4 }}>
                 {resource.name}
               </Title>
-              <Text type="secondary" style={{ fontSize: '12px' }}>
-                {resource.category}
+              <Text type="secondary" style={{ fontSize: '14px' }}>
+                {resource.category} • {resource.description}
               </Text>
             </div>
-          </div>
-
-          {/* Status Badges */}
-          <div style={{ width: '100%', marginBottom: 16 }}>
-            {driftCount > 0 && (
-              <div style={{ marginBottom: 12 }}>
+            
+            {/* Status Badges */}
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+              {driftCount > 0 && (
                 <Badge 
                   count={`${driftCount} issue${driftCount !== 1 ? 's' : ''}`}
                   style={{ backgroundColor: '#f5222d' }}
                 />
+              )}
+              
+              <div style={{ display: 'flex', gap: 12 }}>
+                <Badge 
+                  status={detectionStatus === 'complete' ? 'success' : 'processing'}
+                  text={
+                    <span style={{ fontSize: '13px' }}>
+                      Detection: {detectionStatus}
+                    </span>
+                  }
+                />
+                <Badge 
+                  status={reportStatus === 'complete' ? 'success' : 'processing'}
+                  text={
+                    <span style={{ fontSize: '13px' }}>
+                      Report: {reportStatus}
+                    </span>
+                  }
+                />
               </div>
-            )}
-            
-            <div style={{ 
-              display: 'flex', 
-              gap: 8, 
-              flexWrap: 'wrap',
-              alignItems: 'center',
-              minHeight: '24px'
-            }}>
-              <Badge 
-                status={detectionStatus === 'complete' ? 'success' : 'processing'}
-                text={
-                  <span style={{ 
-                    fontSize: '12px', 
-                    lineHeight: '1.4',
-                    display: 'inline-block',
-                    verticalAlign: 'middle'
-                  }}>
-                    Detection: {detectionStatus}
-                  </span>
-                }
-              />
-              <Badge 
-                status={reportStatus === 'complete' ? 'success' : 'processing'}
-                text={
-                  <span style={{ 
-                    fontSize: '12px', 
-                    lineHeight: '1.4',
-                    display: 'inline-block',
-                    verticalAlign: 'middle'
-                  }}>
-                    Report: {reportStatus}
-                  </span>
-                }
-              />
             </div>
           </div>
 
-          {/* Expanded Content */}
-          {isExpanded && (results?.detectionResults || results?.reportResults) && (
+          {/* Direct Report Display - Always Visible */}
+          {(results?.detectionResults || results?.reportResults) && (
             <div>
-              <Divider />
-              
-              {/* AI-Generated Report Display */}
+              {/* AI-Generated Report Display - Full Width */}
               {results?.detectionResults && (
                 <div style={{ 
-                  backgroundColor: '#fafafa',
+                  backgroundColor: 'white',
                   borderRadius: '8px',
-                  padding: '16px',
-                  border: '1px solid #f0f0f0'
+                  padding: '24px',
+                  border: '1px solid #f0f0f0',
+                  minHeight: '400px'
                 }}>
                   {renderComprehensiveReport(results.detectionResults, resourceId)}
                 </div>
               )}
 
-              {/* Download Options (Minimized) */}
-              <div style={{ marginTop: 12, textAlign: 'right' }}>
-                <Space size="small">
+              {/* Download Options */}
+              <div style={{ marginTop: 16, textAlign: 'right', paddingTop: 16, borderTop: '1px solid #f0f0f0' }}>
+                <Space size="middle">
                   <Button
-                    size="small"
                     icon={<DownloadOutlined />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      downloadAsJson(results.detectionResults, `${fileName}_${resourceId}_detection.json`);
-                    }}
-                    style={{ fontSize: '11px' }}
+                    onClick={() => downloadAsJson(results.detectionResults, `${fileName}_${resourceId}_detection.json`)}
                   >
                     Export JSON
                   </Button>
+                  <Button
+                    type="primary"
+                    icon={<FileTextOutlined />}
+                    onClick={() => downloadAsPdf(results.detectionResults, resourceId, fileName)}
+                  >
+                    Download PDF Report
+                  </Button>
                 </Space>
+              </div>
+            </div>
+          )}
+
+          {/* Loading State for Pending Reports */}
+          {!results?.detectionResults && detectionStatus === 'pending' && (
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '40px',
+              background: '#fafafa',
+              borderRadius: '8px',
+              border: '1px solid #f0f0f0'
+            }}>
+              <Spin size="large" />
+              <div style={{ marginTop: 16 }}>
+                <Text style={{ color: '#8c8c8c', fontSize: '14px' }}>
+                  Analyzing {resource.name.toLowerCase()}...
+                </Text>
               </div>
             </div>
           )}
