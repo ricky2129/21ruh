@@ -293,7 +293,6 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
     try {
       setIsAnalyzing(true);
-      setCurrentStep(3); // Move to analysis step
       
       const selectedResources = resourceTypes
         .filter(resource => resource.selected)
@@ -309,7 +308,6 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         selected_resources: selectedResources
       });
 
-
       // Set the analysis results for the results tab
       setAnalysisResults(bucketAnalysisResult);
 
@@ -320,6 +318,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
       if (readyFile && readyFile.analysis_data) {
         setCurrentAnalysisData(readyFile.analysis_data);
+        
+        // Skip loading page and go directly to streaming analysis
+        setCurrentStep(3);
         
         // Navigate to workflow tab if callback is provided
         if (onNavigateToWorkflow) {
