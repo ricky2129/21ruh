@@ -24,11 +24,9 @@ import {
   UserOutlined,
   CheckCircleOutlined,
   DownloadOutlined,
-  FileTextOutlined,
   WarningOutlined,
   LoadingOutlined
 } from "@ant-design/icons";
-import { pdfGeneratorService } from 'services/pdfGenerator.service';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -123,7 +121,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [expandedResources, setExpandedResources] = useState<Set<string>>(new Set());
-  const [pdfGenerationState, setPdfGenerationState] = useState<Record<string, any>>({});
 
   const analysisStartedRef = useRef(false);
   const componentIdRef = useRef(Math.random().toString(36).substr(2, 9));
@@ -418,121 +415,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
     URL.revokeObjectURL(url);
   }, []);
 
-  /**
-   * Download data as PDF report with enhanced UX using local PDF generation
-   */
-  const downloadAsPdf = useCallback(async (data: any, resourceType: string, filename: string) => {
-    const pdfKey = `${resourceType}_${filename}`;
-
-    try {
-      // Set initial PDF generation state
-      setPdfGenerationState(prev => ({
-        ...prev,
-        [pdfKey]: {
-          isGenerating: true,
-          stage: 'preparing',
-          progress: 0,
-          message: '🔄 Preparing PDF generation...'
-        }
-      }));
-
-      // Update progress during generation
-      const updateProgress = (stage: string, progress: number, message: string) => {
-        setPdfGenerationState(prev => ({
-          ...prev,
-          [pdfKey]: { ...prev[pdfKey], stage, progress, message }
-        }));
-      };
-
-      updateProgress('generating', 25, '📄 Generating PDF report...');
-
-      // Transform data to match the expected format for PDF generation
-      const analysisResults = {
-        drifts: Array.isArray(data.drifts) ? data.drifts : 
-                Array.isArray(data) ? data : 
-                data.differences ? data.differences : [],
-        summary: {
-          total_drifts: data.drift_count || (Array.isArray(data.drifts) ? data.drifts.length : 0),
-          drift_types: {},
-          severity_distribution: {}
-        },
-        metadata: {
-          resource_type: resourceType,
-          file_name: filename,
-          analysis_timestamp: new Date().toISOString()
-        }
-      };
-
-      updateProgress('processing', 75, '⚙️ Processing report data...');
-
-      // Use local PDF generation service
-      const pdfBytes = pdfGeneratorService.generateDriftAnalysisReport(
-        analysisResults,
-        resourceType,
-        filename
-      );
-
-      updateProgress('downloading', 100, '🎉 Report ready! Starting download...');
-
-      // Create blob and download
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${filename}_${resourceType}_drift_report.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-
-      // Show success state briefly
-      setPdfGenerationState(prev => ({
-        ...prev,
-        [pdfKey]: {
-          ...prev[pdfKey],
-          stage: 'completed',
-          progress: 100,
-          message: '✅ PDF downloaded successfully!'
-        }
-      }));
-
-      // Clear state after 3 seconds
-      setTimeout(() => {
-        setPdfGenerationState(prev => {
-          const newState = { ...prev };
-          delete newState[pdfKey];
-          return newState;
-        });
-      }, 3000);
-
-      showMessage('success', 'PDF report downloaded successfully!');
-
-    } catch (error) {
-      console.error('PDF download failed:', error);
-      
-      setPdfGenerationState(prev => ({
-        ...prev,
-        [pdfKey]: {
-          ...prev[pdfKey],
-          stage: 'error',
-          progress: 0,
-          message: '❌ PDF generation failed'
-        }
-      }));
-
-      // Clear error state after 5 seconds
-      setTimeout(() => {
-        setPdfGenerationState(prev => {
-          const newState = { ...prev };
-          delete newState[pdfKey];
-          return newState;
-        });
-      }, 5000);
-
-      showMessage('error', 'Failed to generate PDF report. Please try again.');
-    }
-  }, [showMessage]);
 
   /**
    * Render comprehensive AI-generated report

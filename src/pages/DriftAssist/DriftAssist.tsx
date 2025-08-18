@@ -7,9 +7,7 @@ import {
   Row, 
   Col, 
   Typography, 
-  Space, 
-  Badge,
-  Switch,
+  Space,
   message,
   Form,
   Input as AntInput,
@@ -28,8 +26,6 @@ import {
   InfoCircleOutlined,
   BarChartOutlined,
   ReloadOutlined,
-  EyeInvisibleOutlined, 
-  EyeTwoTone,
   RightOutlined,
   SettingOutlined
 } from "@ant-design/icons";
