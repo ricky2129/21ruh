@@ -886,13 +886,6 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
                   >
                     Export JSON
                   </Button>
-                  <Button
-                    type="primary"
-                    icon={<FileTextOutlined />}
-                    onClick={() => downloadAsPdf(results.detectionResults, resourceId, fileName)}
-                  >
-                    Download PDF Report
-                  </Button>
                 </Space>
               </div>
             </div>
