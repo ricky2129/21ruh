@@ -84,17 +84,8 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const [activePreset, setActivePreset] = useState("common");
   const [showDetails, setShowDetails] = useState(false);
   
-  // Initialize step - check for persisted state first
-  const [currentStep, setCurrentStep] = useState(() => {
-    // Check if we have persisted analysis state
-    if (hasPersistedState()) {
-      const persistedState = loadStateFromStorage();
-      if (persistedState?.currentAnalysisData) {
-        return 3; // Go directly to analysis view
-      }
-    }
-    return 0; // Default to bucket selection
-  });
+  // Initialize step - will be set properly in useEffect
+  const [currentStep, setCurrentStep] = useState(0);
   
   const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(
     sessionId || initialSessionId
@@ -108,19 +99,18 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
-    // First check props/navigation state
+    // First check if we have persisted analysis state
+    if (hasPersistedState()) {
+      console.log('Found persisted state, loading...');
+      loadStateFromStorage();
+      setCurrentStep(3); // Go directly to analysis view
+      return;
+    }
+    
+    // Then check props/navigation state
     if (finalSessionId && finalCredentials?.access_key && finalCredentials?.secret_key) {
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
-      
-      // Check if we have persisted analysis state
-      if (hasPersistedState()) {
-        const persistedState = loadStateFromStorage();
-        if (persistedState?.currentAnalysisData) {
-          setCurrentStep(3); // Go directly to analysis view
-          return;
-        }
-      }
       setCurrentStep(0); // Go to bucket selection
     } 
     // Then check session storage
@@ -138,37 +128,29 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
             if (Date.now() - session.timestamp < 3600000) {
               setCurrentSessionId(session.sessionId);
               setCurrentAwsCredentials(session.awsCredentials);
-              
-              // Check if we have persisted analysis state
-              if (hasPersistedState()) {
-                const persistedState = loadStateFromStorage();
-                if (persistedState?.currentAnalysisData) {
-                  setCurrentStep(3); // Go directly to analysis view
-                  return;
-                }
-              }
               setCurrentStep(0); // Go to bucket selection
             } else {
-              setCurrentStep(0); // Force to bucket selection for testing
+              setCurrentStep(0); // Force to bucket selection
             }
           } else {
-            setCurrentStep(0); // Force to bucket selection for testing
+            setCurrentStep(0); // Force to bucket selection
           }
         } else {
-          setCurrentStep(0); // Force to bucket selection for testing
+          setCurrentStep(0); // Force to bucket selection
         }
       } catch (error) {
         console.error('Error reading from session storage:', error);
-        setCurrentStep(0); // Force to bucket selection for testing
+        setCurrentStep(0); // Force to bucket selection
       }
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, location.state, hasPersistedState, loadStateFromStorage]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, hasPersistedState, loadStateFromStorage]);
 
   // Add backend health check
   useEffect(() => {
     const checkBackendHealth = async () => {
       try {
-        const healthUrl = `${import.meta.env.VITE_DRIFT_ASSIST_URL}/api/health`;
+        const driftAssistUrl = (import.meta as any).env?.VITE_DRIFT_ASSIST_URL || 'http://localhost:8004';
+        const healthUrl = `${driftAssistUrl}/api/health`;
         const response = await fetch(healthUrl);
         
         if (!response.ok) {
@@ -1078,17 +1060,24 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         return currentAnalysisData ? (
           <S3StreamingAnalysis
             analysisData={currentAnalysisData}
-            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL}
+            apiBaseUrl={(import.meta as any).env?.VITE_DRIFT_ASSIST_URL || 'http://localhost:8004'}
             fileName={currentAnalysisData.fileName}
           />
-        ) : null;
+        ) : (
+          <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
+            <Card style={{ borderRadius: 16, textAlign: 'center', padding: '40px' }}>
+              <Title level={3}>Loading Analysis...</Title>
+              <Text type="secondary">Preparing your drift analysis data...</Text>
+            </Card>
+          </div>
+        );
 
       case 4:
         return analysisResults ? (
           <UnifiedResultsDisplay
             data={analysisResults}
             onReset={handleResetAnalysis}
-            apiBaseUrl={import.meta.env.VITE_DRIFT_ASSIST_URL || 'http://localhost:8001'}
+            apiBaseUrl={(import.meta as any).env?.VITE_DRIFT_ASSIST_URL || 'http://localhost:8004'}
           />
         ) : (
           <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
