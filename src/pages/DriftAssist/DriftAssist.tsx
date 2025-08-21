@@ -78,7 +78,8 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     hasPersistedState,
     loadStateFromStorage,
     hasStarted,
-    setHasStarted
+    setHasStarted,
+    clearAnalysisState
   } = useDriftAssist();
 
   const [selectedBucket, setSelectedBucket] = useState<string | undefined>();
@@ -327,6 +328,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     }
 
     try {
+      // Clear previous analysis state before starting new scan
+      clearAnalysisState();
+      
       setIsAnalyzing(true);
       
       const selectedResources = resourceTypes

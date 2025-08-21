@@ -127,8 +127,8 @@ const DriftAssistProvider = ({ children }: ContextState) => {
 
       const parsedState = JSON.parse(savedState);
       
-      // Check if the saved state is not too old (e.g., 24 hours)
-      const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      // Check if the saved state is not too old (15 minutes)
+      const maxAge = 15 * 60 * 1000; // 15 minutes in milliseconds
       if (parsedState.timestamp && (Date.now() - parsedState.timestamp) > maxAge) {
         localStorage.removeItem(persistenceKey);
         return false;
@@ -159,8 +159,8 @@ const DriftAssistProvider = ({ children }: ContextState) => {
 
       const parsedState = JSON.parse(savedState);
       
-      // Check if the saved state is not too old
-      const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+      // Check if the saved state is not too old (15 minutes)
+      const maxAge = 15 * 60 * 1000; // 15 minutes in milliseconds
       if (parsedState.timestamp && (Date.now() - parsedState.timestamp) > maxAge) {
         localStorage.removeItem(persistenceKey);
         return false;
