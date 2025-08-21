@@ -12,7 +12,8 @@ import {
   message,
   Form,
   Input as AntInput,
-  Steps
+  Steps,
+  Drawer
 } from "antd"
 import {
   CloudOutlined,
@@ -41,6 +42,7 @@ import {
   type ConnectAWSRequest
 } from "react-query/driftAssistQueries";
 import { S3StreamingAnalysis, UnifiedResultsDisplay } from "components/DriftAssist";
+import { ConfigureDriftAssist } from "components";
 import "./DriftAssist.styles.scss";
 
 const { Title, Text, Paragraph } = Typography;
@@ -86,6 +88,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const [stateFiles, setStateFiles] = useState<StateFile[]>([]);
   const [activePreset, setActivePreset] = useState("common");
   const [showDetails, setShowDetails] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   
   // Initialize step - will be set properly in useEffect
   const [currentStep, setCurrentStep] = useState(0);
@@ -508,6 +511,62 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     }
   };
 
+  const handleDrawerConnectToAWS = async (values: any) => {
+    // Validate inputs before sending
+    if (!values.AWS_ACCESS_KEY || !values.AWS_SECRET_KEY) {
+      message.error('Please enter both access key and secret key');
+      return;
+    }
+    
+    try {
+      const connectRequest: ConnectAWSRequest = {
+        provider: "aws",
+        credentials: {
+          access_key: values.AWS_ACCESS_KEY.trim(),
+          secret_key: values.AWS_SECRET_KEY.trim(),
+        },
+        region: values.AWS_REGION || "us-east-1",
+      };
+
+      const response = await connectToAWSMutation.mutateAsync(connectRequest);
+      
+      // Close drawer first
+      setIsDrawerOpen(false);
+      
+      // Update session and credentials
+      setCurrentSessionId(response.session_id);
+      setCurrentAwsCredentials({
+        region: connectRequest.region,
+        provider: connectRequest.provider,
+        access_key: connectRequest.credentials.access_key,
+        secret_key: connectRequest.credentials.secret_key
+      });
+      
+      // Reset to bucket selection step
+      setCurrentStep(0);
+      setSelectedBucket(undefined);
+      setStateFiles([]);
+      
+      message.success('Successfully connected to AWS! You can now select a bucket.');
+    } catch (error) {
+      console.error('AWS connection failed:', error);
+      
+      // Better error messages based on error type
+      let errorMessage = 'Failed to connect to AWS';
+      if (error instanceof Error) {
+        if (error.message.includes('422')) {
+          errorMessage = 'Invalid request format. Please check your credentials.';
+        } else if (error.message.includes('401') || error.message.includes('403')) {
+          errorMessage = 'Invalid AWS credentials. Please check your access key and secret key.';
+        } else {
+          errorMessage = error.message;
+        }
+      }
+      
+      message.error(errorMessage);
+    }
+  };
+
   const AWS_REGIONS = [
     { label: "US East (N. Virginia) - us-east-1", value: "us-east-1" },
     { label: "US East (Ohio) - us-east-2", value: "us-east-2" },
@@ -791,7 +850,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                     <Button
                       type="default"
                       size="large"
-                      onClick={() => setCurrentStep(-1)}
+                      onClick={() => setIsDrawerOpen(true)}
                       icon={<CloudOutlined />}
                       style={{ 
                         minWidth: 180,
@@ -1405,6 +1464,84 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
       <div style={{ padding: '24px' }}>
         {renderStepContent()}
       </div>
+
+      {/* New Connection Drawer */}
+      <Drawer
+        title="Add New AWS Connection"
+        placement="right"
+        size="large"
+        onClose={() => setIsDrawerOpen(false)}
+        open={isDrawerOpen}
+        style={{
+          borderRadius: '12px 0 0 12px'
+        }}
+        headerStyle={{
+          background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+          color: 'white',
+          borderBottom: '1px solid #e8e8e8'
+        }}
+        bodyStyle={{
+          padding: '24px',
+          background: '#fafbfc'
+        }}
+      >
+        <div style={{ padding: '0' }}>
+          <Form
+            layout="vertical"
+            onFinish={handleDrawerConnectToAWS}
+            style={{ textAlign: 'left' }}
+          >
+            <Form.Item
+              label="AWS Access Key"
+              name="AWS_ACCESS_KEY"
+              rules={[
+                { required: true, message: 'Please enter your AWS access key' },
+                { pattern: /^AKIA[0-9A-Z]{16}$/, message: 'Invalid AWS Access Key format (should start with AKIA)' }
+              ]}
+            >
+              <AntInput placeholder="AKIA..." />
+            </Form.Item>
+            
+            <Form.Item
+              label="AWS Secret Key"
+              name="AWS_SECRET_KEY"
+              rules={[
+                { required: true, message: 'Please enter your AWS secret key' },
+                { len: 40, message: 'AWS Secret Key should be exactly 40 characters long' }
+              ]}
+            >
+              <AntInput.Password placeholder="Enter secret key" />
+            </Form.Item>
+            
+            <Form.Item
+              label="AWS Region"
+              name="AWS_REGION"
+              initialValue="us-east-1"
+              rules={[{ required: true, message: 'Please select a region' }]}
+            >
+              <Select>
+                {AWS_REGIONS.map(region => (
+                  <Option key={region.value} value={region.value}>
+                    {region.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            
+            <Form.Item style={{ marginTop: 32, textAlign: 'center' }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                size="large"
+                loading={connectToAWSMutation.isLoading}
+                style={{ minWidth: 200 }}
+              >
+                Connect to AWS
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </Drawer>
     </div>
   );
 };
