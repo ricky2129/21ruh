@@ -34,12 +34,14 @@ interface ConfigureDriftAssistProps {
   configureDriftAssistForm: FormInstance<ConfigureDriftAssistFormField>;
   setDisabledSave: (disabled: boolean) => void;
   onFinish?: () => void;
+  skipNavigation?: boolean; // New prop to control navigation behavior
 }
 
 const ConfigureDriftAssist: React.FC<ConfigureDriftAssistProps> = ({
   configureDriftAssistForm,
   setDisabledSave,
   onFinish,
+  skipNavigation = false,
 }) => {
   const navigate = useNavigate();
   const { project, application } = useParams();
@@ -140,10 +142,13 @@ const ConfigureDriftAssist: React.FC<ConfigureDriftAssistProps> = ({
       
       message.success('Successfully connected to AWS!');
       
-      // Navigate to workflows section with sessionId
-      navigate(`/project/${project}/application/${application}/workflow`, {
-        state: navigationState
-      });
+      // Only navigate if skipNavigation is false (default behavior for workflow)
+      if (!skipNavigation) {
+        // Navigate to workflows section with sessionId
+        navigate(`/project/${project}/application/${application}/workflow`, {
+          state: navigationState
+        });
+      }
 
       if (onFinish) onFinish();
     } catch (error) {

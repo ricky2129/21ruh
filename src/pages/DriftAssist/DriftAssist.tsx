@@ -12,7 +12,6 @@ import {
   message,
   Form,
   Steps,
-  Drawer,
   Input as AntInput
 } from "antd";
 import {
@@ -42,7 +41,7 @@ import {
   type ConnectAWSRequest
 } from "react-query/driftAssistQueries";
 import { S3StreamingAnalysis, UnifiedResultsDisplay } from "components/DriftAssist";
-import { ConfigureDriftAssist } from "components";
+import { ConfigureDriftAssist, Drawer } from "components";
 import "./DriftAssist.styles.scss";
 
 const { Title, Text, Paragraph } = Typography;
@@ -1468,27 +1467,18 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
       {/* New Connection Drawer */}
       <Drawer
-        title="Add New AWS Connection"
-        placement="right"
-        size="large"
-        onClose={() => setIsDrawerOpen(false)}
+        title="Configure Drift Assist"
         open={isDrawerOpen}
-        style={{
-          borderRadius: '12px 0 0 12px'
-        }}
-        headerStyle={{
-          background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-          color: 'white',
-          borderBottom: '1px solid #e8e8e8'
-        }}
-        bodyStyle={{
-          padding: '24px',
-          background: '#fafbfc'
-        }}
+        hideFooter={true}
+        onClose={() => setIsDrawerOpen(false)}
+        onCancel={() => setIsDrawerOpen(false)}
+        disabled={false}
+        loading={false}
       >
         <ConfigureDriftAssist
           configureDriftAssistForm={drawerForm}
           setDisabledSave={() => {}}
+          skipNavigation={true}
           onFinish={() => {
             // The ConfigureDriftAssist component handles the connection logic
             // and stores the session data. We just need to close the drawer
