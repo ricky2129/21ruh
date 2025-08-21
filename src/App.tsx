@@ -6,6 +6,7 @@ import { ConfigProvider } from "antd";
 
 import { AppNavigationProvider } from "context";
 import AuthProvider from "context/AuthProvider";
+import DriftAssistProvider from "context/DriftAssistProvider";
 
 import antdTheme from "themes/antdTheme";
 
@@ -16,9 +17,11 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <ConfigProvider theme={antdTheme}>
         <AuthProvider>
-          <AppNavigationProvider>
-            <Outlet />
-          </AppNavigationProvider>
+          <DriftAssistProvider>
+            <AppNavigationProvider>
+              <Outlet />
+            </AppNavigationProvider>
+          </DriftAssistProvider>
         </AuthProvider>
       </ConfigProvider>
     </QueryClientProvider>

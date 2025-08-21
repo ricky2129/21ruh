@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useDriftAssist } from '../../context/DriftAssistProvider';
 import { 
   Card, 
   Button, 
@@ -114,13 +115,16 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
   apiBaseUrl, 
   fileName 
 }) => {
-  const [analysisResults, setAnalysisResults] = useState<AnalysisState>({});
-  const [resourceResults, setResourceResults] = useState<Record<string, ResourceResult>>({});
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [analysisComplete, setAnalysisComplete] = useState(false);
-  const [hasStarted, setHasStarted] = useState(false);
+  const { currentSession, startAnalysis: startContextAnalysis, resumeAnalysis, clearSession } = useDriftAssist();
   const [expandedResources, setExpandedResources] = useState<Set<string>>(new Set());
+
+  // Use context session data if available, otherwise fall back to local state
+  const analysisResults = currentSession?.analysisResults || {};
+  const resourceResults = currentSession?.resourceResults || {};
+  const isAnalyzing = currentSession?.isAnalyzing || false;
+  const error = currentSession?.error || null;
+  const analysisComplete = currentSession?.analysisComplete || false;
+  const hasStarted = currentSession?.hasStarted || false;
 
   const analysisStartedRef = useRef(false);
   const componentIdRef = useRef(Math.random().toString(36).substr(2, 9));
@@ -164,197 +168,10 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
 
     analysisStartedRef.current = true;
     
-    setHasStarted(true);
-    setIsAnalyzing(true);
-    setError(null);
-    setAnalysisResults({});
-    setResourceResults({});
-    setAnalysisComplete(false);
+    // Use context to start analysis
+    await startContextAnalysis(analysisData, apiBaseUrl);
+  }, [analysisData, apiBaseUrl, isAnalyzing, hasStarted, startContextAnalysis]);
 
-    try {
-      const response = await fetch(`${apiBaseUrl}/api/s3/analyze-state-file-stream`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          session_id: analysisData.sessionId,
-          selected_resources: analysisData.selectedResources,
-          state_data: analysisData.stateData,
-          file_name: analysisData.fileName,
-          file_key: analysisData.fileKey,
-          source: analysisData.source,
-          bucket_name: analysisData.bucketName,
-          terraformAnalysis: analysisData.terraformAnalysis,
-          configurationSummary: analysisData.configurationSummary
-        })
-      });
-
-      if (!response.ok) {
-        let errorData;
-        try {
-          errorData = await response.json();
-        } catch (parseError) {
-          console.error('Failed to parse error response:', parseError);
-          errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
-        }
-        
-        if (response.status === 423) {
-          setError('Analysis already in progress for this file. Please wait for it to complete.');
-          return;
-        } else if (response.status === 401) {
-          setError('Authentication failed. Your session may have expired. Please reconnect to your cloud environment.');
-          return;
-        } else if (response.status === 403) {
-          setError('Access forbidden. Please check your permissions and try again.');
-          return;
-        }
-        
-        const errorMessage = errorData.details || errorData.error || `Analysis failed with status ${response.status}`;
-        throw new Error(errorMessage);
-      }
-
-      // Handle streaming response
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('Failed to get response reader');
-      }
-      
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        
-        if (done) {
-          break;
-        }
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              handleStreamingUpdate(data);
-            } catch (parseError) {
-              console.warn('Failed to parse streaming data:', parseError);
-            }
-          }
-        }
-      }
-
-      setAnalysisComplete(true);
-
-    } catch (error) {
-      console.error('S3 streaming analysis error:', error);
-      setError(error instanceof Error ? error.message : 'Unknown error occurred');
-      setHasStarted(false);
-      analysisStartedRef.current = false;
-    } finally {
-      setIsAnalyzing(false);
-    }
-  }, [analysisData, apiBaseUrl, fileName, isAnalyzing, hasStarted]);
-
-  /**
-   * Handle streaming updates from the analysis
-   */
-  const handleStreamingUpdate = useCallback((data: any) => {
-    switch (data.type) {
-      case 'session_initialized':
-        setAnalysisResults(prev => ({
-          ...prev,
-          status: 'session_initialized',
-          session_dir: data.session_dir
-        }));
-        break;
-
-      case 'analysis_started':
-        setAnalysisResults(prev => ({
-          ...prev,
-          status: 'started',
-          resources: data.resources
-        }));
-        break;
-
-      case 'resource_initialized':
-        setResourceResults(prev => ({
-          ...prev,
-          [data.resource]: {
-            status: 'initialized',
-            detectionStatus: data.detectionStatus || 'pending',
-            reportStatus: data.reportStatus || 'pending'
-          }
-        }));
-        break;
-
-      case 'resource_group_update':
-        if (data.data && data.data.resources) {
-          setAnalysisResults(prev => ({
-            ...prev,
-            resources: prev.resources || Object.keys(data.data.resources)
-          }));
-          
-          setResourceResults(prev => {
-            const updated = { ...prev };
-            
-            Object.entries(data.data.resources).forEach(([resourceType, resourceData]: [string, any]) => {
-              const hasDetectionResults = resourceData.drift_result && 
-                                        (resourceData.drift_result.drifts || resourceData.drift_result.has_drift !== undefined);
-              const hasReport = resourceData.report && resourceData.report !== null;
-              const isCompleted = resourceData.status === 'completed';
-              
-              const detectionStatus = isCompleted || hasDetectionResults ? 'complete' : 'pending';
-              const reportStatus = isCompleted || hasReport ? 'complete' : 'pending';
-              
-              updated[resourceType] = {
-                status: resourceData.status || 'processing',
-                detectionStatus: detectionStatus,
-                reportStatus: reportStatus,
-                detectionResults: resourceData.drift_result,
-                reportResults: resourceData.report
-              };
-            });
-            
-            return updated;
-          });
-        }
-        break;
-
-      case 'detection_complete':
-        setResourceResults(prev => ({
-          ...prev,
-          [data.resource]: {
-            ...prev[data.resource],
-            detectionStatus: 'complete',
-            detectionResults: data.results
-          }
-        }));
-        break;
-
-      case 'report_complete':
-        setResourceResults(prev => ({
-          ...prev,
-          [data.resource]: {
-            ...prev[data.resource],
-            reportStatus: 'complete',
-            reportResults: data.results
-          }
-        }));
-        break;
-
-      case 'analysis_complete':
-        setAnalysisComplete(true);
-        break;
-
-      case 'error':
-        setError(data.error);
-        break;
-
-      default:
-        // Unknown streaming update type
-    }
-  }, []);
 
   /**
    * Start analysis when component mounts
@@ -918,14 +735,15 @@ const S3StreamingAnalysis: React.FC<S3StreamingAnalysisProps> = ({
    */
   const handleRetry = useCallback(() => {
     analysisStartedRef.current = false;
-    setHasStarted(false);
-    setError(null);
-    setAnalysisResults({});
-    setResourceResults({});
-    setAnalysisComplete(false);
     
+    // Clear the current session and restart analysis
+    if (currentSession?.sessionId) {
+      clearSession(currentSession.sessionId);
+    }
+    
+    // Start a new analysis
     startAnalysis();
-  }, [fileName, startAnalysis]);
+  }, [currentSession, clearSession, startAnalysis]);
 
   // Render error state
   if (error) {
