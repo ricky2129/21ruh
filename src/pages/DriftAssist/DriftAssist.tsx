@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDriftAssist } from "context";
 import { 
   Card, 
   Button, 
@@ -40,7 +41,6 @@ import {
   type ConnectAWSRequest
 } from "react-query/driftAssistQueries";
 import { S3StreamingAnalysis, UnifiedResultsDisplay } from "components/DriftAssist";
-import { useDriftAssist } from "../../context/DriftAssistProvider";
 import "./DriftAssist.styles.scss";
 
 const { Title, Text, Paragraph } = Typography;
@@ -62,22 +62,39 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { startAnalysis: startContextAnalysis, currentSession } = useDriftAssist();
   
   // Get sessionId from navigation state or props (for workflow integration)
   const sessionId = initialSessionId || location.state?.sessionId;
   const awsCredentials = initialAwsCredentials || location.state?.awsCredentials;
 
+  // Use persistent state from context
+  const {
+    currentAnalysisData,
+    analysisResults,
+    isAnalyzing,
+    setCurrentAnalysisData,
+    setAnalysisResults,
+    setIsAnalyzing,
+    hasPersistedState,
+    loadStateFromStorage
+  } = useDriftAssist();
+
   const [selectedBucket, setSelectedBucket] = useState<string | undefined>();
   const [stateFiles, setStateFiles] = useState<StateFile[]>([]);
   const [activePreset, setActivePreset] = useState("common");
   const [showDetails, setShowDetails] = useState(false);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
-  const [currentAnalysisData, setCurrentAnalysisData] = useState<any>(null);
   
-  // Initialize step - always start at S3 bucket selection since credentials come from ConfigureDriftAssist
-  const [currentStep, setCurrentStep] = useState(0);
+  // Initialize step - check for persisted state first
+  const [currentStep, setCurrentStep] = useState(() => {
+    // Check if we have persisted analysis state
+    if (hasPersistedState()) {
+      const persistedState = loadStateFromStorage();
+      if (persistedState?.currentAnalysisData) {
+        return 3; // Go directly to analysis view
+      }
+    }
+    return 0; // Default to bucket selection
+  });
   
   const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(
     sessionId || initialSessionId
@@ -95,7 +112,16 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     if (finalSessionId && finalCredentials?.access_key && finalCredentials?.secret_key) {
       setCurrentSessionId(finalSessionId);
       setCurrentAwsCredentials(finalCredentials);
-      setCurrentStep(0); // Go directly to bucket selection
+      
+      // Check if we have persisted analysis state
+      if (hasPersistedState()) {
+        const persistedState = loadStateFromStorage();
+        if (persistedState?.currentAnalysisData) {
+          setCurrentStep(3); // Go directly to analysis view
+          return;
+        }
+      }
+      setCurrentStep(0); // Go to bucket selection
     } 
     // Then check session storage
     else {
@@ -112,7 +138,16 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
             if (Date.now() - session.timestamp < 3600000) {
               setCurrentSessionId(session.sessionId);
               setCurrentAwsCredentials(session.awsCredentials);
-              setCurrentStep(0); // Go directly to bucket selection
+              
+              // Check if we have persisted analysis state
+              if (hasPersistedState()) {
+                const persistedState = loadStateFromStorage();
+                if (persistedState?.currentAnalysisData) {
+                  setCurrentStep(3); // Go directly to analysis view
+                  return;
+                }
+              }
+              setCurrentStep(0); // Go to bucket selection
             } else {
               setCurrentStep(0); // Force to bucket selection for testing
             }
@@ -127,7 +162,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         setCurrentStep(0); // Force to bucket selection for testing
       }
     }
-  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, location.state]);
+  }, [sessionId, awsCredentials, initialSessionId, initialAwsCredentials, location.state, hasPersistedState, loadStateFromStorage]);
 
   // Add backend health check
   useEffect(() => {
