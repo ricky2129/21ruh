@@ -16,7 +16,8 @@ import { AddIcon, CodescanIcon, DiagnosticsIcon, ExperimentIcon, ToilAssistIcon,
 
 import { ConfigureGremlin, IconViewer, Loading, Text } from "components";
 
-import { useAppNavigation, DriftAssistProvider } from "context";
+import { useAppNavigation } from "context";
+import { DriftAssistProvider } from "context";
 
 import { Colors, Metrics } from "themes";
 
@@ -307,8 +308,9 @@ const ApplicationWorkflow: React.FC = () => {
   };
 
   return (
-    <Row className="application-workflow-container">
-      <Col sm={24} md={7} className="application-workflow-nav">
+    <DriftAssistProvider>
+      <Row className="application-workflow-container">
+        <Col sm={24} md={7} className="application-workflow-nav">
         <Flex
           align="center"
           justify="center"
@@ -465,25 +467,24 @@ const ApplicationWorkflow: React.FC = () => {
         ) : showDashboardAssist ? ( 
           <DashboardAssist onClose={() => setShowDashboardAssist(false)} /> 
         ) : showDriftAssist ? (
-          <DriftAssistProvider>
-            <DriftAssist 
-              onClose={() => setShowDriftAssist(false)} 
-              onNavigateToWorkflow={() => {
-                // This callback will be triggered when analysis starts
-                // The user is already in the workflow tab, so we just need to ensure
-                // the DriftAssist remains active and visible
-                console.log('Analysis started - staying in workflow tab');
-              }}
-              // Pass session state from navigation if available
-              initialSessionId={driftAssistState?.sessionId}
-              initialAwsCredentials={driftAssistState?.awsCredentials}
-            />
-          </DriftAssistProvider>
+          <DriftAssist 
+            onClose={() => setShowDriftAssist(false)} 
+            onNavigateToWorkflow={() => {
+              // This callback will be triggered when analysis starts
+              // The user is already in the workflow tab, so we just need to ensure
+              // the DriftAssist remains active and visible
+              console.log('Analysis started - staying in workflow tab');
+            }}
+            // Pass session state from navigation if available
+            initialSessionId={driftAssistState?.sessionId}
+            initialAwsCredentials={driftAssistState?.awsCredentials}
+          />
         ) : (
           <Outlet />
         )}
-      </Col>
-    </Row>
+        </Col>
+      </Row>
+    </DriftAssistProvider>
   );
 };
 

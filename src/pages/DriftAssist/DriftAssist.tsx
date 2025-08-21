@@ -76,7 +76,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     setAnalysisResults,
     setIsAnalyzing,
     hasPersistedState,
-    loadStateFromStorage
+    loadStateFromStorage,
+    hasStarted,
+    setHasStarted
   } = useDriftAssist();
 
   const [selectedBucket, setSelectedBucket] = useState<string | undefined>();
@@ -86,6 +88,17 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   
   // Initialize step - will be set properly in useEffect
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Debug logging for state changes
+  useEffect(() => {
+    console.log('🔍 DriftAssist: State changed:', {
+      hasCurrentAnalysisData: !!currentAnalysisData,
+      hasAnalysisResults: !!analysisResults && Object.keys(analysisResults).length > 0,
+      isAnalyzing,
+      hasStarted,
+      currentStep
+    });
+  }, [currentAnalysisData, analysisResults, isAnalyzing, hasStarted, currentStep]);
   
   const [currentSessionId, setCurrentSessionId] = useState<string | undefined>(
     sessionId || initialSessionId
@@ -99,12 +112,19 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     const finalSessionId = sessionId || initialSessionId;
     const finalCredentials = awsCredentials || initialAwsCredentials;
     
+    console.log('🔄 DriftAssist: useEffect triggered');
+    console.log('📊 DriftAssist: Checking persisted state...');
+    
     // First check if we have persisted analysis state
     if (hasPersistedState()) {
-      console.log('Found persisted state, loading...');
-      loadStateFromStorage();
+      console.log('✅ DriftAssist: Found persisted state, loading...');
+      const loaded = loadStateFromStorage();
+      console.log('📥 DriftAssist: State loaded successfully:', loaded);
+      console.log('📋 DriftAssist: Current analysis data after load:', currentAnalysisData);
       setCurrentStep(3); // Go directly to analysis view
       return;
+    } else {
+      console.log('❌ DriftAssist: No persisted state found');
     }
     
     // Then check props/navigation state
