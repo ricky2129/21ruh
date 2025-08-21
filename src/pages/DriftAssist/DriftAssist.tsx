@@ -11,10 +11,10 @@ import {
   Space,
   message,
   Form,
-  Input as AntInput,
   Steps,
-  Drawer
-} from "antd"
+  Drawer,
+  Input as AntInput
+} from "antd";
 import {
   CloudOutlined,
   DisconnectOutlined,
@@ -1482,7 +1482,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           borderBottom: '1px solid #e8e8e8'
         }}
         bodyStyle={{
-          padding: '0',
+          padding: '24px',
           background: '#fafbfc'
         }}
       >
@@ -1490,27 +1490,37 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           configureDriftAssistForm={drawerForm}
           setDisabledSave={() => {}}
           onFinish={() => {
-            // Close drawer and update state
+            // The ConfigureDriftAssist component handles the connection logic
+            // and stores the session data. We just need to close the drawer
+            // and update our local state from the stored session data.
             setIsDrawerOpen(false);
             
-            // Get form values
-            const values = drawerForm.getFieldsValue();
-            
-            // Update session and credentials
-            setCurrentSessionId(values.sessionId || 'drawer-session');
-            setCurrentAwsCredentials({
-              region: values.AWS_REGION,
-              provider: values.CLOUD_PROVIDER,
-              access_key: values.AWS_ACCESS_KEY,
-              secret_key: values.AWS_SECRET_KEY
-            });
-            
-            // Reset to bucket selection step
-            setCurrentStep(0);
-            setSelectedBucket(undefined);
-            setStateFiles([]);
-            
-            message.success('Successfully connected to AWS! You can now select a bucket.');
+            // Read the session data that ConfigureDriftAssist stored
+            try {
+              const storedSession = sessionStorage.getItem('driftAssistSession');
+              if (storedSession) {
+                const session = JSON.parse(storedSession);
+                
+                if (session.sessionId && session.awsCredentials) {
+                  setCurrentSessionId(session.sessionId);
+                  setCurrentAwsCredentials(session.awsCredentials);
+                  
+                  // Reset to bucket selection step
+                  setCurrentStep(0);
+                  setSelectedBucket(undefined);
+                  setStateFiles([]);
+                  
+                  message.success('Successfully connected to AWS! You can now select a bucket.');
+                } else {
+                  message.error('Failed to retrieve connection details. Please try again.');
+                }
+              } else {
+                message.error('Connection data not found. Please try again.');
+              }
+            } catch (error) {
+              console.error('Error reading session data:', error);
+              message.error('Failed to process connection. Please try again.');
+            }
           }}
         />
       </Drawer>
