@@ -328,9 +328,6 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
     }
 
     try {
-      // Clear previous analysis state before starting new scan
-      clearAnalysisState();
-      
       setIsAnalyzing(true);
       
       const selectedResources = resourceTypes
@@ -1082,11 +1079,42 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 
       case 3:
         return currentAnalysisData ? (
-          <S3StreamingAnalysis
-            analysisData={currentAnalysisData}
-            apiBaseUrl={(import.meta as any).env?.VITE_DRIFT_ASSIST_URL || 'http://localhost:8004'}
-            fileName={currentAnalysisData.fileName}
-          />
+          <div>
+            {/* Start New Analysis Button */}
+            <div style={{ 
+              margin: '24px 24px 0 24px', 
+              display: 'flex', 
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              gap: 16
+            }}>
+              <Button
+                type="default"
+                size="large"
+                onClick={() => {
+                  clearAnalysisState();
+                  setCurrentStep(0);
+                  message.success('Analysis cleared! You can now start a new analysis.');
+                }}
+                icon={<ReloadOutlined />}
+                style={{ 
+                  borderRadius: 8,
+                  fontWeight: 500,
+                  background: '#fff',
+                  borderColor: '#d9d9d9',
+                  color: '#595959'
+                }}
+              >
+                Start New Analysis
+              </Button>
+            </div>
+            
+            <S3StreamingAnalysis
+              analysisData={currentAnalysisData}
+              apiBaseUrl={(import.meta as any).env?.VITE_DRIFT_ASSIST_URL || 'http://localhost:8004'}
+              fileName={currentAnalysisData.fileName}
+            />
+          </div>
         ) : (
           <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
             <Card style={{ borderRadius: 16, textAlign: 'center', padding: '40px' }}>
