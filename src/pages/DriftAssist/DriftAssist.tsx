@@ -40,6 +40,7 @@ import {
   type ConnectAWSRequest
 } from "react-query/driftAssistQueries";
 import { S3StreamingAnalysis, UnifiedResultsDisplay } from "components/DriftAssist";
+import { useDriftAssist } from "../../context/DriftAssistProvider";
 import "./DriftAssist.styles.scss";
 
 const { Title, Text, Paragraph } = Typography;
@@ -61,6 +62,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { startAnalysis: startContextAnalysis, currentSession } = useDriftAssist();
   
   // Get sessionId from navigation state or props (for workflow integration)
   const sessionId = initialSessionId || location.state?.sessionId;
