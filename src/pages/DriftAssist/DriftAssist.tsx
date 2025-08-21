@@ -89,6 +89,7 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const [activePreset, setActivePreset] = useState("common");
   const [showDetails, setShowDetails] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerForm] = Form.useForm();
   
   // Initialize step - will be set properly in useEffect
   const [currentStep, setCurrentStep] = useState(0);
@@ -1481,66 +1482,37 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
           borderBottom: '1px solid #e8e8e8'
         }}
         bodyStyle={{
-          padding: '24px',
+          padding: '0',
           background: '#fafbfc'
         }}
       >
-        <div style={{ padding: '0' }}>
-          <Form
-            layout="vertical"
-            onFinish={handleDrawerConnectToAWS}
-            style={{ textAlign: 'left' }}
-          >
-            <Form.Item
-              label="AWS Access Key"
-              name="AWS_ACCESS_KEY"
-              rules={[
-                { required: true, message: 'Please enter your AWS access key' },
-                { pattern: /^AKIA[0-9A-Z]{16}$/, message: 'Invalid AWS Access Key format (should start with AKIA)' }
-              ]}
-            >
-              <AntInput placeholder="AKIA..." />
-            </Form.Item>
+        <ConfigureDriftAssist
+          configureDriftAssistForm={drawerForm}
+          setDisabledSave={() => {}}
+          onFinish={() => {
+            // Close drawer and update state
+            setIsDrawerOpen(false);
             
-            <Form.Item
-              label="AWS Secret Key"
-              name="AWS_SECRET_KEY"
-              rules={[
-                { required: true, message: 'Please enter your AWS secret key' },
-                { len: 40, message: 'AWS Secret Key should be exactly 40 characters long' }
-              ]}
-            >
-              <AntInput.Password placeholder="Enter secret key" />
-            </Form.Item>
+            // Get form values
+            const values = drawerForm.getFieldsValue();
             
-            <Form.Item
-              label="AWS Region"
-              name="AWS_REGION"
-              initialValue="us-east-1"
-              rules={[{ required: true, message: 'Please select a region' }]}
-            >
-              <Select>
-                {AWS_REGIONS.map(region => (
-                  <Option key={region.value} value={region.value}>
-                    {region.label}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
+            // Update session and credentials
+            setCurrentSessionId(values.sessionId || 'drawer-session');
+            setCurrentAwsCredentials({
+              region: values.AWS_REGION,
+              provider: values.CLOUD_PROVIDER,
+              access_key: values.AWS_ACCESS_KEY,
+              secret_key: values.AWS_SECRET_KEY
+            });
             
-            <Form.Item style={{ marginTop: 32, textAlign: 'center' }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
-                loading={connectToAWSMutation.isLoading}
-                style={{ minWidth: 200 }}
-              >
-                Connect to AWS
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
+            // Reset to bucket selection step
+            setCurrentStep(0);
+            setSelectedBucket(undefined);
+            setStateFiles([]);
+            
+            message.success('Successfully connected to AWS! You can now select a bucket.');
+          }}
+        />
       </Drawer>
     </div>
   );
