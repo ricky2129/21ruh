@@ -1066,8 +1066,27 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
         ) : (
           <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
             <Card style={{ borderRadius: 16, textAlign: 'center', padding: '40px' }}>
-              <Title level={3}>Loading Analysis...</Title>
-              <Text type="secondary">Preparing your drift analysis data...</Text>
+              <div style={{ marginBottom: 24 }}>
+                <InfoCircleOutlined style={{ fontSize: 64, color: '#faad14', marginBottom: 16 }} />
+                <Title level={3} style={{ color: '#d46b08' }}>No Analysis Data Available</Title>
+                <Text type="secondary" style={{ fontSize: 16 }}>
+                  The analysis session has expired or the data is no longer available.
+                </Text>
+              </div>
+              <Button
+                type="primary"
+                size="large"
+                onClick={() => setCurrentStep(0)}
+                icon={<DatabaseOutlined />}
+                style={{ 
+                  minWidth: 200,
+                  height: 48,
+                  borderRadius: 8,
+                  fontWeight: 500
+                }}
+              >
+                Start New Analysis
+              </Button>
             </Card>
           </div>
         );
