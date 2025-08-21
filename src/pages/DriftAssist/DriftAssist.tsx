@@ -778,25 +778,51 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                   )}
                 </div>
 
-                {/* Next Step Button */}
-                {selectedBucket && stateFiles.length > 0 && (
-                  <div style={{ textAlign: 'center', marginTop: 24 }}>
+                  {/* Action Buttons */}
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    marginTop: 24,
+                    flexWrap: 'wrap',
+                    gap: 16
+                  }}>
+                    {/* New Connection Button */}
                     <Button
-                      type="primary"
+                      type="default"
                       size="large"
-                      onClick={() => setCurrentStep(1)}
-                      icon={<RightOutlined />}
+                      onClick={() => setCurrentStep(-1)}
+                      icon={<CloudOutlined />}
                       style={{ 
                         minWidth: 180,
                         height: 48,
                         borderRadius: 8,
-                        fontWeight: 500
+                        fontWeight: 500,
+                        borderColor: '#1890ff',
+                        color: '#1890ff'
                       }}
                     >
-                      Continue to Resource Selection
+                      New Connection
                     </Button>
+
+                    {/* Next Step Button */}
+                    {selectedBucket && stateFiles.length > 0 && (
+                      <Button
+                        type="primary"
+                        size="large"
+                        onClick={() => setCurrentStep(1)}
+                        icon={<RightOutlined />}
+                        style={{ 
+                          minWidth: 180,
+                          height: 48,
+                          borderRadius: 8,
+                          fontWeight: 500
+                        }}
+                      >
+                        Continue to Resource Selection
+                      </Button>
+                    )}
                   </div>
-                )}
               </div>
             </Card>
           </div>
