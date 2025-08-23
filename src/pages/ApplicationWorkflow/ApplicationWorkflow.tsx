@@ -17,7 +17,6 @@ import { AddIcon, CodescanIcon, DiagnosticsIcon, ExperimentIcon, ToilAssistIcon,
 import { ConfigureGremlin, IconViewer, Loading, Text } from "components";
 
 import { useAppNavigation } from "context";
-import { DriftAssistProvider } from "context";
 
 import { Colors, Metrics } from "themes";
 
@@ -37,6 +36,7 @@ const serviceMap: Record<string, string> = {
   "toil-assist": "ToilAssist",
   "dashboard-assist": "DashboardAssist",
   "trace-assist": "TraceAssist",
+  "drift-assist": "DriftAssist",
   "slo-sli": "SLOSLI",
 };
 
@@ -90,6 +90,7 @@ const serviceMenuMap = {
     name: "Drift Assist",
     desc: "Detecting and Analyzing infrastructure drift",
     icon: DriftAssistIcon,
+    route: RouteUrl.APPLICATIONS.DRIFT_ASSIST,
   },
 };
 
@@ -308,9 +309,8 @@ const ApplicationWorkflow: React.FC = () => {
   };
 
   return (
-    <DriftAssistProvider>
-      <Row className="application-workflow-container">
-        <Col sm={24} md={7} className="application-workflow-nav">
+    <Row className="application-workflow-container">
+      <Col sm={24} md={7} className="application-workflow-nav">
         <Flex
           align="center"
           justify="center"
@@ -451,7 +451,7 @@ const ApplicationWorkflow: React.FC = () => {
             navigate(
               resolveUrlParams(RouteUrl.APPLICATIONS.EXPERIMENT, {
                 project: params.project,
-                application: params?.applicationData,
+                application: params?.application,
               }),
             );
           }}
@@ -482,9 +482,8 @@ const ApplicationWorkflow: React.FC = () => {
         ) : (
           <Outlet />
         )}
-        </Col>
-      </Row>
-    </DriftAssistProvider>
+      </Col>
+    </Row>
   );
 };
 

@@ -409,6 +409,17 @@ const routes = createBrowserRouter([
                               },
                             ],
                           },
+                          {
+                            path: "drift-assist",
+                            element: (
+                              <Suspense fallback={<Loading type="spinner" />}>
+                                <DriftAssist />
+                              </Suspense>
+                            ),
+                            handle: {
+                              crumb: () => "Drift Assist",
+                            },
+                          },
                         ],
                       },
                     ],

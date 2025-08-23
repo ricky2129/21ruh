@@ -217,6 +217,7 @@ export const RouteUrl = {
       "/project/:project/application/:application/workflow/chaos-experiments/agents",
     AGENT_INSTALATION_GUIDE:
       "/project/:project/application/:application/workflow/chaos-experiments/agent-installation-guide",
+    DRIFT_ASSIST: "/project/:project/application/:application/workflow/drift-assist",
   },
 };
 
