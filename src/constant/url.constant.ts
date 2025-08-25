@@ -171,6 +171,8 @@ export const DriftAssistUrl = {
   ANALYZE_BUCKET: `${DRIFT_ASSIST_BASE_URL}/api/s3/analyze-bucket-state-files`,
   ANALYZE_STATE_FILE_STREAM: `${DRIFT_ASSIST_BASE_URL}/api/s3/analyze-state-file-stream`,
   GENERATE_PDF_REPORT: `${DRIFT_ASSIST_BASE_URL}/api/reports/generate-pdf`,
+  LIST_STORED_ANALYSES: `${DRIFT_ASSIST_BASE_URL}/api/analyses/list`,
+  GET_STORED_ANALYSIS: `${DRIFT_ASSIST_BASE_URL}/api/analyses`,
 };
 
 

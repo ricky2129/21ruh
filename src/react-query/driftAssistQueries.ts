@@ -266,6 +266,122 @@ export const useCreateDriftAnalysis = () => {
   });
 };
 
+// New types for stored analyses
+interface StoredAnalysisItem {
+  analysis_id: number;
+  created_at: string;
+}
+
+interface AnalysisListResponse {
+  analyses: StoredAnalysisItem[];
+}
+
+interface StoredAnalysisData {
+  session_id: string;
+  file_name: string;
+  selected_resources: string[];
+  analysis_data: any[];
+  drift_results: any[];
+  terraform_analysis?: any;
+  session_summary: any;
+  completed_at: string;
+  project_id: string;
+  application_id: string;
+  analysis_id: number;
+}
+
+// API Functions for stored analyses
+const listStoredAnalyses = async (projectId: string, applicationId: string): Promise<AnalysisListResponse> => {
+  console.log('📋 API: listStoredAnalyses called with:', { projectId, applicationId });
+  
+  const response = await fetch(`${DriftAssistUrl.LIST_STORED_ANALYSES}/${projectId}/${applicationId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  console.log('📋 API: listStoredAnalyses response status:', response.status);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error('❌ API: listStoredAnalyses failed:', errorData);
+    throw new Error(errorData.detail || errorData.error || 'Failed to fetch stored analyses');
+  }
+
+  const result = await response.json();
+  console.log('✅ API: listStoredAnalyses success:', { analysesCount: result.analyses?.length || 0 });
+  return result;
+};
+
+const getStoredAnalysis = async (projectId: string, applicationId: string, analysisId: number): Promise<StoredAnalysisData> => {
+  console.log('📄 API: getStoredAnalysis called with:', { projectId, applicationId, analysisId });
+  
+  const response = await fetch(`${DriftAssistUrl.GET_STORED_ANALYSIS}/${projectId}/${applicationId}/${analysisId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  console.log('📄 API: getStoredAnalysis response status:', response.status);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error('❌ API: getStoredAnalysis failed:', errorData);
+    throw new Error(errorData.detail || errorData.error || 'Failed to fetch analysis details');
+  }
+
+  const result = await response.json();
+  console.log('✅ API: getStoredAnalysis success');
+  return result;
+};
+
+// React Query Hooks for stored analyses
+export const useListStoredAnalyses = (projectId: string, applicationId: string, enabled: boolean = true) => {
+  console.log('📋 useListStoredAnalyses called:', { 
+    projectId, 
+    applicationId, 
+    enabled,
+    hasProjectId: !!projectId,
+    hasApplicationId: !!applicationId
+  });
+  
+  return useQuery({
+    queryKey: [QUERY_KEY.LIST_STORED_ANALYSES, projectId, applicationId],
+    queryFn: () => {
+      console.log('📋 Executing listStoredAnalyses for:', { projectId, applicationId });
+      return listStoredAnalyses(projectId, applicationId);
+    },
+    enabled: enabled && !!projectId && !!applicationId,
+    staleTime: 30 * 1000, // 30 seconds
+    retry: 2,
+  });
+};
+
+export const useGetStoredAnalysis = (projectId: string, applicationId: string, analysisId: number, enabled: boolean = false) => {
+  console.log('📄 useGetStoredAnalysis called:', { 
+    projectId, 
+    applicationId, 
+    analysisId, 
+    enabled,
+    hasProjectId: !!projectId,
+    hasApplicationId: !!applicationId,
+    hasAnalysisId: !!analysisId
+  });
+  
+  return useQuery({
+    queryKey: [QUERY_KEY.GET_STORED_ANALYSIS, projectId, applicationId, analysisId],
+    queryFn: () => {
+      console.log('📄 Executing getStoredAnalysis for:', { projectId, applicationId, analysisId });
+      return getStoredAnalysis(projectId, applicationId, analysisId);
+    },
+    enabled: enabled && !!projectId && !!applicationId && !!analysisId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2,
+  });
+};
+
 // Export types for use in components
 export type {
   AWSCredentials,
@@ -277,4 +393,7 @@ export type {
   GetStateFilesResponse,
   AnalyzeBucketRequest,
   AnalyzeBucketResponse,
+  StoredAnalysisItem,
+  AnalysisListResponse,
+  StoredAnalysisData,
 };

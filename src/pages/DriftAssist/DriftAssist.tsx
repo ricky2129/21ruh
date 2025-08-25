@@ -28,19 +28,23 @@ import {
   BarChartOutlined,
   ReloadOutlined,
   RightOutlined,
-  SettingOutlined
+  SettingOutlined,
+  HistoryOutlined,
+  ArrowLeftOutlined
 } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { 
   useGetS3Buckets, 
   useGetStateFiles, 
   useAnalyzeBucket,
   useConnectToAWS,
+  useListStoredAnalyses,
+  useGetStoredAnalysis,
   type S3Bucket,
   type StateFile,
   type ConnectAWSRequest
 } from "react-query/driftAssistQueries";
-import { S3StreamingAnalysis, UnifiedResultsDisplay } from "components/DriftAssist";
+import { S3StreamingAnalysis, UnifiedResultsDisplay, StoredAnalysesCard, StoredAnalysisDisplay } from "components/DriftAssist";
 import { ConfigureDriftAssist, Drawer } from "components";
 import "./DriftAssist.styles.scss";
 
@@ -63,6 +67,11 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const params = useParams();
+  
+  // Extract project_id and application_id from URL parameters
+  const projectId = params.project;
+  const applicationId = params.application;
   
   // Get sessionId from navigation state or props (for workflow integration)
   const sessionId = initialSessionId || location.state?.sessionId;
@@ -92,6 +101,9 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   
   // Initialize step - will be set properly in useEffect
   const [currentStep, setCurrentStep] = useState(0);
+  
+  // Stored analyses state
+  const [selectedAnalysisId, setSelectedAnalysisId] = useState<number | null>(null);
 
   // Debug logging for state changes
   useEffect(() => {
@@ -192,6 +204,19 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
   const { data: s3BucketsData, isLoading: isLoadingBuckets, error: bucketsError } = useGetS3Buckets(currentSessionId, !!currentSessionId);
   const { data: stateFilesData, isLoading: isLoadingStateFiles } = useGetStateFiles(currentSessionId, selectedBucket || "", !!currentSessionId && !!selectedBucket);
   const analyzeBucketMutation = useAnalyzeBucket();
+  
+  // Stored analyses hooks
+  const { data: storedAnalysesData, isLoading: isLoadingStoredAnalyses, error: storedAnalysesError } = useListStoredAnalyses(
+    projectId || '', 
+    applicationId || '', 
+    !!(projectId && applicationId)
+  );
+  const { data: selectedStoredAnalysis, isLoading: isLoadingSelectedAnalysis } = useGetStoredAnalysis(
+    projectId || '', 
+    applicationId || '', 
+    selectedAnalysisId || 0, 
+    !!(projectId && applicationId && selectedAnalysisId)
+  );
 
   // Update state files when data changes
   useEffect(() => {
@@ -846,23 +871,45 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                     flexWrap: 'wrap',
                     gap: 16
                   }}>
-                    {/* New Connection Button */}
-                    <Button
-                      type="default"
-                      size="large"
-                      onClick={() => setIsDrawerOpen(true)}
-                      icon={<CloudOutlined />}
-                      style={{ 
-                        minWidth: 180,
-                        height: 48,
-                        borderRadius: 8,
-                        fontWeight: 500,
-                        borderColor: '#1890ff',
-                        color: '#1890ff'
-                      }}
-                    >
-                      New Connection
-                    </Button>
+                    <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                      {/* New Connection Button */}
+                      <Button
+                        type="default"
+                        size="large"
+                        onClick={() => setIsDrawerOpen(true)}
+                        icon={<CloudOutlined />}
+                        style={{ 
+                          minWidth: 180,
+                          height: 48,
+                          borderRadius: 8,
+                          fontWeight: 500,
+                          borderColor: '#1890ff',
+                          color: '#1890ff'
+                        }}
+                      >
+                        New Connection
+                      </Button>
+
+                      {/* View Stored Analyses Button */}
+                      {projectId && applicationId && (
+                        <Button
+                          type="default"
+                          size="large"
+                          onClick={() => setCurrentStep(5)}
+                          icon={<HistoryOutlined />}
+                          style={{ 
+                            minWidth: 180,
+                            height: 48,
+                            borderRadius: 8,
+                            fontWeight: 500,
+                            borderColor: '#52c41a',
+                            color: '#52c41a'
+                          }}
+                        >
+                          View Stored Analyses
+                        </Button>
+                      )}
+                    </div>
 
                     {/* Next Step Button */}
                     {selectedBucket && stateFiles.length > 0 && (
@@ -1408,6 +1455,150 @@ const DriftAssist: React.FC<DriftAssistProps> = ({
                     borderRadius: 12,
                     marginBottom: 0
                   }}
+                />
+              </div>
+            </Card>
+          </div>
+        );
+
+      case 5:
+        // Stored Analyses List
+        return (
+          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
+            <Card 
+              style={{ 
+                borderRadius: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                border: '1px solid #f0f0f0',
+                marginBottom: 32,
+                background: 'white'
+              }}
+            >
+              <div style={{ 
+                padding: '24px 32px',
+                borderBottom: '1px solid #f0f0f0',
+                background: '#f8f9fa',
+                borderRadius: '12px 12px 0 0',
+                marginBottom: 24
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <HistoryOutlined style={{ fontSize: 24, color: '#52c41a' }} />
+                    <div>
+                      <Title level={3} style={{ margin: 0, color: '#1f2937', fontWeight: 600 }}>
+                        Stored Analyses
+                      </Title>
+                      <Text type="secondary" style={{ fontSize: 14 }}>
+                        View and manage your previously saved drift analyses
+                      </Text>
+                    </div>
+                  </div>
+                  <Button
+                    type="default"
+                    size="large"
+                    onClick={() => setCurrentStep(0)}
+                    icon={<ArrowLeftOutlined />}
+                    style={{ 
+                      borderRadius: 8,
+                      fontWeight: 500,
+                      borderColor: '#d9d9d9',
+                      color: '#595959'
+                    }}
+                  >
+                    Back to Analysis
+                  </Button>
+                </div>
+              </div>
+
+              <div style={{ padding: '0 32px 32px 32px' }}>
+                <StoredAnalysesCard
+                  projectId={projectId || ''}
+                  applicationId={applicationId || ''}
+                  onSelectAnalysis={(analysisId) => {
+                    setSelectedAnalysisId(analysisId);
+                    setCurrentStep(6);
+                  }}
+                  isLoading={isLoadingStoredAnalyses}
+                  error={storedAnalysesError}
+                  data={storedAnalysesData}
+                />
+              </div>
+            </Card>
+          </div>
+        );
+
+      case 6:
+        // Individual Stored Analysis Display
+        return (
+          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
+            <Card 
+              style={{ 
+                borderRadius: 12,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                border: '1px solid #f0f0f0',
+                marginBottom: 32,
+                background: 'white'
+              }}
+            >
+              <div style={{ 
+                padding: '24px 32px',
+                borderBottom: '1px solid #f0f0f0',
+                background: '#f8f9fa',
+                borderRadius: '12px 12px 0 0',
+                marginBottom: 24
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <BarChartOutlined style={{ fontSize: 24, color: '#1890ff' }} />
+                    <div>
+                      <Title level={3} style={{ margin: 0, color: '#1f2937', fontWeight: 600 }}>
+                        Analysis Details
+                      </Title>
+                      <Text type="secondary" style={{ fontSize: 14 }}>
+                        {selectedStoredAnalysis ? `Analysis ID: ${selectedAnalysisId}` : 'Loading analysis details...'}
+                      </Text>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <Button
+                      type="default"
+                      size="large"
+                      onClick={() => setCurrentStep(5)}
+                      icon={<ArrowLeftOutlined />}
+                      style={{ 
+                        borderRadius: 8,
+                        fontWeight: 500,
+                        borderColor: '#d9d9d9',
+                        color: '#595959'
+                      }}
+                    >
+                      Back to List
+                    </Button>
+                    <Button
+                      type="default"
+                      size="large"
+                      onClick={() => setCurrentStep(0)}
+                      icon={<ReloadOutlined />}
+                      style={{ 
+                        borderRadius: 8,
+                        fontWeight: 500,
+                        borderColor: '#52c41a',
+                        color: '#52c41a'
+                      }}
+                    >
+                      New Analysis
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ padding: '0 32px 32px 32px' }}>
+                <StoredAnalysisDisplay
+                  analysisId={selectedAnalysisId || 0}
+                  projectId={projectId || ''}
+                  applicationId={applicationId || ''}
+                  isLoading={isLoadingSelectedAnalysis}
+                  data={selectedStoredAnalysis}
                 />
               </div>
             </Card>
